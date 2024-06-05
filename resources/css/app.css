@@ -1,3 +1,11 @@
+/*
+Leave tailwind out of usage since we are using a theme instead 
+
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; 
+*/
+
+/* Include the main primevue style */
+@import 'primeflex/primeflex.scss';
+@import 'primeicons/primeicons.css';
