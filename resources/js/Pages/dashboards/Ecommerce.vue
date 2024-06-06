@@ -1,87 +1,11 @@
 <script setup>
-    import { computed, watch, ref, onBeforeUnmount } from 'vue';
-    import { usePrimeVue } from 'primevue/config';
-    import AppTopbar from '@/Layouts/AppTopbar.vue';
-    import AppSidebar from '@/Layouts/AppSidebar.vue';
-    import AppConfig from '@/Layouts/AppConfig.vue';
-    import AppProfileSidebar from '@/Layouts/AppProfileSidebar.vue';
-    // import AppBreadCrumb from '@/Layouts/AppBreadcrumb.vue';
-    import { useLayout } from '@/Layouts/composables/layout';
-    import { onMounted } from 'vue';
-    
-    import { ProductService } from '@/Services/ProductService';
-    import { FilterMatchMode } from 'primevue/api';
+import { onMounted, ref, watch } from 'vue';
+import { ProductService } from '@/Services/ProductService';
+import { FilterMatchMode } from 'primevue/api';
+import { useLayout } from '@/Layouts/composables/layout';
 
-    const $primevue = usePrimeVue();
-    const { layoutConfig, layoutState, isSidebarActive } = useLayout();
-    const outsideClickListener = ref(null);
-    const sidebarRef = ref(null);
-    const topbarRef = ref(null);
-
-    watch(isSidebarActive, (newVal) => {
-        if (newVal) {
-            bindOutsideClickListener();
-        } else {
-            unbindOutsideClickListener();
-        }
-    });
-
-    onBeforeUnmount(() => {
-        unbindOutsideClickListener();
-    });
-
-    const containerClass = computed(() => {
-        return {
-            'layout-light': layoutConfig.colorScheme.value === 'light',
-            'layout-dim': layoutConfig.colorScheme.value === 'dim',
-            'layout-dark': layoutConfig.colorScheme.value === 'dark',
-            'layout-colorscheme-menu': layoutConfig.menuTheme.value === 'colorScheme',
-            'layout-primarycolor-menu': layoutConfig.menuTheme.value === 'primaryColor',
-            'layout-transparent-menu': layoutConfig.menuTheme.value === 'transparent',
-            'layout-overlay': layoutConfig.menuMode.value === 'overlay',
-            'layout-static': layoutConfig.menuMode.value === 'static',
-            'layout-slim': layoutConfig.menuMode.value === 'slim',
-            'layout-slim-plus': layoutConfig.menuMode.value === 'slim-plus',
-            'layout-horizontal': layoutConfig.menuMode.value === 'horizontal',
-            'layout-reveal': layoutConfig.menuMode.value === 'reveal',
-            'layout-drawer': layoutConfig.menuMode.value === 'drawer',
-            'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
-            'layout-overlay-active': layoutState.overlayMenuActive.value,
-            'layout-mobile-active': layoutState.staticMenuMobileActive.value,
-            'p-ripple-disabled': $primevue.config.ripple === false,
-            'layout-sidebar-active': layoutState.sidebarActive.value,
-            'layout-sidebar-anchored': layoutState.anchored.value
-        };
-    });
-                            
-    const bindOutsideClickListener = () => {
-        if (!outsideClickListener.value) {
-            outsideClickListener.value = (event) => {
-                if (isOutsideClicked(event)) {
-                    layoutState.overlayMenuActive.value = false;
-                    layoutState.overlaySubmenuActive.value = false;
-                    layoutState.staticMenuMobileActive.value = false;
-                    layoutState.menuHoverActive.value = false;
-                }
-            };
-            document.addEventListener('click', outsideClickListener.value);
-        }
-    };
-    const unbindOutsideClickListener = () => {
-        if (outsideClickListener.value) {
-            document.removeEventListener('click', outsideClickListener);
-            outsideClickListener.value = null;
-        }
-    };
-    const isOutsideClicked = (event) => {
-        const sidebarEl = sidebarRef?.value.$el;
-        const topbarEl = topbarRef?.value.$el.querySelector('.topbar-menubutton');
-
-        return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
-    };
-
-
-    const knobValue = ref(90);
+const { layoutConfig } = useLayout();
+const knobValue = ref(90);
 const products = ref([]);
 const weeks = ref([
     {
@@ -257,16 +181,8 @@ watch(
     { immediate: true }
 );
 </script>
-
 <template>
-    <div :class="['layout-container', { ...containerClass }]">
-        <AppSidebar ref="sidebarRef" />
-
-        <div class="layout-content-wrapper">
-            <AppTopbar ref="topbarRef" />
-            <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
-            <div class="layout-content">
-                <div class="grid">
+    <div class="grid">
         <div class="col-12 md:col-6 xl:col-3">
             <div class="card h-full">
                 <span class="font-semibold text-lg">Sales</span>
@@ -432,14 +348,4 @@ watch(
             </div>
         </div>
     </div>
-            </div>
-        </div>
-
-        <AppProfileSidebar />
-        <AppConfig />
-
-        <Toast></Toast>
-        <div class="layout-mask"></div>
-    </div>
 </template>
-

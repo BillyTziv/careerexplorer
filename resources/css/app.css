@@ -5,7 +5,11 @@ Leave tailwind out of usage since we are using a theme instead
 @tailwind components;
 @tailwind utilities; 
 */
+@import '@/assets/layout/layout.scss';
 
 /* Include the main primevue style */
 @import 'primeflex/primeflex.scss';
 @import 'primeicons/primeicons.css';
+
+/* Demos */
+@import '@/assets/demo/demo.scss';
