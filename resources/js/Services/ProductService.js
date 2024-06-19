@@ -1,3 +1,4 @@
+
 export class ProductService {
     getProductsSmall() {
         return fetch('/demo/data/products-small.json', { headers: { 'Cache-Control': 'no-cache' } })

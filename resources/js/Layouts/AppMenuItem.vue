@@ -189,6 +189,7 @@ const calculatePosition = (overlay, target) => {
 <template>
     <li ref="menuItemRef" :class="{ 'layout-root-menuitem': root, 'active-menuitem': isActiveMenu }">
         <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
+
         <a
             v-if="(!item.to || item.items) && item.visible !== false"
             :href="item.url"
@@ -203,13 +204,19 @@ const calculatePosition = (overlay, target) => {
             <span class="layout-menuitem-text">{{ item.label }}</span>
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
         </a>
-        <Link
+        <!-- <Link
             v-if="item.to && !item.items && item.visible !== false"
             @click="itemClick($event, item, index)"
          
             tabindex="0"
             :to="item.to"
             @mouseenter="onMouseEnter"
+            v-tooltip.hover="(isSlim || isSlimPlus) && root && !isActiveMenu ? item.label : null"
+        > -->
+        <Link
+            v-if="item.to && !item.items && item.visible !== false"
+            :href="item.to"
+            tabindex="0"
             v-tooltip.hover="(isSlim || isSlimPlus) && root && !isActiveMenu ? item.label : null"
         >
             <i :class="item.icon" class="layout-menuitem-icon"></i>

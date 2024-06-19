@@ -3,7 +3,102 @@ import { ref } from 'vue';
 
 import AppSubMenu from './AppSubMenu.vue';
 
-const model = ref([
+const model = ref( [
+    {
+        label: 'ΔΙΑΧΕΙΡΙΣΗ ΧΡΗΣΤΩΝ',
+        icon: 'pi pi-fw pi-user',
+        items: [
+            {
+                label: 'Λίστα Χρηστών',
+                icon: 'pi pi-fw pi-list',
+                to: '/users'
+            },
+            {
+                label: 'Λίστα Ρόλων',
+                icon: 'pi pi-fw pi-list',
+                to: '/roles'
+            },
+            {
+                label: 'Λίστα Δικαιωμάτων',
+                icon: 'pi pi-fw pi-list',
+                to: '/permissions'
+            },
+            {
+                label: 'Δημιουργία',
+                icon: 'pi pi-fw pi-plus',
+                items: [
+                    {
+                        label: 'Χρήστη',
+                        icon: 'pi pi-fw pi-user-plus',
+                        to: '/users/create'
+                    },
+                    {
+                        label: 'Ρόλου',
+                        icon: 'pi pi-fw pi-user-plus',
+                        to: '/roles/create'
+                    },
+                    {
+                        label: 'Δικαιώματος',
+                        icon: 'pi pi-fw pi-user-plus',
+                        to: '/permissions/create'
+                    }
+                ]
+            }
+        ]
+    },
+    
+    {
+        label: 'ΕΠΑΓΓΕΛΜΑΤΑ',
+        icon: 'pi pi-fw pi-check-square',
+        to: '/apps/tasklist',
+        items: [
+            {
+                label: 'Λίστα Επαγγελμάτων',
+                icon: 'pi pi-fw pi-business',
+                to: '/careers'
+            },
+            {
+                label: 'Δημιουργία',
+                icon: 'pi pi-fw pi-user-plus',
+                to: '/careers/create'
+            }
+        ]
+    },
+    {
+        label: 'ΕΡΩΤΗΜΑΤΟΛΟΓΙΑ',
+        icon: 'pi pi-fw pi-check-square',
+        items: [
+            {
+                label: 'Πρότυπα',
+                icon: 'pi pi-fw pi-square',
+                to: '/tests/templates'
+            },
+            {
+                label: 'Απαντήσεις',
+                icon: 'pi pi-fw pi-check',
+                to: '/tests/submissions'
+            }
+        ]
+    },
+    {
+        label: 'ΣΥΝΕΔΡΙΕΣ',
+        icon: 'pi pi-fw pi-download',
+        items: [
+            {
+                label: 'Οι Συνεδρίες μου',
+                icon: 'pi pi-fw pi-shopping-cart',
+                url: '/session-requests'
+            },
+            {
+                label: 'Δημιουργία',
+                icon: 'pi pi-fw pi-user-plus',
+                to: '/session-requests/create'
+            }
+        ]
+    }
+]);
+
+const model_old = ref([
     {
         label: 'Dashboards',
         icon: 'pi pi-home',

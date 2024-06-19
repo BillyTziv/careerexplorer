@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+
+/* MOdels */
+use App\Models\UserManagement\User;
+use App\Models\UserManagement\Role;
+use App\Models\UserManagement\Permission;
+
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,7 +42,10 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'firstname' => $request->name,
+            'lastname' => $request->name,
+            'phone' => '1234567890',
+            'username' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);

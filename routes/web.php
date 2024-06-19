@@ -22,6 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //require __DIR__.'/authorizedRoutes/careerInterestRoutes.php'; // CE
+    //require __DIR__.'/authorizedRoutes/sessionRequestRoutes.php'; // CE
+    //require __DIR__.'/authorizedRoutes/careerRoutes.php'; // CE
+    //require __DIR__.'/authorizedRoutes/careerRequestRoutes.php'; // CE
+    require __DIR__.'/authRoutes/userManagementRoutes.php'; // CE
+    //require __DIR__.'/authorizedRoutes/testRoutes.php'; // CE
+    //require __DIR__.'/authorizedRoutes/careerExperienceRoutes.php'; // CE
 });
 
 require __DIR__.'/auth.php';
