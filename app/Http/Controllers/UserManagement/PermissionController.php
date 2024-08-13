@@ -65,12 +65,7 @@ class PermissionController extends Controller
     }
 
 
-    public function store(Request $request) {
-        return back()->with([
-            'status' => 'success',
-            'message' => 'Το δικαίωμα χρήστη δημιουργήθηκε με επιτυχία!'
-        ]);
-        
+    public function store(Request $request) {        
         $validated = $request->validate([
             'name' => ['required'],
             'code' => ['required'],
@@ -88,10 +83,16 @@ class PermissionController extends Controller
 
             DB::commit();
 
-            return back()->with([
+            Inertia::render('UserManagement/Permissions/CreateEdit',[
+                'permission' => new stdClass(),
                 'status' => 'success',
                 'message' => 'Το δικαίωμα χρήστη δημιουργήθηκε με επιτυχία!'
             ]);
+            
+            // return back()->with([
+            //     'status' => 'success',
+            //     'message' => 'Το δικαίωμα χρήστη δημιουργήθηκε με επιτυχία!'
+            // ]);
         } catch (\Throwable $th) {
             return redirect()->route( 'permissions.index' )->with([
                 'status' => 'error',

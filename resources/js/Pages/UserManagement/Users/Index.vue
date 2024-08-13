@@ -1,15 +1,9 @@
 <script setup>
-    import { computed, watch, ref, onBeforeUnmount } from 'vue';
-    import { usePrimeVue } from 'primevue/config';
-    import AppTopbar from '@/Layouts/AppTopbar.vue';
-    import AppSidebar from '@/Layouts/AppSidebar.vue';
-    import AppConfig from '@/Layouts/AppConfig.vue';
-    import AppProfileSidebar from '@/Layouts/AppProfileSidebar.vue';
-    // import AppBreadCrumb from '@/Layouts/AppBreadcrumb.vue';
-    import { useLayout } from '@/Layouts/composables/layout';
-    import { onMounted } from 'vue';
-    
-    import { FilterMatchMode } from 'primevue/api';
+    import { ref } from 'vue';
+    import { router } from '@inertiajs/vue3'
+
+    /* Layouts */
+    import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
     let props = defineProps({
         user: Object,
@@ -19,172 +13,100 @@
         response: Object,
     });
 
-    const $primevue = usePrimeVue();
-    const { layoutConfig, layoutState, isSidebarActive } = useLayout();
-    const outsideClickListener = ref(null);
-    const sidebarRef = ref(null);
-    const topbarRef = ref(null);
-
-    watch(isSidebarActive, (newVal) => {
-        if (newVal) {
-            bindOutsideClickListener();
-        } else {
-            unbindOutsideClickListener();
-        }
-    });
-
-    onBeforeUnmount(() => {
-        unbindOutsideClickListener();
-    });
-
-    const containerClass = computed(() => {
-        return {
-            'layout-light': layoutConfig.colorScheme.value === 'light',
-            'layout-dim': layoutConfig.colorScheme.value === 'dim',
-            'layout-dark': layoutConfig.colorScheme.value === 'dark',
-            'layout-colorscheme-menu': layoutConfig.menuTheme.value === 'colorScheme',
-            'layout-primarycolor-menu': layoutConfig.menuTheme.value === 'primaryColor',
-            'layout-transparent-menu': layoutConfig.menuTheme.value === 'transparent',
-            'layout-overlay': layoutConfig.menuMode.value === 'overlay',
-            'layout-static': layoutConfig.menuMode.value === 'static',
-            'layout-slim': layoutConfig.menuMode.value === 'slim',
-            'layout-slim-plus': layoutConfig.menuMode.value === 'slim-plus',
-            'layout-horizontal': layoutConfig.menuMode.value === 'horizontal',
-            'layout-reveal': layoutConfig.menuMode.value === 'reveal',
-            'layout-drawer': layoutConfig.menuMode.value === 'drawer',
-            'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
-            'layout-overlay-active': layoutState.overlayMenuActive.value,
-            'layout-mobile-active': layoutState.staticMenuMobileActive.value,
-            'p-ripple-disabled': $primevue.config.ripple === false,
-            'layout-sidebar-active': layoutState.sidebarActive.value,
-            'layout-sidebar-anchored': layoutState.anchored.value
-        };
-    });
-                            
-    const bindOutsideClickListener = () => {
-        if (!outsideClickListener.value) {
-            outsideClickListener.value = (event) => {
-                if (isOutsideClicked(event)) {
-                    layoutState.overlayMenuActive.value = false;
-                    layoutState.overlaySubmenuActive.value = false;
-                    layoutState.staticMenuMobileActive.value = false;
-                    layoutState.menuHoverActive.value = false;
-                }
-            };
-            document.addEventListener('click', outsideClickListener.value);
-        }
-    };
-    const unbindOutsideClickListener = () => {
-        if (outsideClickListener.value) {
-            document.removeEventListener('click', outsideClickListener);
-            outsideClickListener.value = null;
-        }
-    };
-    const isOutsideClicked = (event) => {
-        const sidebarEl = sidebarRef?.value.$el;
-        const topbarEl = topbarRef?.value.$el.querySelector('.topbar-menubutton');
-
-        return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+    const selectedUser = ref(null);
+    const deleteUserDialog = ref(false);
+    const usersTableRef = ref(null);
+    const filterUsersTable = ref(props.filters);
+    
+    const exportCSV = () => {
+        usersTableRef.value.exportCSV();
     };
 
+    const editUser = ( user ) => {    
+        router.visit(`/users/${user.id}/edit`);
+    };
 
-    const knobValue = ref(90);
-const weeks = ref([
-    {
-        label: 'Last Week',
-        value: 0,
-        data: [
-            [65, 59, 80, 81, 56, 55, 40],
-            [28, 48, 40, 19, 86, 27, 90]
-        ]
-    },
-    {
-        label: 'This Week',
-        value: 1,
-        data: [
-            [35, 19, 40, 61, 16, 55, 30],
-            [48, 78, 10, 29, 76, 77, 10]
-        ]
-    }
-]);
-const selectedWeek = ref(weeks.value[0]);
-const pieOptions = ref({});
-const barOptions = ref({});
-const barData = ref({});
-const pieData = ref({});
-const salesTableRef = ref(null);
-const filterSalesTable = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-});
-onMounted(() => {
-    selectedWeek.value = weeks.value[0];
-});
+    const confirmDeleteUser = ( editUser ) => {
+        selectedUser.value = editUser;
+        deleteUserDialog.value = true;
+    };
 
-const exportCSV = () => {
-    salesTableRef.value.exportCSV();
-};
+    const deleteUser = () => {
+        router.delete(`/users/${selectedUser.value.id}`)
+        deleteUserDialog.value = false;
+        selectedUser.value = {};
+        // users.value = users.value.filter((val) => val.id !== user.value.id);
+    
+        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
+    };
 </script>
 
 <template>
-    <div :class="['layout-container', { ...containerClass }]">
-        <AppSidebar ref="sidebarRef" />
+    <AppPageWrapper>
+        <template #page-title>
+            Χρήστες
+        </template>
 
-        <div class="layout-content-wrapper">
-            <AppTopbar ref="topbarRef" />
-            <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
-            
-            <div class="col-12 lg:col-12">
-                <div class="card">
-                    <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
-                        <div class="text-900 text-xl font-semibold mb-3 md:mb-0">Χρηστες</div>
-                        <div class="inline-flex align-items-center">
-                            <IconField iconPosition="left">
-                                <InputIcon class="pi pi-search" />
-                                <InputText type="text" v-model="filterSalesTable.global.value" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
-                            </IconField>
-                            <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportCSV"></Button>
-                        </div>
-                    </div>
+        <template #page-content>
+            <DataTable ref="usersTableRef" :value="users.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterUsersTable">
+                <template #empty>Δεν βρέθηκαν χρήστες.</template>
+                <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Όνομα</span>
+                        {{ data.firstname }}
+                    </template>
+                </Column>
 
-                    <DataTable ref="salesTableRef" :value="users.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterSalesTable">
-                        <template #empty>Δεν βρέθηκαν χρήστες.</template>
-                        <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">Όνομα</span>
-                                {{ data.firstname }}
-                            </template>
-                        </Column>
+                <Column field="lastname" header="Επίθετο" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Επίθετο</span>
+                        {{ data.lastname }}
+                    </template>
+                </Column>
 
-                        <Column field="lastname" header="Επίθετο" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">Επίθετο</span>
-                                {{ data.lastname }}
-                            </template>
-                        </Column>
+                <Column field="user_role" header="Ρόλος" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Ρόλος</span>
+                        {{ data.user_role }}
+                    </template>
+                </Column>
 
-                        <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">Τηλέφωνο</span>
-                                {{ data.phone }}
-                            </template>
-                        </Column>
+                <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Τηλέφωνο</span>
+                        {{ data.phone }}
+                    </template>
+                </Column>
 
-                        <Column field="email" header="Email" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">Email</span>
-                                {{ data.email }}
-                            </template>
-                        </Column>
-                    </DataTable>
-                </div>
-            </div>
+                <Column field="email" header="Email" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Email</span>
+                        {{ data.email }}
+                    </template>
+                </Column>
+
+                <Column headerStyle="min-width:10rem;">
+                    <template #body="slotProps">
+                        <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editUser(slotProps.data)" />
+                        <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteUser(slotProps.data)" />
+                    </template>
+                </Column>
+            </DataTable>
+        </template>
+    </AppPageWrapper>
+
+    <Dialog v-model:visible="deleteUserDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής Χρήστη" :modal="true">
+        <div class="flex align-items-center justify-content-center">
+            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+            <span v-if="selectedUser">
+                Είστε σίγουροι οτι θέλετε να διαγράψετε τον χρήστη <b>{{ selectedUser.firstname }} {{ selectedUser.lastname }}</b>?
+            </span
+            >
         </div>
-
-        <AppProfileSidebar />
-        <AppConfig />
-
-        <Toast></Toast>
-        <div class="layout-mask"></div>
-    </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="deleteUserDialog = false" />
+            <Button label="Yes" icon="pi pi-check" text @click="deleteUser" />
+        </template>
+    </Dialog>
 </template>
 

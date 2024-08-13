@@ -1,11 +1,11 @@
 <template>
     <CustomNavbar :user="user">
 
-        <template #page-header>
+        <template #page-title>
             View User
         </template>
 
-        <template #main>
+        <template #page-content>
             <div class="md:flex no-wrap md:-mx-2 ">
 
                 <!-- Left Side -->

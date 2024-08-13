@@ -2,7 +2,7 @@
     <Head title="Dashboard" />
   
     <BreezeAuthenticatedLayout>
-        <template #page-header>
+        <template #page-title>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 View User
             </h2>
@@ -34,7 +34,8 @@
   <script>
     import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
     import { Head, Link } from '@inertiajs/inertia-vue3';
-    import { Inertia } from '@inertiajs/inertia';
+    import { router } from '@inertiajs/vue3'
+    
     import 'boxicons';
     import moment from 'moment';
     import Notification from '../../Common/Notification.vue';

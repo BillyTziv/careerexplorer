@@ -6,7 +6,7 @@
     import AppSidebar from '@/Layouts/AppSidebar.vue';
     import AppConfig from '@/Layouts/AppConfig.vue';
     import AppProfileSidebar from '@/Layouts/AppProfileSidebar.vue';    
-    import { useForm } from '@inertiajs/inertia-vue3';
+    import { useForm } from '@inertiajs/vue3';
     import { useLayout } from '@/Layouts/composables/layout';
 
     import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
@@ -94,13 +94,13 @@
                         </div>
                     </div>
 
-                    /////////////{{ errors }}
                     <form @submit.prevent="saveRole" autocomplete="off">
                         <div class="col-12 lg:col-10">
                             <div class="grid formgrid p-fluid">
                                 <BaseTextInput
                                     v-model="roleForm.name"
                                     label="Όνομα Ρόλου"
+                                    :errors="errors.name"
                                 />
                             </div>
                         </div>
@@ -113,7 +113,9 @@
                                 :key="permissionIndex"
                             >
                                 <div class="border-1 surface-border flex justify-content-between align-items-center px-3 border-round">
-                                    <InputSwitch v-model="permission.value"></InputSwitch>
+                                    <InputSwitch
+                                        v-model="permission.value"
+                                    ></InputSwitch>
 
                                     <span class="text-900 font-bold p-3">
                                         {{ permission.name }}

@@ -63,3 +63,7 @@ run php artisan migrate
 ```
 
 Create a folder with the layour in the public directory.
+
+# Permission Control
+
+All permissions are stored in a separate config file `config/permissions.php`.

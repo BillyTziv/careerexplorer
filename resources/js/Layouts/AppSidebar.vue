@@ -1,39 +1,46 @@
 <script setup>
-import AppMenu from './AppMenu.vue';
-import { useLayout } from '@/Layouts/composables/layout';
-import { Link } from '@inertiajs/vue3'
+    import AppMenu from './AppMenu.vue';
+    import { useLayout } from '@/Layouts/composables/layout';
+    import { Link } from '@inertiajs/vue3'
+    import { useUserStore } from '@/Stores/useUser.store';
+    import { onMounted } from 'vue';
+    
+    const { layoutState } = useLayout();
+    const userStore = useUserStore();
 
-const { layoutState } = useLayout();
+    let timeout = null;
 
-let timeout = null;
-
-const onMouseEnter = () => {
-    if (!layoutState.anchored.value) {
-        if (timeout) {
-            clearTimeout(timeout);
-            timeout = null;
+    const onMouseEnter = () => {
+        if (!layoutState.anchored.value) {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            layoutState.sidebarActive.value = true;
         }
-        layoutState.sidebarActive.value = true;
-    }
-};
+    };
 
-const onMouseLeave = () => {
-    if (!layoutState.anchored.value) {
-        if (!timeout) {
-            timeout = setTimeout(() => (layoutState.sidebarActive.value = false), 300);
+    const onMouseLeave = () => {
+        if (!layoutState.anchored.value) {
+            if (!timeout) {
+                timeout = setTimeout(() => (layoutState.sidebarActive.value = false), 300);
+            }
         }
-    }
-};
+    };
 
-const anchor = () => {
-    layoutState.anchored.value = !layoutState.anchored.value;
-};
+    const anchor = () => {
+        layoutState.anchored.value = !layoutState.anchored.value;
+    };
+
+    onMounted(() => {
+        userStore.fetchPermissions();
+    });
 </script>
 
 <template>
     <div class="layout-sidebar" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
         <div class="sidebar-header">
-            <Link :to="{ name: 'e-commerce' }" class="app-logo">
+            <!-- <Link :to="{ name: 'e-commerce' }" class="app-logo"> -->
                 <img width="120" src="/ce_logo.png" />
                 
                 <!-- <svg viewBox="0 0 124 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="app-logo-normal">
@@ -56,12 +63,12 @@ const anchor = () => {
                         fill="var(--logo-color)"
                     />
                 </svg> -->
-                <svg width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="app-logo-small">
+                <!-- <svg width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="app-logo-small">
                     <path d="M10.4851 0L0 20.9465H3.53702L10.4856 6.07843L17.2944 20.9465H20.9715L10.4851 0Z" fill="var(--logo-color)" />
                     <path d="M13.8399 15.793L16.2076 21.0019H11.7681L13.8399 15.793Z" fill="var(--logo-color)" />
                     <path d="M9.04637 21.0019L6.67867 15.793L4.60693 21.0019H9.04637Z" fill="var(--logo-color)" />
-                </svg>
-            </Link>
+                </svg> -->
+            <!-- </Link> -->
             <button class="layout-sidebar-anchor p-link z-2 mb-2" type="button" @click="anchor()"></button>
         </div>
         <div class="layout-menu-container">

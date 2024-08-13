@@ -1,7 +1,12 @@
 <script setup>
-import { useLayout } from '@/Layouts/composables/layout';
+    import { useLayout } from '@/Layouts/composables/layout';
+    import { router } from '@inertiajs/vue3';
+    
+    const { layoutState } = useLayout();
 
-const { layoutState } = useLayout();
+    function logout() {
+        router.post(`/logout/`);
+    }
 </script>
 
 <template>
@@ -45,12 +50,12 @@ const { layoutState } = useLayout();
                     </a>
                 </li>
                 <li>
-                    <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                    <a @click="logout()" class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
                         <span>
                             <i class="pi pi-power-off text-xl text-primary"></i>
                         </span>
                         <div class="ml-3">
-                            <span class="mb-2 font-semibold">Sign Out</span>
+                            <span  class="mb-2 font-semibold">Sign Out</span>
                             <p class="text-color-secondary m-0">Sed ut perspiciatis</p>
                         </div>
                     </a>

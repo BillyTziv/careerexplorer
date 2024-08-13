@@ -1,12 +1,15 @@
 <script setup>
     import { ref, watchEffect, defineEmits } from 'vue';
+    import InputError from '@/Components/InputError.vue';
 
     const emit = defineEmits(['update:modelValue']);
 
     const props = defineProps({
-        modelValue: { type: String, default: '' },
+        modelValue: { type: Number, default: null },
         label: { type: String, default: '' },
-        placeholder: { type: String, default: '' }
+        placeholder: { type: String, default: '' },
+        required: { type: Boolean, default: false },
+        errors: { type: String, default: "" }
     });
 
     const inputValue = ref(props.modelValue);
@@ -16,12 +19,12 @@
     });
 
     const updateValue = ( event ) => {
-        emit('update:modelValue', event.target.value);
+        emit('update:modelValue', parseInt(event.target.value));
     };
 </script>
 
 <template>
-    <div class="field mb-4 col-12">
+    <div class="field">
         <label for="nickname" class="font-medium text-900"> 
             {{ label }}
         </label>

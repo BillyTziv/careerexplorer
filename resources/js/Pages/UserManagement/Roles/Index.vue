@@ -1,165 +1,102 @@
 <script setup>
-    import { computed, watch, ref, onBeforeUnmount } from 'vue';
-    import { usePrimeVue } from 'primevue/config';
-    import AppTopbar from '@/Layouts/AppTopbar.vue';
-    import AppSidebar from '@/Layouts/AppSidebar.vue';
-    import AppConfig from '@/Layouts/AppConfig.vue';
-    import AppProfileSidebar from '@/Layouts/AppProfileSidebar.vue';
-    // import AppBreadCrumb from '@/Layouts/AppBreadcrumb.vue';
-    import { useLayout } from '@/Layouts/composables/layout';
-    import { onMounted } from 'vue';
-    
-    import { FilterMatchMode } from 'primevue/api';
+    import { ref, watch } from 'vue';
+    import { router } from '@inertiajs/vue3'
+
+    /* Layouts */
+    import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
     let props = defineProps({
         user: Object,
         roles: Object, 
-        roleDropdownOptions: Array,
         filters: Object,
         response: Object,
     });
 
-    const $primevue = usePrimeVue();
-    const { layoutConfig, layoutState, isSidebarActive } = useLayout();
-    const outsideClickListener = ref(null);
-    const sidebarRef = ref(null);
-    const topbarRef = ref(null);
+    const selectedRole = ref(null);
+    const deleteRoleDialog = ref(false);
+    const rolesTableRef = ref(null);
+    const filterRolesTable = ref(props.filters);
+    const searchFilter = ref('');
 
-    watch(isSidebarActive, (newVal) => {
-        if (newVal) {
-            bindOutsideClickListener();
-        } else {
-            unbindOutsideClickListener();
-        }
-    });
-
-    onBeforeUnmount(() => {
-        unbindOutsideClickListener();
-    });
-
-    const containerClass = computed(() => {
-        return {
-            'layout-light': layoutConfig.colorScheme.value === 'light',
-            'layout-dim': layoutConfig.colorScheme.value === 'dim',
-            'layout-dark': layoutConfig.colorScheme.value === 'dark',
-            'layout-colorscheme-menu': layoutConfig.menuTheme.value === 'colorScheme',
-            'layout-primarycolor-menu': layoutConfig.menuTheme.value === 'primaryColor',
-            'layout-transparent-menu': layoutConfig.menuTheme.value === 'transparent',
-            'layout-overlay': layoutConfig.menuMode.value === 'overlay',
-            'layout-static': layoutConfig.menuMode.value === 'static',
-            'layout-slim': layoutConfig.menuMode.value === 'slim',
-            'layout-slim-plus': layoutConfig.menuMode.value === 'slim-plus',
-            'layout-horizontal': layoutConfig.menuMode.value === 'horizontal',
-            'layout-reveal': layoutConfig.menuMode.value === 'reveal',
-            'layout-drawer': layoutConfig.menuMode.value === 'drawer',
-            'layout-static-inactive': layoutState.staticMenuDesktopInactive.value && layoutConfig.menuMode.value === 'static',
-            'layout-overlay-active': layoutState.overlayMenuActive.value,
-            'layout-mobile-active': layoutState.staticMenuMobileActive.value,
-            'p-ripple-disabled': $primevue.config.ripple === false,
-            'layout-sidebar-active': layoutState.sidebarActive.value,
-            'layout-sidebar-anchored': layoutState.anchored.value
-        };
-    });
-                            
-    const bindOutsideClickListener = () => {
-        if (!outsideClickListener.value) {
-            outsideClickListener.value = (event) => {
-                if (isOutsideClicked(event)) {
-                    layoutState.overlayMenuActive.value = false;
-                    layoutState.overlaySubmenuActive.value = false;
-                    layoutState.staticMenuMobileActive.value = false;
-                    layoutState.menuHoverActive.value = false;
-                }
-            };
-            document.addEventListener('click', outsideClickListener.value);
-        }
-    };
-    const unbindOutsideClickListener = () => {
-        if (outsideClickListener.value) {
-            document.removeEventListener('click', outsideClickListener);
-            outsideClickListener.value = null;
-        }
-    };
-    const isOutsideClicked = (event) => {
-        const sidebarEl = sidebarRef?.value.$el;
-        const topbarEl = topbarRef?.value.$el.querySelector('.topbar-menubutton');
-
-        return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+    const exportCSV = () => {
+        rolesTableRef.value.exportCSV();
     };
 
-
-const weeks = ref([
-    {
-        label: 'Last Week',
-        value: 0,
-        data: [
-            [65, 59, 80, 81, 56, 55, 40],
-            [28, 48, 40, 19, 86, 27, 90]
-        ]
-    },
-    {
-        label: 'This Week',
-        value: 1,
-        data: [
-            [35, 19, 40, 61, 16, 55, 30],
-            [48, 78, 10, 29, 76, 77, 10]
-        ]
+    const searchRoles = ( searchTerm ) => {
+        router.get('/roles', { search: searchTerm }, { preserveState: true, replace: true });
     }
-]);
-const selectedWeek = ref(weeks.value[0]);
 
-const salesTableRef = ref(null);
-const filterSalesTable = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
-});
-onMounted(() => {
-    selectedWeek.value = weeks.value[0];
-});
+    const editRole = ( role ) => {    
+        router.visit(`/roles/${role.id}/edit`);
+    };
 
-const exportCSV = () => {
-    salesTableRef.value.exportCSV();
-};
+    const confirmDeleteRole = ( editRole ) => {
+        selectedRole.value = editRole;
+        deleteRoleDialog.value = true;
+    };
+    
+    const deleteRole = () => {
+        router.delete(`/roles/${selectedRole.value.id}`)
+        deleteRoleDialog.value = false;
+        selectedRole.value = {};
+        // roles.value = roles.value.filter((val) => val.id !== user.value.id);
+    
+        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
+    };
+
+    watch(() => searchFilter.value, (searchTerm) => {
+        searchRoles(searchTerm);
+    });
 </script>
 
 <template>
-    <div :class="['layout-container', { ...containerClass }]">
-        <AppSidebar ref="sidebarRef" />
+    <AppPageWrapper>
+        <template #page-title>
+            Ρόλοι
+        </template>
 
-        <div class="layout-content-wrapper">
-            <AppTopbar ref="topbarRef" />
-            <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
-            
-            <div class="col-12 lg:col-12">
-                <div class="card">
-                    <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
-                        <div class="text-900 text-xl font-semibold mb-3 md:mb-0">Ρόλοι</div>
-                        <div class="inline-flex align-items-center">
-                            <IconField iconPosition="left">
-                                <InputIcon class="pi pi-search" />
-                                <InputText type="text" v-model="filterSalesTable.global.value" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
-                            </IconField>
-                            <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportCSV"></Button>
-                        </div>
-                    </div>
-
-                    <DataTable ref="salesTableRef" :value="roles.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterSalesTable">
-                        <template #empty>Δεν βρέθηκαν ρόλοι ρόλοι.</template>
-                        <Column field="name" header="Όνομα Ρόλου" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">Όνομα Ρόλου</span>
-                                {{ data.name }}
-                            </template>
-                        </Column>
-                    </DataTable>
+        <template #page-content>
+            <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <div class="inline-flex align-items-center">
+                    <IconField iconPosition="left">
+                        <InputIcon class="pi pi-search" />
+                        <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    </IconField>
+                    <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportCSV"></Button>
                 </div>
             </div>
+
+            <DataTable ref="salesTableRef" :value="roles.data" dataKey="id" paginator :rows="10" responsiveLayout="scroll" v-model:filters="filterRolesTable">
+                <template #empty>Δεν βρέθηκαν ρόλοι.</template>
+                <Column field="name" header="Όνομα Ρόλου" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Όνομα Ρόλου</span>
+                        {{ data.name }}
+                    </template>
+                </Column>
+
+                <Column headerStyle="min-width:10rem;">
+                    <template #body="slotProps">
+                        <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editRole(slotProps.data)" />
+                        <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteRole(slotProps.data)" />
+                    </template>
+                </Column>
+            </DataTable>
+        </template>
+    </AppPageWrapper>
+
+    <Dialog v-model:visible="deleteRoleDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής Χρήστη" :modal="true">
+        <div class="flex align-items-center justify-content-center">
+            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+            <span v-if="selectedRole">
+                Είστε σίγουροι οτι θέλετε να διαγράψετε τον ρόλο <b>{{ selectedRole.name }}</b>?
+            </span
+            >
         </div>
-
-        <AppProfileSidebar />
-        <AppConfig />
-
-        <Toast></Toast>
-        <div class="layout-mask"></div>
-    </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="deleteRoleDialog = false" />
+            <Button label="Yes" icon="pi pi-check" text @click="deleteRole" />
+        </template>
+    </Dialog>
 </template>
 

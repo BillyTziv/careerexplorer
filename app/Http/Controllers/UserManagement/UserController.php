@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\UserManagement;
 
+use Inertia\Inertia;
+use Inertia\Response;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 
 /* MOdels */
 use App\Models\UserManagement\User;
@@ -20,48 +24,44 @@ use stdClass;
 class UserController extends Controller {
     private function getUsersWithRoles()
     {
+        $userColumns = [
+            'users.id', 
+            'users.email', 
+            'users.firstname', 
+            'users.lastname', 
+            'users.phone'
+        ];
     
-        // Define the columns to be selected from the users table.
-        // This ensures we are explicitly selecting only the columns we need, 
-        // making the query more efficient and compliant with ONLY_FULL_GROUP_BY.
-        // $userColumns = [
-        //     'users.id', 
-        //     'users.email', 
-        //     'users.firstname', 
-        //     'users.lastname', 
-        //     'users.phone'
-        // ];
-    
-        // Start building the query.
-        $query = User::query();
-            // ->select(array_merge($userColumns, [DB::raw("GROUP_CONCAT(DISTINCT roles.name ORDER BY roles.name SEPARATOR ', ') AS user_roles")]))
-            // ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
-            // ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
-            
+        $query = User::query()
+            ->select(array_merge($userColumns, [DB::raw("GROUP_CONCAT(DISTINCT roles.name ORDER BY roles.name SEPARATOR ', ') AS user_role")]))
+            ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
+            ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id')
+            ->groupBy($userColumns);
+      
     
         // Apply search filter if provided.
         // if ($searchTerm = request('search')) {
         //     $searchTerm = '%' . $searchTerm . '%';
         //     $query->where(function ($query) use ($searchTerm) {
         //         $query->where('users.email', 'LIKE', $searchTerm)
-        //               ->orWhere('users.firstname', 'LIKE', $searchTerm)
-        //               ->orWhere('users.lastname', 'LIKE', $searchTerm);
+        //             ->orWhere('users.firstname', 'LIKE', $searchTerm)
+        //             ->orWhere('users.lastname', 'LIKE', $searchTerm);
         //     });
         // }
     
         // Apply role filter if provided.
-        if ($roleId = request('role')) {
-            $query->whereExists(function ($subQuery) use ($roleId) {
-                $subQuery->select(DB::raw(1))
-                            ->from('role_user')
-                            ->whereColumn('role_user.user_id', 'users.id')
-                            ->where('role_user.role_id', '=', $roleId);
-            });
-        }
+        // if ($roleId = request('role')) {
+        //     $query->whereExists(function ($subQuery) use ($roleId) {
+        //         $subQuery->select(DB::raw(1))
+        //             ->from('role_user')
+        //             ->whereColumn('role_user.user_id', 'users.id')
+        //             ->where('role_user.role_id', '=', $roleId);
+        //     });
+        // }
     
         // Group by the user id to ensure that each user is listed once with their roles aggregated.
         // Pagination is applied to make the query more efficient on large datasets.
-        return $query->paginate(10);
+        return $query->paginate(20);
     }
 
     private function getUserRoles() {
@@ -80,26 +80,24 @@ class UserController extends Controller {
         ]);
     }
 
-    public function create() {
+    public function create(): Response {
         return Inertia::render('UserManagement/Users/CreateEdit', [
-            'response' => [],
             'userData' => new stdClass(),
-            'roles' => self::getUserRoles()
+            'roleOptions' => self::getUserRoles()
         ]);
     }
 
-    public function edit( $userId ) {
-        // Get user information.
+    public function edit( $userId ): Response {
         $user = User::find( $userId );
         $user->role = DB::table('role_user')->where('user_id', $user->id)->get()->pluck('role_id')->first();
        
         return Inertia::render('UserManagement/Users/CreateEdit', [
             'userData' => $user,
-            'roles' => self::getUserRoles()
+            'roleOptions' => self::getUserRoles()
         ]);
     }
 
-    public function store( Request $request ) {
+    public function store( Request $request ): Response {
         $validated = $request->validate([
             'username' => ['required'],
             'firstname' => ['required', 'max:50'],
@@ -115,31 +113,39 @@ class UserController extends Controller {
 
             // Create the user.
             $user = new User();
+
             $user->firstname = $request->firstname;
             $user->lastname = $request->lastname;
             $user->phone = $request->phone;
             $user->email = $request->email;
             $user->username = $request->username;
             $user->password = Hash::make($request->password);
+            
             $user->save();
 
             // Associate the user with a role.
-            DB::insert('insert into role_user (role_id, user_id) values (?, ?)', [intVal($request->role), $user->id]);
-           
+            //DB::insert('insert into role_user (role_id, user_id) values (?, ?)', [intVal($request->role), $user->id]);
+            $user->roles()->attach($request->role);
+
             DB::commit();
-            return redirect()
-                ->route('users.index')
-                ->with([
-                    'message' => 'Ο χρήστης δημιουργήθηκε με επιτυχία!',
-                    'status' => 'success',
-                ]);
+            
+            return Inertia::render('UserManagement/Users/Index', [
+                'message' => 'Ο χρήστης δημιουργήθηκε με επιτυχία!',
+                'status' => 'success',
+                'users' => self::getUsersWithRoles(),
+                'roleDropdownOptions' => self::getUserRoles(),
+                'filters' => [
+                    'role' => request('filters') ? request('filters') : '',
+                    'search' => request('search') ? request('search') : ''
+                ]
+            ]);
         } catch (\Throwable $ex) {
             DB::rollBack();
 
             return Inertia::render('UserManagement/Users/Index', [
                 'response' => [
                     'status' => 'error',
-                    'message' => 'Oups, something went wrong while trying to save the user.'
+                    'message' => 'Oups, something went wrong while trying to save the user.',
                 ],
                 'users' => [],
                 'roles' => [],
@@ -210,7 +216,7 @@ class UserController extends Controller {
             ]);
     }
 
-    public function destroy(Request $request, $id) {
+    public function destroy(Request $request, $id): RedirectResponse {
         try {
             DB::beginTransaction();
 
@@ -218,15 +224,13 @@ class UserController extends Controller {
 
             abort_if($user->secured, 403);
 
-            $user->update([
-                'deleted' => true
-            ]);
+            $user->delete();
 
             DB::commit();
 
             return redirect()->route( 'users.index' )->with([
-                'message' => 'Η διαγραφή ολοκληρώθηκε με επιτυχία!',
-                'status' => 'success',
+                'status' => 'error',
+                'message'=> 'Ουπς, κάτι πήγε στραβά. Παρακαλούμε ξαναπροσπαθήστε.'
             ]);
         } catch (\Throwable $th) {
             return redirect()->route( 'users.index' )->with([

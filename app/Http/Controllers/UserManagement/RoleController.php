@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 
 /* MOdels */
 use App\Models\UserManagement\User;
@@ -49,7 +50,7 @@ class RoleController extends Controller {
         ]);
     }
 
-    public function store(Request $request): Response {
+    public function store(Request $request): RedirectResponse {
         $validated = $request->validate([
             'name' => ['required'],
         ]);
@@ -69,6 +70,7 @@ class RoleController extends Controller {
             DB::commit();
 
             return Inertia::render('UserManagement/Roles/Index',[
+                
                 'response' => []
             ]);
         } catch (\Throwable $th) {
@@ -107,14 +109,19 @@ class RoleController extends Controller {
             $role->save();
 
             // Give the role its selected permissions.
-            $permissionIds = collect($request->permissions)->pluck('id')->all();
+            $permissionIds = collect($request->permissions)
+                ->filter(function ($permission) {
+                    return $permission['value'] === true;
+                })
+                ->pluck('id')->all();
+
             $role->permissions()->sync($permissionIds);
 
             DB::commit();
 
-            return back()->with([
-                'message' => 'Ο ρόλος ενημερώθηκε με επιτυχία!',
+            return redirect()->route( 'roles.index' )->with([
                 'status' => 'success',
+                'message'=> 'Ο ρόλος ενημερώθηκε με επιτυχία.'
             ]);
         } catch (\Throwable $th) {
             return redirect()->route( 'roles.index' )->with([

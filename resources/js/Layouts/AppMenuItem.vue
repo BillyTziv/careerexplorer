@@ -1,10 +1,13 @@
 <script setup>
-import { ref, onBeforeMount, watch, nextTick } from 'vue';
+import { computed, ref, onBeforeMount, watch, nextTick } from 'vue';
 //import { useRoute } from 'vue-router';
 import { useLayout } from '@/Layouts/composables/layout';
 import { DomHandler } from 'primevue/utils';
 // const route = useRoute();
 import { Link } from '@inertiajs/vue3'
+import { useUserStore } from '@/Stores/useUser.store';
+const userStore = useUserStore();
+const permissions = computed(() => userStore.getPermissionCodes);
 
 const { layoutConfig, layoutState, setActiveMenuItem, onMenuToggle, isHorizontal, isSlim, isSlimPlus, isDesktop } = useLayout();
 
@@ -38,7 +41,6 @@ onBeforeMount(() => {
     const activeItem = layoutState.activeMenuItem.value;
 
     isActiveMenu.value = activeItem === itemKey.value || activeItem ? activeItem.startsWith(itemKey.value + '-') : false;
-    // handleRouteChange(route.path);
 });
 
 watch(
@@ -79,6 +81,32 @@ watch(
     }
 );
 
+function hasPermission( permission ) {
+    return permissions.value.includes( permission );
+}
+
+function canAccessLink( menuItem  ) {
+    return hasPermission( menuItem.permission );
+}
+
+function canViewMenuGroup( menuItem ) {
+    if ( menuItem.items?.length > 0 ) {
+        return menuItem.items.some( ( item ) => canAccessLink( item ) );
+    }
+
+    return false;
+}
+
+function canOpenDropdown( item ) {
+    if ( item.items?.length > 0 ) {
+        return item.items.some( ( item ) => {
+            return canAccessLink( item );
+        } );
+    }
+
+    return false;
+}
+
 // watch(() => route.path, handleRouteChange);
 
 // watch(
@@ -114,7 +142,7 @@ const itemClick = async (event, item) => {
 
             return;
         }
-
+            
         setActiveMenuItem(isActiveMenu.value ? props.parentItemKey : itemKey);
 
         if (props.root && !isActiveMenu.value && (isSlim.value || isSlimPlus.value || isHorizontal.value)) {
@@ -188,10 +216,10 @@ const calculatePosition = (overlay, target) => {
 
 <template>
     <li ref="menuItemRef" :class="{ 'layout-root-menuitem': root, 'active-menuitem': isActiveMenu }">
-        <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
+        <div v-if="root && canViewMenuGroup(item)" class="layout-menuitem-root-text">{{ item.label }}</div>
 
         <a
-            v-if="(!item.to || item.items) && item.visible !== false"
+            v-if="(!item.to || item.items) && canOpenDropdown( item )"
             :href="item.url"
             @click="itemClick($event, item, index)"
             :class="item.class"
@@ -204,8 +232,9 @@ const calculatePosition = (overlay, target) => {
             <span class="layout-menuitem-text">{{ item.label }}</span>
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
         </a>
+
         <!-- <Link
-            v-if="item.to && !item.items && item.visible !== false"
+            v-if="item.to && !item.items"
             @click="itemClick($event, item, index)"
          
             tabindex="0"
@@ -213,8 +242,9 @@ const calculatePosition = (overlay, target) => {
             @mouseenter="onMouseEnter"
             v-tooltip.hover="(isSlim || isSlimPlus) && root && !isActiveMenu ? item.label : null"
         > -->
+       
         <Link
-            v-if="item.to && !item.items && item.visible !== false"
+            v-if="item.to && !item.items && canAccessLink( item )"
             :href="item.to"
             tabindex="0"
             v-tooltip.hover="(isSlim || isSlimPlus) && root && !isActiveMenu ? item.label : null"
@@ -224,7 +254,7 @@ const calculatePosition = (overlay, target) => {
             <i class="pi pi-fw pi-angle-down layout-submenu-toggler" v-if="item.items"></i>
         </Link>
 
-        <ul ref="subMenuRef" :class="{ 'layout-root-submenulist': root }" v-if="item.items && item.visible !== false">
+        <ul ref="subMenuRef" :class="{ 'layout-root-submenulist': root }" v-if="item.items">
             <AppMenuItem v-for="(child, i) in item.items" :key="child" :index="i" :item="child" :parentItemKey="itemKey" :root="false"></AppMenuItem>
         </ul>
     </li>

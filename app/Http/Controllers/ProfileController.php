@@ -13,6 +13,14 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function getUserPermissions(Request $request)
+    {
+        $user = auth()->user();
+        $permissions = $user->roles()->with('permissions')->get()->pluck('permissions')->flatten()->unique('id');
+
+        return $permissions;
+    }
+
     /**
      * Display the user's profile form.
      */

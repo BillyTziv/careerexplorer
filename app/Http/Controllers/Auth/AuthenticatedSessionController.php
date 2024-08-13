@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\UserManagement\User;
+use App\Models\UserManagement\Permission;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -27,19 +29,39 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request): Response
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $loginUser = Auth::user();
+        $userRole = User::with('roles')->find( $loginUser->id )->roles[0];
+        
+        $userPermissions = Permission::whereHas('roles', function ($query) use ($userRole) {
+            $query->where('roles.id', $userRole->id);
+        })->pluck('code')->toArray();
+
+        return Inertia::render('Dashboard', [
+            'user' => [
+                'firstName' => $loginUser->firstname,
+                'lastName' =>$loginUser->lastname,
+                'email' => $loginUser->email,
+                'role' => $userRole->name,
+                'isSuperAdmin' => ( $loginUser->secured === 1 ) ? true : false,
+                'permissions' => $userPermissions,
+                'lastVersionSeen' => $loginUser->last_version_seen ?? null
+            ],
+        ]);
     }
+
+    //     return redirect()->intended(route('dashboard', absolute: false));
+    // }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request): Response
     {
         Auth::guard('web')->logout();
 
@@ -47,6 +69,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return Inertia::render('Login');
     }
 }

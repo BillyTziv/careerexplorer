@@ -6,7 +6,7 @@
     import AppSidebar from '@/Layouts/AppSidebar.vue';
     import AppConfig from '@/Layouts/AppConfig.vue';
     import AppProfileSidebar from '@/Layouts/AppProfileSidebar.vue';    
-    import { useForm } from '@inertiajs/inertia-vue3';
+    import { useForm } from '@inertiajs/vue3';
     import { useLayout } from '@/Layouts/composables/layout';
 
     import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
