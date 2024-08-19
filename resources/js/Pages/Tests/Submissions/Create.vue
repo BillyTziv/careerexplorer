@@ -1,5 +1,4 @@
 <template>
-    <PublicPage :is-dark="true">
         <transition name="fade">
             <TheHollandTestHeroSection
                 v-if="testStatus === 'not-started'"
@@ -20,16 +19,14 @@
                 @submit-form="submitForm"
             />
         </transition>
-    </PublicPage>
 </template>
   
 <script setup>
     import { ref, reactive, computed } from 'vue';
-    import PublicPage from '../../Common/PublicPage.vue';
     import TheTestSubmitForm from './TheTestSubmitForm.vue';
     import TheTestQuestions from './TheTestQuestions.vue';
     import TheHollandTestHeroSection from './TheHollandTestHeroSection.vue';
-    import { Inertia } from '@inertiajs/inertia';
+    import { router } from '@inertiajs/vue3';
 
     const props = defineProps({
         response: Object,

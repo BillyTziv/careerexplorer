@@ -26,17 +26,13 @@
         emit('update:modelValue', event);
     };
 
-    // const label = computed( function() {
-    //     return props.field.label;
-    // });
-
     const hasErrors = computed( function() {
         return props.errors.length > 0;
     });
 </script>
 
 <template>
-    <div class="field mb-3  col-12">
+    <div class="field">
         <label class="font-medium text-md text-900"> 
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>

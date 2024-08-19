@@ -5,7 +5,7 @@
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
-    /* Componnet Emits */
+    /* Emits Actions */
     import { useUserStore } from '@/Stores/useUser.store';
 
     const userStore = useUserStore();
@@ -28,7 +28,7 @@
 
         <template #page-content>
             You are logged in.
-            <pre>{{ user }}</pre>
+            <!-- <pre>{{ user }}</pre> -->
         </template>
     </AppPageWrapper>
 </template>

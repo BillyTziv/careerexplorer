@@ -21,7 +21,7 @@
 
     const volunteerStore = useVolunteersStore();
 
-    /* Componnet Emits */
+    /* Emits Actions */
 
     /* Component Properties */
     let props = defineProps({

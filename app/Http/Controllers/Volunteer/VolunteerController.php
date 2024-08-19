@@ -115,10 +115,152 @@ class VolunteerController extends Controller {
     }
 
     public function createPublicApplication() {
+        // return Inertia::render('Volunteers/Create', [
+        //     'volunteer' => new stdClass(),
+        //     'roles' => self::getVolunteerRoles(),
+        //     'assignees' => self::getAssignees(),
+        // ]);
         return Inertia::render('Volunteers/Create', [
-            'volunteer' => new stdClass(),
-            'roles' => self::getVolunteerRoles(),
-            'assignees' => self::getAssignees(),
+            'submitRoute' => [
+                'url' => '/volunteers',
+                'method' => 'post',
+            ],
+            'formFields' => [
+                'role' => [
+                    'label' => 'Θέλω να ασχοληθώ εθελοντικά ως',
+                    'type' => 'select',
+                    'options' => VolunteerRole::get()->map(function($role) {
+                        return [
+                            'id' => $role->id,
+                            'label' => $role->name,
+                        ];
+                    }),
+                    'placeholder' => 'Επιλογή ρόλου',
+                    'value' => null,
+                    'required' => true,
+                ],
+                'firstname' => [
+                    'label' => 'Όνομα',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => 'Όνομα..',
+                    'required' => true,
+                ],
+                'lastname' => [
+                    'label' => 'Επώνυμο',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => 'Επώνυμο..',
+                    'required' => true,
+                ],
+                'email' => [
+                    'label' => 'Email',
+                    'type' => 'email',
+                    'value' => '',
+                    'placeholder' => 'Email..',
+                    'required' => true,
+                ],
+                'phone' => [
+                    'label' => 'Τηλέφωνο',
+                    'type' => 'tel',
+                    'value' => '',
+                    'placeholder' => 'Τηλέφωνο..',
+                    'required' => true,
+                ],
+                'expectations' => [
+                    'label' => 'Ποιες είναι οι προσδοκίες σου από τον οργανισμό;',
+                    'type' => 'expectations',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'expectations' => [
+                    'label' => 'Ποιες είναι οι προσδοκίες σου από τον οργανισμό;',
+                    'type' => 'textarea',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'reason' => [
+                    'label' => 'Με τι θα ήθελες να ασχοληθείς;',
+                    'type' => 'textarea',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'interests' => [
+                    'label' => 'Τι ενδιαφέροντά έχεις στην προσωπική σου ζωή;',
+                    'type' => 'textarea',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'description' => [
+                    'label' => 'Πως θα περιέγραφες τον εαυτό σου σε μια παράγραφο;',
+                    'type' => 'textarea',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'university' => [
+                    'label' => 'Σε ποιο εκπαιδευτικό ίδρυμα/πανεπιστήμιο φοιτάς ή φοίτησες;',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'department' => [
+                    'label' => 'Σε ποιο τμήμα/σχολή φοιτάς ή φοίτησες;',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'otherstudies' => [
+                    'label' => 'Επιπλέον μεταπτυχιακά, πιστοποιήσεις, σεμινάρια;',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => '',
+                    'required' => false,
+                ],
+                'linkedin' => [
+                    'label' => 'Linkedin Profile URL',
+                    'type' => 'text',
+                    'hint' => '',
+                    'value' => '',
+                    'placeholder' => 'https://www.linkedin.com/in/profile-id',
+                    'required' => false,
+                ],
+                'facebook' => [
+                    'label' => 'Facebook Profile URL',
+                    'type' => 'text',
+                    'hint' => '',
+                    'value' => '',
+                    'placeholder' => 'https://www.facebook.com/profile.php?id=00000000',
+                    'required' => false,
+                ],
+                'instagram' => [
+                    'label' => 'Instagram Profile URL',
+                    'type' => 'text',
+                    'value' => '',
+                    'hint' => '',
+                    'placeholder' => 'https://www.instagram.com/profile-id/',
+                    'required' => false,
+                ],
+                'cv' => [
+                    'label' => 'Βιογραφικό',
+                    'type' => 'file',
+                    'value' => '',
+                    'accept' => 'application/pdf',
+                    'required' => false,
+                ],
+                'hasGivenConsent' => [
+                    'label' => 'Συναινώ στη συλλογή του βιογραφικού σημειώματος μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.',
+                    'type' => 'checkbox',
+                    'value' => false,
+                    'required' => true,
+                ],
+            ],
         ]);
     }
 
@@ -342,7 +484,7 @@ class VolunteerController extends Controller {
         if ($validationResult['error']) {
             return back()->withErrors($validationResult['message']);
         }
-        
+
         $volunteer = new Volunteer();
     
         // Personal Information

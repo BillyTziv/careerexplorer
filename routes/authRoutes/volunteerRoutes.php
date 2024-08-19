@@ -31,6 +31,11 @@ Route::post('/volunteers/sendInvitation', [VolunteerController::class, 'sendInvi
 Route::post('/volunteers/{volunteer}/notes', [VolunteerController::class, 'updateNotes'])
     ->middleware('can:create, App\Models\Volunteer');
 
+Route::get('/volunteers/join', [VolunteerController::class, 'createPublicApplication'])
+// ->middleware('can:create, App\Models\Volunteer')
+->name('volunteers.join');
+    
+
 // --------------------------------------------------------------------------------
 // PLACE ABOVE ALL ROUTES
 // --------------------------------------------------------------------------------

@@ -1,9 +1,140 @@
 <script setup>
+    import { computed, reactive } from 'vue';
+
+    // import { useForm } from '@inertiajs/vue3';
+    import { router } from '@inertiajs/vue3'
+
+    /* Layouts */
+    import AppPublicPageWrapper from '@/Layouts/AppPublicPageWrapper.vue';
+    import AppFormLayout from '@/Layouts/AppFormLayout.vue';
+
+    /* Field Components */
+    import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
+    import BaseTextareaInput from '@/Components/Base/BaseTextareaInput.vue';
+    import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
+    import BaseFileInput from '@/Components/Base/BaseFileInput.vue';
+    import BaseCheckboxInput from '@/Components/Base/BaseCheckboxInput.vue';
+
+    let props = defineProps({
+        user: Object,
+        formFields: {
+            type: Object,
+            required: true,
+        },
+        submitRoute: {
+            type: Object,
+            required: true,
+        },
+        errors: Object,
+        response: Object
+    });
+
+    const components = {
+        text: BaseTextInput,
+        textarea: BaseTextareaInput,
+        checkbox: BaseCheckboxInput,
+        select: BaseDropdownInput,
+        file: BaseFileInput,
+    };
+
+    const form = reactive( props.formFields );
+
+    const getComponentType = (type) => components[type] || BaseTextInput;
+
+    function submitForm() {
+        const transformedForm = Object.fromEntries(
+            Object.entries(form).map(([key, value]) => [key, value.value])
+        );
+
+        router.post('/volunteers/', transformedForm);
+    }    
+</script>
+
+<template>
+    <AppPublicPageWrapper>
+        <template #page-header-title>
+            Αίτηση Εγγραφής Εθελοντή στο FutureGeneration
+        </template>
+
+        <template #page-header-subtitle>
+        </template>
+
+        <template #page-header-actions>
+        </template>
+
+        <template #page-header-disclaimer>
+            <Message
+                severity="info" 
+            >
+                <p>
+                    Συμπλήρωσε τα στοιχεία σου, για να δηλώσεις το ενδιαφέρον σου για εθελοντική συμμετοχή στο FutureGeneration. Ένας εκπρόσωπος από το HR τμήμα θα επικοινωνήσει άμεσα μαζί σου για την πρώτη συνέντευξη!
+                </p>
+            </Message>
+        </template>
+        
+        <template #page-content>
+            <form @submit.prevent="submitForm" autocomplete="off">
+                <AppFormLayout>
+                    <template 
+                        v-for="(field, name) in form" 
+                        :key="name"
+                    >
+                        <component
+                            :is="getComponentType(field.type)"
+                            v-model="field.value"
+                            :label="field.label"
+                            :options="field.options"
+                            :placeholder="field.placeholder"
+                            :required="field.required"
+                            :errors="errors[name]"
+                        />
+                    </template>
+                </AppFormLayout>
+         
+                <!-- <div class="field-checkbox mb-3">
+                    <Checkbox id="checkOption1" name="option" value="true" v-model="form.hasGivenConsent.value" />
+                    <label for="checkOption1">
+                        Συναινώ στη συλλογή των δεδομένων μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.
+                    </label>
+                </div> -->
+
+                <Button
+                    @click="submitForm"
+                    label="Αποθήκευση Αιτήματος" 
+                    raised 
+                    class="mb-2 mr-2"
+                />
+            </form>
+        </template>
+    </AppPublicPageWrapper>
+</template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+
+
+<script setup>
     import { ref, reactive, computed } from 'vue'
     import { Inertia } from '@inertiajs/inertia'
-
-    /* Layout */
-    import PublicPageLayout from '@/Components/Layouts/PublicPageLayout.vue';
 
     /* Form Components */
     import BaseInput from '@/Pages/Common/UI/Form/BaseInput.vue';
@@ -81,7 +212,6 @@
 </script>
 
 <template>
-    <PublicPageLayout>
         <Notification2 v-if="$page.props.flash.status" :response="$page.props.flash" />
        
         <BaseFormTitle>
@@ -95,9 +225,7 @@
         
         <form @submit.prevent="submit">
 
-            <!------------------------------------------------------------------------------------------>
-            <!-- PERSONALITY -->
-            <!------------------------------------------------------------------------------------------>
+
             <section id="personality" class="mt-5">
                 <BaseFormSectionHeader>
                     Βήμα #1 - Προσωπικότητα
@@ -136,9 +264,6 @@
                 />
             </section>
 
-            <!------------------------------------------------------------------------------------------>
-            <!-- PERSONAL INFORMATION -->
-            <!------------------------------------------------------------------------------------------>
             <section id="personal_information" class="mt-5">
                 <BaseFormSectionHeader>
                     Βήμα #2 - Επικοινωνία
@@ -181,9 +306,7 @@
                 />
             </section>
 
-            <!------------------------------------------------------------------------------------------>
-            <!-- STUDIES -->
-            <!------------------------------------------------------------------------------------------>
+   
             <section id="studies" class="mt-5">
                 <BaseFormSectionHeader>
                     Βήμα #3 - Σπουδές & Εκπαίδευση
@@ -211,9 +334,6 @@
                 />
             </section>
 
-            <!------------------------------------------------------------------------------------------>
-            <!-- SOCIAL NETWORKS -->
-            <!------------------------------------------------------------------------------------------>
             <section id="social-networks" class="mt-5">
                 <BaseFormSectionHeader>
                     Βήμα #4 - Social Media
@@ -244,9 +364,6 @@
                 />
             </section>
 
-            <!------------------------------------------------------------------------------------------>
-            <!-- CV -->
-            <!------------------------------------------------------------------------------------------>
             <label class="block mb-2 text-sm font-medium text-sm text-gray-500 dark:text-slate-300" for="file_input">
                 Επίσύναψε το βιογραφικό σου
             </label>
@@ -265,9 +382,6 @@
                 </label>
             </div> 
 
-            <!------------------------------------------------------------------------------------------>
-            <!-- ROLE -->
-            <!------------------------------------------------------------------------------------------>
             <BaseSingleSelect
                 v-model="form.role"
                 :options="roleDropdownList"
@@ -290,6 +404,5 @@
                 label="Αποστολή Αίτησης"
             />
         </form>
-    </PublicPageLayout>
 </template>
-
+ -->

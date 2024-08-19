@@ -74,6 +74,7 @@ class CourseController extends Controller
     public function create()
     {
         return Inertia::render('Courses/CreateEdit', [
+            'course' => new stdClass(),
             'response' => [],
             'companyDropdownOptions' => self::getCompaniesForDropdown()
         ]);
@@ -143,7 +144,7 @@ class CourseController extends Controller
         
         $course->title = trim($request->title);
         $course->description = trim($request->description);
-        $course->status = $request->status;
+        $course->status = 1;
         $course->link = trim($request->link);
         $course->feature_image = trim($request->feature_image);
         $course->company_id = $request->company_id;

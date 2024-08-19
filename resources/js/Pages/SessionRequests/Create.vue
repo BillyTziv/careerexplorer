@@ -6,6 +6,7 @@
 
     /* Layouts */
     import AppPublicPageWrapper from '@/Layouts/AppPublicPageWrapper.vue';
+    import AppFormLayout from '@/Layouts/AppFormLayout.vue';
 
     /* Field Components */
     import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
@@ -83,23 +84,21 @@
         
         <template #page-content>
             <form @submit.prevent="submitForm" autocomplete="off">
-                <div class="col-12 lg:col-10">
-                    <div class="grid formgrid p-fluid">
-                        <template 
-                            v-for="(field, name) in form" 
-                            :key="name"
-                        >
-                            <component
-                                :is="getComponentType(field.type)"
-                                v-model="field.value"
-                                :label="field.label"
-                                :placeholder="field.placeholder"
-                                :required="field.required"
-                                :errors="errors[name]"
-                            />
-                        </template>
-                    </div>
-                </div>
+                <AppFormLayout>
+                    <template 
+                        v-for="(field, name) in form" 
+                        :key="name"
+                    >
+                        <component
+                            :is="getComponentType(field.type)"
+                            v-model="field.value"
+                            :label="field.label"
+                            :placeholder="field.placeholder"
+                            :required="field.required"
+                            :errors="errors[name]"
+                        />
+                    </template>
+                </AppFormLayout>
 
                 <div class="field-checkbox mb-3">
                     <Checkbox id="checkOption1" name="option" value="true" v-model="consentValue" />

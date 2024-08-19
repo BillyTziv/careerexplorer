@@ -6,7 +6,7 @@
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
-    /* Componnet Emits */
+    /* Emits Actions */
 
 
     /* Component Properties */

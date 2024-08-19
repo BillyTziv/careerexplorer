@@ -24,7 +24,6 @@
 
     const updateValue = ( event ) => {
         emit('update:modelValue', event.target.value);
-        //emit('update:field', props.field);
     };
 
     const hasErrors = computed(() => {

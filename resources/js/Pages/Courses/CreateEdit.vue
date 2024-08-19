@@ -25,11 +25,11 @@
     });
 
     const courseForm = useForm({
-        id: props.id ? props.id : null,
-        title: props.title ? props.title : "",
-        description: props.description ? props.description : "",
-        link: props.link ? props.link : "",
-        company_id: props.company ? props.company_id: []
+        id: props.course.id ? props.course?.id : null,
+        title: props.course.title ? props.course?.title : "",
+        description: props.course.description ? props.course.description : "",
+        link: props.course.link ? props.course.link : "",
+        company_id: props.course.company_id ? props.course.company_id : null
     });
 
     const isEditMode = computed(() => {

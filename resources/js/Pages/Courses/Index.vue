@@ -6,7 +6,7 @@
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
-    /* Componnet Emits */
+    /* Emits Actions */
 
 
     /* Component Properties */
@@ -32,7 +32,7 @@
 
     // Navigate to the edit page of a course
     const editEntity = ( course ) => {    
-        router.visit(`/career-courses/${course.id}/edit`);
+        router.visit(`/courses/${course.id}/edit`);
     };
 
     // Popup a dialog to confirm the deletion of a course
@@ -45,10 +45,10 @@
     const deleteCourse = () => {
         if( !selectedCourse.value.id || selectedCourse.value.id <= 0 ) return;
 
-        router.delete(`/career-courses/${selectedCourse.value.id}`);
+        router.delete(`/courses/${selectedCourse.value.id}`);   // Delete the course
 
-        deleteCourseDialog.value = false;
-        selectedCourse.value = null;
+        deleteCourseDialog.value = false;                       // Close the dialog
+        selectedCourse.value = null;                            // Reset the selected course
     };
 </script>
 
@@ -97,7 +97,7 @@
         <div class="flex align-items-center justify-content-center">
             <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
             <span v-if="selectedCourse">
-                Είστε σίγουροι οτι θέλετε να διαγράψετε το μάθημα <b>{{ selectedCourse.name }}</b>?
+                Είστε σίγουροι οτι θέλετε να διαγράψετε το μάθημα <b>{{ selectedCourse.title }}</b>?
             </span
             >
         </div>

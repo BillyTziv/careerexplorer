@@ -124,19 +124,9 @@ class SessionRequestController extends Controller
                     'value' => '',
                     'placeholder' => 'πχ. 6940********',
                     'required' => true,
-                ],
-                // 'consent' => [
-                //     'label' => 'Συναινώ στη συλλογή των δεδομένων μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.',
-                //     'type' => 'checkbox',
-                //     'value' => false,
-                //     'required' => true,
-                // ],
+                ]
             ],
         ]);
-
-        // return Inertia::render('SessionRequests/Create', [
-        //     'response' => []
-        // ]);
     }
 
     public function store(Request $request): RedirectResponse {
