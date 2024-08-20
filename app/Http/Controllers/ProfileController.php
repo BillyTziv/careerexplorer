@@ -16,9 +16,9 @@ class ProfileController extends Controller
     public function getUserPermissions(Request $request)
     {
         $user = auth()->user();
-        $permissions = $user->roles()->with('permissions')->get()->pluck('permissions')->flatten()->unique('id');
+        $permissions = $user->roles()->with('permissions')->get()->pluck('permissions')->flatten()->unique('id')->values();
 
-        return $permissions;
+        return response()->json($permissions->toArray());
     }
 
     /**
