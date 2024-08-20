@@ -21,6 +21,10 @@ export const useUserStore = defineStore({
 		async fetchPermissions() {
 			try {
 				const response = await axios.get('/user/permissions');
+				console.log( response );
+				console.log( response.data );
+				console.log( typeof response.data );
+
 				this.permissions = response.data;
 			} catch (error) {
 				console.error('Failed to fetch permissions:', error);
