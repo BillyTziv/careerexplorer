@@ -250,7 +250,19 @@
                 <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportVolunteersAsCSV"></Button>
             </div>
 
-            <DataTable ref="volunteersTableRef" :value="volunteers.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterVolunteersTable">
+            <DataTable
+                dataKey="id"
+                ref="volunteersTableRef"
+                :value="volunteers.data"
+                v-model:filters="filterVolunteersTable"
+                :filters="filters"
+                :paginator="true"
+                :rows="volunteers.per_page" 
+                :rowsPerPageOptions="[5, 10, 25]"
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="Προβολή {first} μέχρι {last} απο {totalRecords} εγγραφές"
+                responsiveLayout="scroll" 
+            >
                 <template #empty>Δεν βρέθηκαν εθελοντές.</template>
                 
                 <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">

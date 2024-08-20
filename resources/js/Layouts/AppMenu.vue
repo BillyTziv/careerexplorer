@@ -29,31 +29,7 @@
             ]
         },
         {
-            label: 'ΜΑΘΗΜΑΤΑ',
-            icon: 'pi pi-fw pi-list',
-            items: [
-                {
-                    label: 'Μαθήματα',
-                    icon: 'pi pi-fw pi-list',
-                    permission: "view-all-courses",
-                    to: '/courses'
-                },
-                {
-                    label: 'Φορείς Εκπαίδευσης',
-                    icon: 'pi pi-fw pi-list',
-                    permission: "view-all-course-companies",
-                    to: '/course-companies'
-                },
-                {
-                    label: 'Δημιουργία Μαθήματος',
-                    icon: 'pi pi-fw pi-plus',
-                    permission: "create-course",
-                    to: '/courses/create'
-                }
-            ]
-        },
-        {
-            label: 'ΕΘΕΛΟΝΤΕΣ',
+            label: 'ΕΘΕΛΟΝΤΙΣΜΟΣ',
             icon: 'pi pi-fw pi-list',
             items: [
                 {
@@ -82,6 +58,31 @@
                 }
             ]
         },
+        {
+            label: 'ΜΑΘΗΜΑΤΑ',
+            icon: 'pi pi-fw pi-list',
+            items: [
+                {
+                    label: 'Μαθήματα',
+                    icon: 'pi pi-fw pi-list',
+                    permission: "view-all-courses",
+                    to: '/courses'
+                },
+                {
+                    label: 'Φορείς Εκπαίδευσης',
+                    icon: 'pi pi-fw pi-list',
+                    permission: "view-all-course-companies",
+                    to: '/course-companies'
+                },
+                {
+                    label: 'Δημιουργία Μαθήματος',
+                    icon: 'pi pi-fw pi-plus',
+                    permission: "create-course",
+                    to: '/courses/create'
+                }
+            ]
+        },
+        
         {
             label: 'ΚΑΡΙΕΡΑ',
             icon: 'pi pi-fw pi-list',
