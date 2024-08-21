@@ -63,6 +63,7 @@ class VolunteerStatusController extends Controller {
             //     'status' => request('status') ? request('status') : ''
             // ],
             'volunteerStatuses' => self::getVolunteerStatuses(),
+            'volunteerStatusDropdownOptions'=> VolunteerStatus::where('deleted', false)->get()
         ]);
     }
 

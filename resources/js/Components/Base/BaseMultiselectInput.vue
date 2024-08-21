@@ -25,7 +25,7 @@
 </script>
 
 <template>
-    <div class="field mb-4 col-12">
+    <div class="field col-12">
         <label class="font-medium text-900"> 
             {{ label }}
         </label>
@@ -38,6 +38,7 @@
             optionValue="id"
             :placeholder="label"
             :filter="true"
+            class="w-full"
         >
             <!-- <template #value="slotProps">
                 <div class="inline-flex align-items-center py-1 px-2 bg-primary text-primary border-round mr-2" v-for="option of slotProps.value" :key="option.code">

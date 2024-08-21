@@ -1,5 +1,5 @@
 <template>
-	<h3 class="mt-5 font-bold text-slate-800 dark:text-lime-300">
+	<h4 class="mt-3 font-bold text-primary">
 		<slot></slot>
-	</h3>
+	</h4>
 </template>

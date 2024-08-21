@@ -18,7 +18,6 @@ export default function usePermissions() {
   const hasPermission = (menuItem) => {
     const permissionCodes = permissions.value.map((permission) => permission.code);
 
-    console.log( permissionCodes )
     if( permissionCodes.includes(menuItem.permission) ) return true;
 
     if (menuItem.items.length > 0) {

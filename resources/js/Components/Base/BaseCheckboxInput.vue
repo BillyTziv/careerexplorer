@@ -31,15 +31,7 @@
 </script>
 
 <template>
-                   <!-- <div class="field-checkbox mb-3">
-                    <Checkbox id="checkOption1" name="option" value="true" v-model="form.hasGivenConsent.value" />
-                    <label for="checkOption1">
-                        Συναινώ στη συλλογή των δεδομένων μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.
-                    </label>
-                </div> -->
-
-    <div class="field-checkbox mb-0">
-
+    <div class="field-checkbox col-12">
         <Checkbox
             v-model="inputValue"
             :value="'false'"

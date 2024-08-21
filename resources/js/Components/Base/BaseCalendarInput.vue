@@ -33,7 +33,7 @@
 </script>
 
 <template>
-    <div class="field">
+    <div class="field col-12">
         <label class="font-medium text-md text-900"> 
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>

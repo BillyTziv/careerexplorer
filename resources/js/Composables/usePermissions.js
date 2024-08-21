@@ -10,7 +10,6 @@ export default function usePermissions() {
   const hasPermission = (menuItem) => {
     // if (menuItem.items.length > 0) {
     //   console.log("Has submenu")
-    //   console.log( menuItem )
     //     return menuItem.items.some((perm) => permissionCodes.includes(perm));
     // }
 
@@ -20,7 +19,6 @@ export default function usePermissions() {
 
   // Fetch permissions when the composable is used
   onMounted( () => {
-    console.log( userStore.getUser )
     // userPermissions = userStore.getUser.permissions.map((permission) => permission.code)
   });
 

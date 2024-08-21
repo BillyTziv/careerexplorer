@@ -5,6 +5,7 @@
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
+    import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
 
     /* Emits Actions */
 
@@ -15,6 +16,7 @@
         volunteerRoles: Object, 
         filters: Object,
         response: Object,
+        volunteerStatusDropdownOptions: Array,
     });
 
     /* Component Reactive Variables */
@@ -29,6 +31,7 @@
     const exportCSV = () => {
         volunteerRoleTableRef.value.exportCSV();
     };
+    const { getStatusName, getStatusDecoration, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
 
     // Navigate to the edit page of a course
     const editEntity = ( volunteerRole ) => {    
@@ -48,6 +51,10 @@
         deleteDialog.value = false;
         selectedvolunteerRole.value = null;
     };
+
+    const redirectToCreate = () => {    
+        router.visit(`/volunteer-roles/create`);
+    };
 </script>
 
 <template>
@@ -57,6 +64,8 @@
         </template>
 
         <template #page-content>
+            <Button label="Δημιουργία" icon="pi pi-plus" class="m-2" severity="primary" @click="redirectToCreate" />
+
             <DataTable ref="volunteerRoleTableRef" :value="volunteerRoles.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterVolunteerRoleTable">
                 <template #empty>Δεν βρέθηκαν ρόλοι.</template>
                 
@@ -67,26 +76,26 @@
                     </template>
                 </Column>
 
-                <Column field="coverage_percentage" header="% Κάλυψης" sortable :headerStyle="{ minWidth: '12rem' }">
+                <!-- <Column field="coverage_percentage" header="% Κάλυψης" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">% Κάλυψης</span>
                         {{ data.coverage_percentage }}
                     </template>
-                </Column>
+                </Column> -->
 
-                <Column field="volunteer_count" header="Εθελοντές" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="volunteer_count" header="Πλήθος Εθελοντών" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
-                        <span class="p-column-title">Εθελοντές</span>
+                        <span class="p-column-title">Πλήθος Εθελοντών</span>
                         {{ data.volunteer_count }}
                     </template>
                 </Column>
 
-                <Column field="volunteers_needed" header="Ανάγκη Για" sortable :headerStyle="{ minWidth: '12rem' }">
+                <!-- <Column field="volunteers_needed" header="Ανάγκη Για" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Ανάγκη Για</span>
                         {{ data.volunteers_needed }}
                     </template>
-                </Column>
+                </Column> -->
 
                 <Column field="description" header="Περιγραφή" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">

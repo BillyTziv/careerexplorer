@@ -1,32 +1,37 @@
 <script setup>
-    import { ref, computed, watchEffect, defineEmits } from 'vue';
+    import { ref, computed, watchEffect, watch, defineEmits } from 'vue';
     import InputError from '@/Components/InputError.vue';
 
     const emit = defineEmits([
-        'update:modelValue',
-        'update:field'
+        'update:modelValue'
+        // 'update:field'
     ]);
 
     const props = defineProps({
         modelValue: { type: String, default: '' },
         label: { type: String, default: '' },
-        fieldType: { type: String, default: 'text' },
         placeholder: { type: String, default: '' },
         required: { type: Boolean, default: false },
         errors: { type: String, default: "" }
     });
 
-    const inputValue = ref(props.modelValue);
+    const selectedColor = ref(props.modelValue);
 
-    watchEffect(() => {
-        inputValue.value = props.modelValue;
-    });
+    // watchEffect(() => {
+    //     inputValue.value = props.modelValue;
+    // });
 
-    const updateValue = ( event ) => {
-        inputValue.value = event.target.value;
-        emit('update:modelValue', event.target.value);
+    //const updateValue = ( event ) => {
+        //console.log("Event", event);
+
+        //inputValue.value = event.target.value;
+        //emit('update:modelValue', event.target.value);
         //emit('update:field', props.field);
-    };
+    //};
+
+    watch(selectedColor, (newColor) => {
+        emit('update:modelValue', newColor);
+    });
 
     const hasErrors = computed(() => {
         return props.errors.length > 0;
@@ -34,28 +39,26 @@
 </script>
 
 <template>
-    <div class="field mb-3 col-12">
+    <div class="field col-12">
         <label class="font-medium text-md text-900"> 
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
 
-        <div class="flex justify-between content-center align-items-center">
+        <div class="flex items-center">
             <ColorPicker
-                :value="inputValue"
-                style="width: 2rem" 
-                @input="updateValue"
-                class="mr-4"
+                v-model="selectedColor"
+                class="mr-4 flex-shrink-0 flex align-items-center"
             />
             
             <InputText
-                :type="fieldType" 
+                v-model="selectedColor"
                 :placeholder="placeholder" 
-                :value="inputValue"
                 :invalid="hasErrors"
-                @input="updateValue"
+                class="w-full"
             />
         </div>
+
         <InputError
             v-if="hasErrors"
             :message="errors"

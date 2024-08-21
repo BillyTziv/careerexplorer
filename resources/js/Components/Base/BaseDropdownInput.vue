@@ -39,6 +39,7 @@
             optionValue="id"
             :placeholder="placeholder"
             :errors="errors.role"
+            class="w-full"
         ></Dropdown>
 
         <InputError class="mt-2" :message="errors" />

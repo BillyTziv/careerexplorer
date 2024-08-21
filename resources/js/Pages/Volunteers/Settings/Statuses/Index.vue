@@ -49,6 +49,10 @@
         deleteDialog.value = false;
         selectedVolunteerStatus.value = null;
     };
+
+    const redirectToCreate = () => {    
+        router.visit(`/volunteer-statuses/create`);
+    };
 </script>
 
 <template>
@@ -58,6 +62,8 @@
         </template>
 
         <template #page-content>
+            <Button label="Δημιουργία" icon="pi pi-plus" class="m-2" severity="primary" @click="redirectToCreate" />
+
             <DataTable ref="volunteerStatusTableRef" :value="volunteerStatuses.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterVolunteerStatusTable">
                 <template #empty>Δεν βρέθηκαν μαθήματα.</template>
                 
@@ -70,8 +76,17 @@
 
                 <Column field="hex_color" header="Χρώμα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
-                        <span class="p-column-title">Χρώμα</span>
-                        {{ data.hex_color }}
+                        <span class="p-column-title">Χρωμα</span>
+                        <span class="flex items-center ">
+                            <Avatar class="mr-2" :style="{ 'background-color': '#'+data.hex_color, color: '#ffffff' }" shape="circle"></Avatar>
+                        </span>
+                    </template>
+                </Column>
+
+                <Column field="name" header="Περιγραφή" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Περιγραφή</span>
+                        {{ data.description }}
                     </template>
                 </Column>
 

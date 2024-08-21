@@ -24,7 +24,7 @@
 </script>
 
 <template>
-    <div class="field">
+    <div class="field col-12">
         <label for="nickname" class="font-medium text-900"> 
             {{ label }}
         </label>
@@ -35,6 +35,7 @@
             :placeholder="placeholder" 
             :value="inputValue"
             @input="updateValue"
+            class="w-full"
         />
 
         <InputError class="mt-2" :message="errors" />

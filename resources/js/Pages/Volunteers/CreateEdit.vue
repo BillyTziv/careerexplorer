@@ -30,27 +30,33 @@
         reason: props.volunteer.reason ? props.volunteer.reason : "",
         interests: props.volunteer.interests ? props.volunteer.interests : "",
         description: props.volunteer.description ? props.volunteer.description : "",
+
+        // Personal Information
         firstname: props.volunteer.firstname || "",
         lastname: props.volunteer.lastname || "",
+        age: props.volunteer.age ? parseInt(props.volunteer.age) : null,
+        gender: props.volunteer.gender || null,
         city: props.volunteer.city || "",
         address: props.volunteer.address || "",
+
+        // Personal Information
+        role: props.volunteer.role || null,
+
         date_of_birth: props.volunteer.date_of_birth || "",
         cv: props.volunteer.cv || "",
         hasGivenConsent: props.volunteer.cvConsent || true,
-        gender: props.volunteer.gender || "",
-        age: props.volunteer.age || "",
-        phone: props.volunteer.phone ? props.volunteer.phone : "",
+        phone: props.volunteer.phone ? parseInt(props.volunteer.phone) : null,
         email: props.volunteer.email ? props.volunteer.email : "",
-        role: props.volunteer.role || "",
         start_date: props.volunteer.start_date || "",
         end_date: props.volunteer.end_date || "",
         hours_contributed: props.volunteer.hours_contributed || "",
         onboarding_completed: props.volunteer.onboarding_completed || false,
-        previous_volunteer_experience: props.volunteer.previous_volunteer_experience || "",
+        previous_volunteer_experience: parseInt(props.volunteer.previous_volunteer_experience) || null,
         disapproved_reason: props.volunteer.disapproved_reason || "",
-        current_company: props.volunteer.current_company || "",
+        current_company: props.volunteer.current_company || "", // removed
+        work_type: props.work_type || null,
         current_role: props.volunteer.current_role || "",
-        years_experience: props.volunteer.years_experience || "",
+        years_experience: parseInt(props.volunteer.years_experience) || null,
         career_status: props.volunteer.career_status || "",
         university: props.volunteer.university ? props.volunteer.university : "",
         department: props.volunteer.department ? props.volunteer.department : "",
@@ -92,6 +98,15 @@
         ];
     });
 
+    const workTypeDropdownList = computed( () => {
+        return [
+            { id: 1, label: 'Δημόσιος Τομέας' },
+            { id: 2, label: 'Ιδιωτικός Τομέας' },
+            { id: 3, label: 'Ελευθερος Επαγγελματίας' },
+            { id: 4, label: 'Άλλο' }
+        ];
+    });
+
     function submit() {
         if( volunteerForm.id && volunteerForm.id > 0 ) {
             volunteerForm.put('/volunteers/'+ volunteerForm.id, volunteerForm);
@@ -113,316 +128,339 @@
         <template #page-content>
             <AppFormLayout>
                 <form @submit.prevent="submit" autocomplete="off">
-                    <!-----------------------------------------------------------------------------------------
-                        | PERSONAL INFORMATION
-                    ------------------------------------------------------------------------------------------>
-                    <!-- FirstName -->
-                    <BaseTextInput
-                        v-model="volunteerForm.firstname"
-                        label="Όνομα" 
-                        placeholder="Όνομα.."
-                        :required="true"
-                        :errors="errors['firstname']"
-                    />
+                    <Accordion :activeIndex="0">
+                        <AccordionTab header="Προσωπικά Στοιχεία">
+                            <!-----------------------------------------------------------------------------------------
+                                | PERSONAL INFORMATION
+                            ------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                                <!-- FirstName -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.firstname"
+                                    label="Όνομα" 
+                                    placeholder="Όνομα.."
+                                    :required="true"
+                                    :errors="errors['firstname']"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- LastName -->
-                    <BaseTextInput
-                        v-model="volunteerForm.lastname"
-                        label="Επώνυμο"
-                        placeholder="Επώνυμο.."
-                        :required="true"
-                        :errors="errors['lastname']"
-                    />
+                                <!-- LastName -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.lastname"
+                                    label="Επώνυμο"
+                                    placeholder="Επώνυμο.."
+                                    :required="true"
+                                    :errors="errors['lastname']"
+                                    class="col-12 md:col-6"
+                                />
+                          
+                            
+                                <!-- Date of Birth -->
+                                <!-- <BaseCalendarInput
+                                    v-model="volunteerForm.date_of_birth"
+                                    label="Ημ/νία Γέννησης"
+                                    :errors="errors['date_of_birth']"
+                                /> -->
 
-                    <!-- Date of Birth -->
-                    <BaseCalendarInput
-                        v-model="volunteerForm.date_of_birth"
-                        label="Ημ/νία Γέννησης"
-                        :errors="errors['date_of_birth']"
-                    />
+                                <!-- Age -->
+                                <!-- <BaseNumberInput
+                                    v-model="volunteerForm.age"
+                                    label="Ηλικία"
+                                    placeholder="Ηλικία.."
+                                    :errors="errors['age']"
+                                    class="col-12 md:col-6"
+                                /> -->
 
-                    <!-- Age -->
-                    <BaseNumberInput
-                        v-model="volunteerForm.age"
-                        label="Ηλικία"
-                        placeholder="Ηλικία.."
-                        :errors="errors['age']"
-                    />
+                                <!-- Gender -->
+                                <BaseDropdownInput
+                                    v-model="volunteerForm.gender"
+                                    :options="genderDropdownList"
+                                    label="Φύλο"
+                                    placeholder="Επιλέξτε Φύλο"
+                                    :required=true
+                                    :errors="errors.gender"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- Gender -->
-                    <BaseDropdownInput
-                        v-model="volunteerForm.gender"
-                        :options="genderDropdownList"
-                        label="Φύλο"
-                        placeholder="Επιλέξτε Φύλο"
-                        :required=true
-                        :errors="errors.gender"
-                    />
+                                <!-- City -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.city"
+                                    label="Πόλη"
+                                    placeholder="Πόλη.."
+                                    :errors="errors['city']"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-----------------------------------------------------------------------------------------
-                        | CONTACT INFORMATION
-                    ------------------------------------------------------------------------------------------>
+                                <!-- Address -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.address"
+                                    label="Διεύθυνση"
+                                    placeholder="Διεύθυνση.."
+                                    :errors="errors['address']"
+                                    class="col-12 md:col-6"
+                                />
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Στοιχεία Επικοινωνίας">
+                            <!-----------------------------------------------------------------------------------------
+                                | CONTACT INFORMATION
+                            ------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                                <!-- Phone -->
+                                <BaseNumberInput
+                                    v-model="volunteerForm.phone"
+                                    label="Τηλέφωνο"
+                                    placeholder="Τηλέφωνο.."
+                                    :required="true"
+                                    :errors="errors['phone']"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- Phone -->
-                    <BaseNumberInput
-                        v-model="volunteerForm.phone"
-                        label="Τηλέφωνο"
-                        placeholder="Τηλέφωνο.."
-                        :required="true"
-                        :errors="errors['phone']"
-                    />
+                                <!-- Email -->
+                                <BaseEmailInput
+                                    v-model="volunteerForm.email"
+                                    label="Email"
+                                    placeholder="Email.."
+                                    :required="true"
+                                    :errors="errors['email']"
+                                    class="col-12 md:col-6"
+                                />
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Σπουδές">
+                            <!------------------------------------------------------------------------------------------>
+                            <!-- STUDIES -->
+                            <!------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                                <!-- University -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.university"
+                                    label="Πανεπιστήμο"
+                                    placeholder="πχ. ΕΚΠΑ"
+                                    :errors="errors['university']"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- Email -->
-                    <BaseEmailInput
-                        v-model="volunteerForm.email"
-                        label="Email"
-                        placeholder="Email.."
-                        :required="true"
-                        :errors="errors['email']"
-                    />
+                                <!-- Department -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.department"
+                                    label="Σχολή"
+                                    placeholder="πχ. Τμήμα Φιλολογίας"
+                                    :errors="errors['department']"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- City -->
-                    <BaseTextInput
-                        v-model="volunteerForm.city"
-                        label="Πόλη"
-                        placeholder="Πόλη.."
-                        :errors="errors['city']"
-                    />
+                                <!-- Other Studies -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.otherstudies"
+                                    label="Επιπλέον Σπουδές"
+                                    placeholder="πχ. Project Management Certification"
+                                    :errors="errors['other_studies']"
+                                    class="col-12 md:col-6"
+                                />
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Ενδιαφέροντα">
+                            <!------------------------------------------------------------------------------------------>
+                            <!-- PERSONALITY -->
+                            <!------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                                <!-- Expectations -->
+                                <BaseTextareaInput
+                                    v-model="volunteerForm.expectations"
+                                    label="Ποιες είναι οι προσδοκίες σου από το FutureGeneration;"
+                                    placeholder="..."
+                                    :errors="errors['personality.expectations']"
+                                />
 
-                    <!-- Address -->
-                    <BaseTextInput
-                        v-model="volunteerForm.address"
-                        label="Διεύθυνση"
-                        placeholder="Διεύθυνση.."
-                        :errors="errors['address']"
-                    />
-                
-                    <!-----------------------------------------------------------------------------------------
-                        | VOLUNTEERING
-                    ------------------------------------------------------------------------------------------>
+                                <!-- Reasons -->
+                                <BaseTextareaInput
+                                    v-model="volunteerForm.reason"
+                                    label="Με τι θα σε ενδιέφερε να ασχοληθείς στην ομάδα του FutureGeneration και γιατί;"
+                                    placeholder="..."
+                                    :errors="errors['personality.reason']"
+                                />
 
-                    <!-- Onboarding Contributed -->
-                    <BaseToggleSwitch 
-                        v-model="volunteerForm.onboarding_completed"
-                        label="Ολοκλήρωση του Onboarding"
-                        class="my-4"
-                    />
+                                <!-- Interests -->
+                                <BaseTextareaInput
+                                    v-model="volunteerForm.interests"
+                                    label="Ποια είναι τα ενδιαφέροντά σου στην προσωπική σου ζωή"
+                                    placeholder="..."
+                                    :errors="errors['personality.interests']"
+                                />
 
-                    <!-- <span class="font-light text-xl text-gray-800 leading-tight py-3">
-                        <span class="text-sm font-semibold px-5 py-2 rounded" v-bind:class="{ 
-                            'border-l-2 dark:text-slate-300 dark:border-orange-600 dark:bg-opacity-30 dark:bg-orange-500 text-orange-600 border-orange-600 bg-orange-100 px-4 py-2 rounded-md shadow-md': volunteer.status === 1, 
-                            'border-l-2 dark:text-slate-300 dark:border-green-600 dark:bg-opacity-30 dark:bg-green-500 text-green-600 border-green-600 bg-green-100 px-4 py-2 rounded-md shadow-md': volunteer.status === 2,
-                            'border-l-2 dark:text-slate-300 dark:border-red-600 dark:bg-opacity-30 dark:bg-red-500 text-red-600 border-red-600 bg-red-100 px-4 py-2 rounded-md shadow-md': volunteer.status === 3 }">
-                            {{ formatStatus(volunteer.status) }}
-                        </span>
-                    </span> -->
+                                <!-- Personal Description -->
+                                <BaseTextareaInput
+                                    v-model="volunteerForm.description"
+                                    label="Πως θα περιέγραφες τον εαυτό σου σε μια παράγραφο;"
+                                    placeholder="..."
+                                    :errors="errors['personality.description']"
+                                />
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Social Media">
+                            <!------------------------------------------------------------------------------------------>
+                            <!-- SOCIAL MEDIA -->
+                            <!------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                               <!-- Linkedin -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.linkedin"
+                                    label="Linkedin Profile URL"
+                                    :required=false
+                                    :errors="errors['linkedin']"
+                                />
 
-                    <!-- <BaseSingleSelect
-                        v-model="volunteerForm.assigned_to"
-                        :options="assigneeDropdownList"
-                        label="Υπεύθυνος Recruiter *"
-                        placeholder="Επίλεξε έναν recruiter"
-                        :errors="errors['volunteering.assignee']"
-                        @update:optionChanged="handleAssigneeOptionChange"
-                    /> -->
+                                <!-- Facebook -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.facebook"
+                                    label="Facebook Profile URL"
+                                    :required=false
+                                    :errors="errors['facebook']"
+                                />
 
-                    <BaseDropdownInput
-                        v-model="volunteerForm.role"
-                        :options="roleDropdownList"
-                        label="Ρόλος"
-                        :required=true
-                        :errors="errors.role"
-                    />
+                                <!-- Instagram -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.instagram"
+                                    label="Instagram Profile URL"
+                                    :required=false
+                                    :errors="errors['instagram']"
+                                />
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Επαγγελματική Εργασία">
+                            <!------------------------------------------------------------------------------------------>
+                            <!-- Rrofessional Work -->
+                            <!------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                                <!-- Type of Work -->
+                                <BaseDropdownInput
+                                    v-model="volunteerForm.work_type"
+                                    :options="workTypeDropdownList"
+                                    label="Τύπος Εργασίας"
+                                    :required=true
+                                    :errors="errors.role"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- Start Date -->
-                    <BaseCalendarInput
-                        v-model="volunteerForm.start_date"
-                        label="Ημ/νία Έναρξης"
-                        :errors="errors['date_of_birth']"
-                    />
+                                <!-- Current Company Role -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.current_role"
+                                    label="Επάγγελμα/Ιδιότητα"
+                                    placeholder="Επάγγελμα/Ιδιότητα.."
+                                    :errors="errors['work.current_role']"
+                                    class="col-12 md:col-6"
+                                />
 
-                    <!-- End Date -->
-                    <BaseCalendarInput
-                        v-model="volunteerForm.end_date"
-                        label="Ημ/νία Ολοκλήρωσης"
-                        :errors="errors['date_of_birth']"
-                    />
+                                <!-- Total Years of Professional Experience -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.years_experience"
+                                    label="Προϋπηρεσία"
+                                    placeholder=""
+                                    :errors="errors['work.years_experience']"
+                                />
 
-                    <!-- Hours Contributed -->
-                    <BaseNumberInput
-                        v-model="volunteerForm.hours_contributed"
-                        label="Ώρες Συνεισφοράς"
-                        placeholder="Ώρες Συνεισφοράς.."
-                        :errors="''"
-                    />
+                                <!-- Career Status -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.career_status"
+                                    label="Κατάσταση Καριέρας"
+                                    placeholder="Κατάσταση Καριέρας.."
+                                    :errors="errors['work.career_status']"
+                                />
 
-                    <!-- Previous Volunteer Experience -->
-                    <BaseNumberInput
-                        v-model="volunteerForm.previous_volunteer_experience"
-                        label="Προυπηρεσία σε Εθελοντισμό"
-                        placeholder="Προυπηρεσία σε Εθελοντισμό.."
-                        :errors="''"
-                    />
+                                 <!------------------------------------------------------------------------------------------>
+                                <!-- CV -->
+                                <!------------------------------------------------------------------------------------------>
+                                <label class="block mb-2 text-sm font-medium text-sm text-gray-500 dark:text-slate-300" for="file_input">
+                                    Βιογραφικό
+                                </label>
 
-                    <!-- Reject Reason -->
-                    <BaseTextInput
-                        v-model="volunteerForm.disapproved_reason"
-                        label="Λόγος Απόρριψης"
-                        placeholder="Λόγος Απόρριψης.."
-                        :errors="''"
-                    />
+                                <!-- <FileUpload 
+                                    mode="basic" 
+                                    name="demo[]" 
+                                    accept="image/*" 
+                                    :maxFileSize="1000000" 
+                                    @uploader="onUpload" 
+                                    customUpload
+                                /> -->
 
-                    <!-----------------------------------------------------------------------------------------
-                        | PROFESSIONAL WORK
-                    ------------------------------------------------------------------------------------------>
-                
-                    <!-- Current Company Name -->
-                    <BaseTextInput
-                        v-model="volunteerForm.current_company"
-                        label="Εταιρεία Εργασίας"
-                        placeholder="Εταιρεία Εργασίας.."
-                        :errors="errors['work.current_company']"
-                    />
 
-                    <!-- Current Company Role -->
-                    <BaseTextInput
-                        v-model="volunteerForm.current_role"
-                        label="Ρόλος Εργασίας"
-                        placeholder="Ρόλος Εργασίας.."
-                        :errors="errors['work.current_role']"
-                    />
+                                <!-- <div class="flex items-center justify-center w-full">
+                                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                        <div class="flex flex-col items-center justify-center p-6">
+                                            <svg class="w-1 h-1  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                            </svg>
+                                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                        </div>
 
-                    <!-- Total Years of Professional Experience -->
-                    <BaseTextInput
-                        v-model="volunteerForm.years_experience"
-                        label="Συνολικά Χρόνια Εργασίας"
-                        placeholder="Συνολικά Χρόνια Εργασίας.."
-                        :errors="errors['work.years_experience']"
-                    />
+                                        <input @change="uploadCV" id="dropzone-file" type="file" class="hidden" />
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ fileName }}</p>
+                                    </label>
+                                </div> -->
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Εθελοντισμός">
+                            <!------------------------------------------------------------------------------------------>
+                            <!-- Volunteering -->
+                            <!------------------------------------------------------------------------------------------>
+                            <div class="p-fluid formgrid grid">
+                                <!-- Onboarding Contributed -->
+                                <!-- <BaseToggleSwitch 
+                                    v-model="volunteerForm.onboarding_completed"
+                                    label="Ολοκλήρωση του Onboarding"
+                                    class="my-4"
+                                /> -->
 
-                    <!-- Career Status -->
-                    <BaseTextInput
-                        v-model="volunteerForm.career_status"
-                        label="Κατάσταση Καριέρας"
-                        placeholder="Κατάσταση Καριέρας.."
-                        :errors="errors['work.career_status']"
-                    />
-                        
+                                <BaseDropdownInput
+                                    v-model="volunteerForm.role"
+                                    :options="roleDropdownList"
+                                    label="Ρόλος"
+                                    :required=true
+                                    :errors="errors.role"
+                                />
 
-                    <!-----------------------------------------------------------------------------------------
-                        | CONNECTIONS
-                    ------------------------------------------------------------------------------------------>
-              
-                    <!-- Google Link -->
-                    <BaseTextInput
-                        v-model="volunteerForm.googleDrive"
-                        label="Google Drive Link"
-                        placeholder="Google link.."
-                        :errors="errors['links.googleDrive']"
-                    />
+                                <!-- Start Date -->
+                                <BaseCalendarInput
+                                    v-model="volunteerForm.start_date"
+                                    label="Ημ/νία Έναρξης"
+                                    :errors="errors['date_of_birth']"
+                                />
 
-                    <!-- Asana Link -->
-                    <BaseTextInput
-                        v-model="volunteerForm.asana"
-                        label="Asana Link"
-                        placeholder="Asana link.."
-                        :errors="errors['links.asana']"
-                    />
-                
-                    <!-----------------------------------------------------------------------------------------
-                        | PERSONALITY
-                    ------------------------------------------------------------------------------------------>
-                
-                    <!-- Expectations -->
-                    <BaseTextarea
-                        v-model="volunteerForm.expectations"
-                        label="Ποιες είναι οι προσδοκίες σου από το FutureGeneration;"
-                        placeholder="..."
-                        :errors="errors['personality.expectations']"
-                    />
+                                <!-- End Date -->
+                                <BaseCalendarInput
+                                    v-model="volunteerForm.end_date"
+                                    label="Ημ/νία Ολοκλήρωσης"
+                                    :errors="errors['date_of_birth']"
+                                />
 
-                    <!-- Reasons -->
-                    <BaseTextarea
-                        v-model="volunteerForm.reason"
-                        label="Με τι θα σε ενδιέφερε να ασχοληθείς στην ομάδα του FutureGeneration και γιατί;"
-                        placeholder="..."
-                        :errors="errors['personality.expectations']"
-                    />
+                                <!-- Hours Contributed -->
+                                <BaseNumberInput
+                                    v-model="volunteerForm.hours_contributed"
+                                    label="Ώρες Συνεισφοράς"
+                                    placeholder="Ώρες Συνεισφοράς.."
+                                    :errors="''"
+                                />
 
-                    <!-- Interests -->
-                    <BaseTextarea
-                        v-model="volunteerForm.interests"
-                        label="Ποια είναι τα ενδιαφέροντά σου στην προσωπική σου ζωή"
-                        placeholder="..."
-                        :errors="errors['personality.expectations']"
-                    />
+                                <!-- Previous Volunteer Experience -->
+                                <BaseNumberInput
+                                    v-model="volunteerForm.previous_volunteer_experience"
+                                    label="Προυπηρεσία σε Εθελοντισμό"
+                                    placeholder="Προυπηρεσία σε Εθελοντισμό.."
+                                    :errors="''"
+                                />
 
-                    <!-- Personal Description -->
-                    <BaseTextarea
-                        v-model="volunteerForm.description"
-                        label="Πως θα περιέγραφες τον εαυτό σου σε μια παράγραφο;"
-                        placeholder="..."
-                        :errors="errors['personality.expectations']"
-                    />
-
-                    <!------------------------------------------------------------------------------------------>
-                    <!-- STUDIES -->
-                    <!------------------------------------------------------------------------------------------>
-                
-                    <!-- University -->
-                    <BaseTextInput
-                        v-model="volunteerForm.university"
-                        label="Πανεπιστήμο"
-                        placeholder="πχ. ΕΚΠΑ"
-                        :errors="''"
-                    />
-
-                    <!-- Department -->
-                    <BaseTextInput
-                        v-model="volunteerForm.department"
-                        label="Σχολή"
-                        placeholder="πχ. Τμήμα Φιλολογίας"
-                        :errors="''"
-                    />
-
-                    <!-- Other Studies -->
-                    <BaseTextInput
-                        v-model="volunteerForm.otherstudies"
-                        label="Επιπλέον Σπουδές"
-                        
-                        placeholder="πχ. Project Management Certification"
-                        :errors="errors['other_studies']"
-                    />
-
-                    <!------------------------------------------------------------------------------------------>
-                    <!-- SOCIAL NETWORKS -->
-                    <!------------------------------------------------------------------------------------------>
-                
-                    <!-- Linkedin -->
-                    <BaseTextInput
-                        v-model="volunteerForm.linkedin"
-                        label="Linkedin Profile URL"
-                        :required=false
-                        :errors="errors['linkedin']"
-                    />
-
-                    <!-- Facebook -->
-                    <BaseTextInput
-                        v-model="volunteerForm.facebook"
-                        label="Facebook Profile URL"
-                        :required=false
-                        :errors="errors['facebook']"
-                    />
-
-                    <!-- Instagram -->
-                    <BaseTextInput
-                        v-model="volunteerForm.instagram"
-                        label="Instagram Profile URL"
-                        :required=false
-                        :errors="errors['instagram']"
-                    />
-
-                    <!-- Notes -->
+                                <!-- Reject Reason -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.disapproved_reason"
+                                    label="Λόγος Απόρριψης"
+                                    placeholder="Λόγος Απόρριψης.."
+                                    :errors="''"
+                                />
+                            </div>
+                        </AccordionTab>
+                    </Accordion>
                     <BaseTextareaInput
                         v-model="volunteerForm.notes"
                         label="Σχόλια"
@@ -430,41 +468,9 @@
                         :errors="errors.notes"
                     />
 
-                    <!------------------------------------------------------------------------------------------>
-                    <!-- CV -->
-                    <!------------------------------------------------------------------------------------------>
-                    <label class="block mb-2 text-sm font-medium text-sm text-gray-500 dark:text-slate-300" for="file_input">
-                        Βιογραφικό
-                    </label>
-
-                    <!-- <FileUpload 
-                        mode="basic" 
-                        name="demo[]" 
-                        accept="image/*" 
-                        :maxFileSize="1000000" 
-                        @uploader="onUpload" 
-                        customUpload
-                    /> -->
-
-
-                    <div class="flex items-center justify-center w-full">
-                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                            <div class="flex flex-col items-center justify-center p-6">
-                                <svg class="w-1 h-1  text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                </svg>
-                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                            </div>
-
-                            <input @change="uploadCV" id="dropzone-file" type="file" class="hidden" />
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ fileName }}</p>
-                        </label>
-                    </div>
-
                     <Button 
                         @click="submit"
-                        label="Αποθήκευση Εθελοντή"
+                        label="Αποθήκευση"
                         raised
                         class="mb-2 mr-2"
                     />

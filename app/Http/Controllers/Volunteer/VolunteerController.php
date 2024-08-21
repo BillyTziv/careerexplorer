@@ -76,7 +76,7 @@ class VolunteerController extends Controller {
                 ELSE 3 END")
             ->orderByRaw("CASE WHEN volunteers.status = 1 THEN volunteers.created_at END DESC")
             ->orderByRaw("CASE WHEN volunteers.status != 1 THEN volunteers.created_at END ASC")
-            ->paginate(10);
+            ->get();
 
         return $volunteers;
     }

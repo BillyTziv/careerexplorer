@@ -1,5 +1,7 @@
 <template>
-    <div class="grid grid-cols-2 text-slate-800 dark:text-slate-300">
-        <slot></slot>
+    <div class="p-grid text-slate-800">
+        <div class="p-col-6">
+            <slot></slot>
+        </div>
     </div>
 </template>

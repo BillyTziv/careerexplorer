@@ -25,7 +25,7 @@
 </script>
 
 <template>
-    <div class="field">
+    <div class="field col-12">
 
         <div class="flex flex-col justify-between">
             <InputSwitch

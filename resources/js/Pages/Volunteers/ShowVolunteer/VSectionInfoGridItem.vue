@@ -1,6 +1,10 @@
 <template>
-    <label class="dark:text-slate-300">{{ label }}</label>
-    <div class="flex-1 font-bold">{{ value }}</div>
+    <div class="field grid">
+        <label class="col-6 mb-2 md:col-6 label-fixed-width">{{ label }}</label>
+        <div class="col-6 md:col-6">
+            <span class="font-bold">{{ value }}</span>
+        </div>
+    </div>
 </template>
   
 <script setup>
@@ -17,3 +21,9 @@
     },
   });
 </script>
+
+<style scoped>
+.label-fixed-width {
+    width: 120px;
+}
+</style>

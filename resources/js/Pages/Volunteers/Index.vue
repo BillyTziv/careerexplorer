@@ -1,6 +1,6 @@
 <script setup>
     /* Core */
-    import { ref, reactive, provide, watch, onMounted } from 'vue';
+    import { computed, ref, reactive, provide, watch, onMounted } from 'vue';
     import { router } from '@inertiajs/vue3'
 
     /* Layouts */
@@ -34,8 +34,8 @@
             default: {}
         },
         volunteers: {
-            type: Object,
-            default: {}
+            type: Array,
+            default: ({}) => []
         },
         volunteerRoleDropdownOptions: {
             type: Array,
@@ -47,7 +47,7 @@
         }
     });
     const { getRoleName } = useVolunteerRoleMapper( props.volunteerRoleDropdownOptions );
-    const { getStatusName, getStatusDecoration } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
+    const { getStatusName, getStatusDecoration, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
     const { formatDate } = useFormatDate( );
 
     // Check if the user has the permission to view the page
@@ -72,6 +72,10 @@
     // Navigate to the edit page of a volunteer
     const editEntity = ( volunteer ) => {    
         router.visit(`/volunteers/${volunteer.id}/edit`);
+    };
+
+    const viewDetails = ( volunteer ) => {
+        router.visit(`/volunteers/${volunteer.id}`);
     };
 
     // Popup a dialog to confirm the deletion of a volunteer
@@ -177,6 +181,26 @@
         volunteerStore.setRoleDropdownOptions( props.volunteerRoleDropdownOptions);
         volunteerStore.setStatusDropdownOptions( props.volunteerStatusDropdownOptions );
     });
+
+    const currentPageReportTemplate = computed(() => {
+        return `Προβολή ${props.volunteers.from} μέχρι ${props.volunteers.to} απο ${props.volunteers.total} εγγραφές`;
+    });
+
+    function handlePageChange() {
+
+    }
+
+    /* Datatable Size Change */
+    const size = ref({ label: 'Small', value: 'small' });
+    
+    const sizeOptions = ref([
+        { label: 'Small', value: 'small' },
+        { label: 'Normal', value: 'null' },
+        { label: 'Large', value: 'large' }
+    ]);
+
+    const selectedVolunteers = ref();
+
 </script>
 
 <template>
@@ -217,7 +241,7 @@
                 />
             </BaseTableFiltersLayout> -->
 
-            <div class="flex flex-column md:flex-row align-items-start md:align-items-start mb-3">
+            <div class="flex flex-column md:flex-row align-items-start md:align-items-start mb-3 w-full">
                 <BaseDropdownInput
                     v-model="filters.role"
                     placeholder="Όλοι οι Ρόλοι"
@@ -247,24 +271,30 @@
                     <InputIcon class="pi pi-search" />
                     <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
-                <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportVolunteersAsCSV"></Button>
+                
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportVolunteersAsCSV"></Button>
+                </div>
             </div>
 
             <DataTable
                 dataKey="id"
                 ref="volunteersTableRef"
-                :value="volunteers.data"
+                :value="volunteers"
                 v-model:filters="filterVolunteersTable"
+                v-model:selection="selectedVolunteers"
                 :filters="filters"
-                :paginator="true"
-                :rows="volunteers.per_page" 
-                :rowsPerPageOptions="[5, 10, 25]"
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                currentPageReportTemplate="Προβολή {first} μέχρι {last} απο {totalRecords} εγγραφές"
-                responsiveLayout="scroll" 
+                :size="size.value"
+                stripedRows
+                responsiveLayout="scroll"
+                paginator
+                :rows="5"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
             >
                 <template #empty>Δεν βρέθηκαν εθελοντές.</template>
                 
+                <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
+
                 <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα</span>
@@ -287,13 +317,17 @@
                 </Column>
 
                 <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '12rem' }">
-                    <!-- <template #body="{ data }">
-                        <span class="p-column-title">Κατάσταση</span>
-                        {{  }}
-                    </template> -->
-
                     <template #body="{ data }">
-                        <Tag :class="getStatusDecoration">{{ getStatusName(data.status) }}</Tag>
+                        <span
+                            class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
+                            :style="{
+                               
+                                'background-color': adjustOpacity(data.status, 0.2),
+                                'color': determineTextColor(data.status),
+                            }"
+                        >
+                           {{ getStatusName( data.status ) }}
+                        </span>
                     </template>
                 </Column>
 
@@ -318,12 +352,21 @@
                     </template>
                 </Column>
  
-                <Column headerStyle="min-width:10rem;" frozen alignFrozen="right">
+                <Column headerStyle="min-width: 12rem;" frozen alignFrozen="right">
                     <template #body="slotProps">
+                        <Button icon="pi pi-eye" class="mr-2" rounded outlined @click="viewDetails(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editEntity(slotProps.data)" />
                         <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteVolunteer(slotProps.data)" />
                     </template>
                 </Column>
+
+                <template #paginatorstart>
+                    <!-- <Dropdown v-model="size" :options="sizeOptions" optionLabel="label" dataKey="label"  class="w-full md:w-15rem" @change="onSortChange($event)" /> -->
+                </template>
+
+                <template #paginatorend>
+                    Εμφάνιση υπάρχουν {{ props.volunteers ? props.volunteers.length : 0 }} εθελοντές.
+                </template>
             </DataTable>
         </template>
     </AppPageWrapper>

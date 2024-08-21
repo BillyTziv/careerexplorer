@@ -19,9 +19,9 @@
 
     onMounted(async() => {
         const fetchedUser = await userStore.getUser;
-        user.firstname = fetchedUser.firstName;
-        user.lastname = fetchedUser.lastName;
-        user.role = fetchedUser.role;
+        user.firstname = fetchedUser?.firstName;
+        user.lastname = fetchedUser?.lastName;
+        user.role = fetchedUser?.role;
     });
 </script>
 
