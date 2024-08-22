@@ -18,6 +18,8 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::redirect('/applications/fg/volunteer', '/volunteers/join');
+
 Route::middleware('auth')->group(function () {
     /*Session Request Routes */
     require __DIR__.'/authRoutes/sessionRequestRoutes.php';

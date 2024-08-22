@@ -9,5 +9,4 @@ use App\Http\Controllers\Volunteer\VolunteerStatusController;
 -------------------------------------------------------------------------------------*/
 Route::resource('/volunteer-statuses', VolunteerStatusController::class);
 
-Route::put('/volunteers/{volunteer}/status', [VolunteerController::class, 'updateStatus'])
-    ->middleware('can:view,App\Models\VolunteerStatus');
+Route::put('/volunteers/{volunteer}/status', [VolunteerController::class, 'updateStatus']);

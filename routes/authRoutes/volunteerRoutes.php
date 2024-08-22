@@ -28,8 +28,7 @@ use App\Http\Controllers\Volunteer\VolunteerController;
 Route::post('/volunteers/sendInvitation', [VolunteerController::class, 'sendInvitation'])
     ->middleware('can:sendInvitation,App\Models\Volunteer');
 
-Route::post('/volunteers/{volunteer}/notes', [VolunteerController::class, 'updateNotes'])
-    ->middleware('can:create, App\Models\Volunteer');
+Route::post('/volunteers/{volunteer}/notes', [VolunteerController::class, 'updateNotes']);
 
 Route::get('/volunteers/join', [VolunteerController::class, 'createPublicApplication'])
 // ->middleware('can:create, App\Models\Volunteer')

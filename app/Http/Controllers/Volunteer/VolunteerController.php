@@ -713,7 +713,7 @@ class VolunteerController extends Controller {
         $volunteer->google_drive = $request->googleDrive ?? null;
         $volunteer->asana = $request->asana ?? null;
 
-        $volunteer->notes = $request->notes ?? null;
+        $volunteer->notes = $request->notes ?? '';
 
         $volunteer->deleted = false;
         $volunteer->save();
@@ -729,6 +729,7 @@ class VolunteerController extends Controller {
     public function updateNotes( Request $request, $volunteer ) {
 
         $volunteer = Volunteer::find( $volunteer );
+        $vid = $volunteer->id;
 
         if( is_null($request->notes) ) {
             return redirect()
@@ -738,13 +739,29 @@ class VolunteerController extends Controller {
                 ]);
         }
 
-        $volunteer->notes = $request->notes ?? null;
+        $volunteer->notes = $request->notes ?? '';
         $volunteer->save();
 
-        return back()->with([
-            'message' => 'Τα σημειώσεις ενημερώθηκαν με επιτυχία!',
-            'status' => 'success',
-            'volunteer' => $volunteer
+        $query = Volunteer::query();
+
+        $volunteer = $query->leftjoin('volunteer_roles', 'volunteer_roles.id', '=', 'volunteers.role')
+            ->select('volunteers.*', DB::raw("JSON_OBJECT('name', volunteer_roles.name) as volunteer_role"),
+             DB::raw("JSON_ARRAY(
+                 JSON_OBJECT('label', 'linkedin', 'link', linkedin),
+                 JSON_OBJECT('label', 'facebook', 'link', facebook),
+                 JSON_OBJECT('label', 'instagram', 'link', instagram)
+             ) as socialMedia"))
+            ->find($vid);
+
+            
+        if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
+
+        return Inertia::render('Volunteers/Show', [
+            'response' => [],
+            'volunteer' => $volunteer,
+            'roles' => self::getUserRoles(),
+            'assignees' => self::getAssignees(),
+            'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()
         ]);
     }
 

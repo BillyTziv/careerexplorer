@@ -1,8 +1,160 @@
+<script setup>
+    /* Core */
+    import { computed, ref, provide, watch } from 'vue';
+    import { router } from '@inertiajs/vue3'
+
+    /* Layouts */
+    import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
+	import SocialMediaLink from './SocialMediaLink.vue';
+	import VolunteerSection from './ShowVolunteer/VolunteerSection.vue';
+	import VSectionHeading from './ShowVolunteer/VSectionHeading.vue';
+	import VSectionInfoGridItem from './ShowVolunteer/VSectionInfoGridItem.vue';
+    import TheShowVolunteerCVModal from '@/Components/Modals/TheShowVolunteerCVModal.vue';
+	import VolunteerStatusChangeModal from '@/Components/Modals/VolunteerStatusChangeModal.vue';
+	import VolunteerNotesModal from '@/Components/Modals/VolunteerNotesModal.vue';
+
+
+	import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
+	
+	let props = defineProps({
+		user: Object,
+		volunteer: Object,
+		response: Object,
+		roles: Array,
+		errors: Object,
+        volunteerStatusDropdownOptions: {
+            type: Array,
+            default: () => []
+        }
+	});
+
+	const selectedVolunteerStatus = ref(props.volunteer.status);
+
+	function updateNotes( notes ) {
+	 	router.post('/volunteers/' + props.volunteer.id + '/notes', {
+	 		notes: notes
+	 	}, {
+	 		preserveState: true,
+	 		replace: true
+	 	});
+	}
+	
+	function changeVolunteerStatus( form ) {
+		console.log( form );
+
+		router.put('/volunteers/' + props.volunteer.id + '/status', {
+			newStatusValue: selectedVolunteerStatus.value,
+			statusChangeReason: form.reason,
+			sendEmail: form.sendEmail
+		}, { preserveState: true, replace: true });
+
+		showVolunteerStatusChangeModal.value = false;
+	}
+
+	const volunteerProfileImage = computed( () => {
+		if( props.volunteer.profile_image ) {
+			return props.volunteer.profile_image;
+		}
+
+		switch( props.volunteer.gender ) {
+			case 'male':
+				return '/images/profile_picture_male.png';
+			case 'female':
+				return '/images/profile_picture_female.png';
+			default:
+				return 'https://placehold.co/32x32';
+		}
+	})
+
+	const volStatusDropdownOptions = computed(() => {
+		return props.volunteerStatusDropdownOptions.map(option => ({
+			id: option.id,
+			label: option.name
+		}));
+	});
+
+	const calculatedVolunteerStatus = computed( () => {
+	 	let status = "";
+
+	 	status = props.volunteerStatusDropdownOptions.find( (item) => {
+	 		if( item.id === props.volunteer.status ) {
+	 			return item.name;
+	 		}
+	 	});
+
+	 	return status?.name ?? 'Άγνωστο';
+	 })
+
+	const volunteerRole = computed( () => {
+		return props.volunteer.volunteer_role ? JSON.parse(props.volunteer.volunteer_role).name : '';
+	})
+
+	const hasCV = computed( () => {
+		return props.volunteer.cv && props.volunteer.cv.trim() !== '';
+	})
+
+	const hasStudies = computed( () => {
+		return props.volunteer.university || props.volunteer.studies || props.volunteer.otherstuddies;
+	})
+
+	const hasProfessionalExperience = computed( () => {
+		return props.volunteer.current_company || props.volunteer.current_role || props.volunteer.years_experience || props.volunteer.career_status;
+	})
+
+	const hasSocialMedia = computed( () => {
+		return props.volunteer.socialMedia.some(item => item.link && item.link.trim() !== '');
+	})
+
+	provide('volunteerStatusDropdownOptions', props.volunteerStatusDropdownOptions);
+
+	const showVolunteerStatusChangeModal = ref(false);
+
+	watch(() => selectedVolunteerStatus.value, (newVal) => {
+		console.log( newVal );
+		showVolunteerStatusChangeModal.value = true;
+	});
+</script>
+
+<style scoped>
+	.grid {
+		grid-template-columns: 1fr 2fr; /* Adjust these fractions according to your needs */
+	}
+
+	.label {
+		max-width: 80px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis; 
+	}
+</style>
+
 <template>
  <AppPageWrapper>
         <template #page-title>
-            <div class="flex flex-column">
+            <!-- <div class="flex flex-column">
 				<div class="px-2 flex text-center justify-center">{{ volunteer.firstname + " " + volunteer.lastname }}</div>
+			</div> -->
+
+			<div class="flex p-2">
+				<!-- <VolunteerStatusChangeModal
+					:volunteerId="volunteer.id"
+					:roles="roles"
+					@change="changeVolunteerStatus"
+				/> -->
+
+				
+
+				<!-- <select
+					
+					@change="handleStatusChange( $event )" 
+					class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-lime-500 focus:border-lime-500 block p-2 dark:bg-slate-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-200 dark:focus:ring-lime-500 dark:focus:border-lime-500"
+				>
+					<option 
+						v-for="statusItem in volunteerStatusDropdownOptions" 
+						:value="statusItem.id" 
+						v-html="statusItem.name"
+					></option>
+				</select> -->
 			</div>
         </template>
 
@@ -14,21 +166,25 @@
 					------------------------------------------------------------------------------------------>
 					<div class="flex flex-col md:flex-row items-center gap-6">
 						<!-- Image Section -->
-						<div class="flex-shrink-0">
-							<img :src="volunteerProfileImage" :alt="volunteer.firstname + ' ' + volunteer.lastname" class="w-full md:w-32 h-auto rounded-lg">
-						</div>
+						<!-- <div class="flex-shrink-0">
+							<img
+								:src="volunteerProfileImage" 
+								:alt="volunteer.firstname + ' ' + volunteer.lastname" 
+								class="w-full md:w-64 h-auto rounded-lg"
+							>
+						</div> -->
 
 						<!-- Text Block Section -->
-						<div class="flex flex-col gap-2">
-							<h2 class="text-xl font-bold dark:text-lime-300">
+						<div class=" gap-2">
+							<h2>
 								{{ volunteer.firstname + " " + volunteer.lastname }}
 							</h2>
 							
-							<p class="text-lg text-slate-300">
-								Ρόλος: {{ volunteerRole }}
+							<p>
+								{{ volunteerRole }}
 							</p>
 
-							<select
+							<!-- <select
 								v-model="selectedVolunteerStatus" 
 								@change="handleStatusChange( $event )" 
 								class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-lime-500 focus:border-lime-500 block p-2 dark:bg-slate-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-200 dark:focus:ring-lime-500 dark:focus:border-lime-500"
@@ -38,8 +194,22 @@
 									:value="statusItem.id" 
 									v-html="statusItem.name"
 								></option>
-							</select>
+							</select> -->
 
+							<VolunteerStatusChangeModal
+								:volunteerId="volunteer.id"
+								:isOpen="showVolunteerStatusChangeModal" 
+								@update:isOpen="showVolunteerStatusChangeModal = $event"
+								@change="changeVolunteerStatus"
+							/>
+
+							<BaseDropdownInput
+								v-model="selectedVolunteerStatus"
+								placeholder="Άγνωστη Κατάσταση"
+								:options="volStatusDropdownOptions"
+								@change="handleStatusChange(event)"
+							/>
+						
 							<VSectionInfoGridItem
 								v-if="volunteer.disapproved_reason" 
 								label="Σχόλια Αλλαγής Κατάστασης" 
@@ -52,7 +222,7 @@
 
 							<!-- Social Media Links -->
 							<template v-if="hasSocialMedia">
-								<div class="flex flex-column">
+								<div class="flex flex-row">
 									<template
 										v-for="(sm, smIndex) in volunteer.socialMedia"
 										:key="smIndex"
@@ -164,22 +334,20 @@
 							<VSectionHeading>Βιογραφικό</VSectionHeading>
 						</template>
 
-						<!-- <BaseClickButton
+						<!-- <Button
 							@click="openCVModal = true"
 							:svg-path="['m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10']"
 							:label="'Προβολή Βιογραφικού'"
 							class="my-1"
 						/> -->
+						<TheShowVolunteerCVModal
+							:cv="volunteer.cv"
+						></TheShowVolunteerCVModal>
 
-						<!-- <TheShowVolunteerCVModal
-							:volunteer="volunteer"
-							:isOpen="openCVModal"
-							@update:isOpen="openCVModal = $event"
-						></TheShowVolunteerCVModal> -->
 					</VolunteerSection>
 				</div>
 				<div class="flex-1 md:w-1/3 lg:w-1/3 xl:w-1/3 mx-2">
-					<!-- <VolunteerSection
+					<VolunteerSection
 						:sectionId="'notes'"
 					>
 						<template #header>
@@ -189,10 +357,15 @@
 						</template>
 						
 						<p style="white-space: pre-wrap;" class="dark:text-slate-100 dark:text-sm">
-							{{ form.notes }}
+							{{ volunteer.notes }}
 						</p>
 
-					</VolunteerSection> -->
+						<VolunteerNotesModal
+							:notes="volunteer.notes"
+							@change="updateNotes"
+						/>
+
+					</VolunteerSection> 
 
 					<!-----------------------------------------------------------------------------------------
 						| PERSONALITY
@@ -235,152 +408,7 @@
 					</VolunteerSection>
 				</div>
 			</div>
-
-			<!-- <VolunteerStatusChangeModal
-				:volunteerId="volunteer.id"
-				:isOpen="showVolunteerStatusChangeModal" 
-				:roles="roles"
-				@update:isOpen="showVolunteerStatusChangeModal = $event"
-				@change="changeVolunteerStatus"
-			/>
-
-			<VolunteerNotesModal
-				:notes="volunteer.notes"
-				:isOpen="showVolunteerNoteModal" 
-				@update:isOpen="showVolunteerNoteModal = $event"
-				@change="updateNotes"
-			/> -->
 		</template>
 	</AppPageWrapper>
 </template>
 
-<script setup>
-    /* Core */
-    import { computed, ref, reactive, provide, watch, onMounted } from 'vue';
-    import { router } from '@inertiajs/vue3'
-
-    /* Layouts */
-    import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
-
-	import SocialMediaLink from './SocialMediaLink.vue';
-
-	import VolunteerSection from './ShowVolunteer/VolunteerSection.vue';
-	import VSectionHeading from './ShowVolunteer/VSectionHeading.vue';
-	import VSectionInfoGrid from './ShowVolunteer/VSectionInfoGrid.vue';
-	import VSectionInfoGridItem from './ShowVolunteer/VSectionInfoGridItem.vue';
-
-    // import BaseClickButton from '@/Pages/Common/UI/Buttons/BaseClickButton.vue';
-    import { useVolunteersStore } from '@/Stores/useVolunteer.store';
-
-
-    // import TheShowVolunteerCVModal from '@/Components/Modals/TheShowVolunteerCVModal.vue';
-
-    const volunteerStore = useVolunteersStore();
-
-	let props = defineProps({
-		user: Object,
-		volunteer: Object,
-		response: Object,
-		roles: Array,
-		errors: Object,
-        volunteerStatusDropdownOptions: {
-            type: Array,
-            default: () => []
-        }
-	});
-
-	const selectedVolunteerStatus = ref(props.volunteer.status);
-	const showVolunteerStatusChangeModal = ref( false );
-
-
-
-
-	// function updateNotes( notes ) {
-	// 	Inertia.post('/volunteers/' + props.volunteer.id + '/notes', {
-	// 		notes: notes
-	// 	}, {
-	// 		preserveState: true,
-	// 		replace: true
-	// 	});
-
-	// 	setTimeout(() => {
-	// 		form.notes = props.volunteer.notes;
-	// 	}, 1000);
-	// }
-	
-	function handleStatusChange( event ) {
-		showVolunteerStatusChangeModal.value = true;
-	}
-	
-	// function changeVolunteerStatus( form ) {
-	// 	Inertia.put('/volunteers/' + props.volunteer.id + '/status', {
-	// 		newStatusValue: selectedVolunteerStatus.value,
-	// 		statusChangeReason: form.reason,
-	// 		sendEmail: form.sendEmail
-	// 	}, { preserveState: true, replace: true });
-
-	// 	showVolunteerStatusChangeModal.value = false;
-	// }
-
-	const volunteerProfileImage = computed( () => {
-		if( props.volunteer.profile_image ) {
-			return props.volunteer.profile_image;
-		}
-
-		switch( props.volunteer.gender ) {
-			case 'male':
-				return '/images/profile_picture_male.png';
-			case 'female':
-				return '/images/profile_picture_female.png';
-			default:
-				return 'https://placehold.co/32x32';
-		}
-	})
-
-	// const calculatedVolunteerStatus = computed( () => {
-	// 	let status = "";
-
-	// 	status = props.volunteerStatusDropdownOptions.find( (item) => {
-	// 		if( item.id === props.volunteer.status ) {
-	// 			return item.name;
-	// 		}
-	// 	});
-
-	// 	return status?.name ?? 'Άγνωστο';
-	// })
-
-	const volunteerRole = computed( () => {
-		return props.volunteer.volunteer_role ? JSON.parse(props.volunteer.volunteer_role).name : '';
-	})
-
-	const hasCV = computed( () => {
-		return props.volunteer.cv && props.volunteer.cv.trim() !== '';
-	})
-
-	const hasStudies = computed( () => {
-		return props.volunteer.university || props.volunteer.studies || props.volunteer.otherstuddies;
-	})
-
-	const hasProfessionalExperience = computed( () => {
-		return props.volunteer.current_company || props.volunteer.current_role || props.volunteer.years_experience || props.volunteer.career_status;
-	})
-
-	const hasSocialMedia = computed( () => {
-		return props.volunteer.socialMedia.some(item => item.link && item.link.trim() !== '');
-	})
-
-	provide('volunteerStatusDropdownOptions', props.volunteerStatusDropdownOptions);
-</script>
-
-<style scoped>
-	.grid {
-		grid-template-columns: 1fr 2fr; /* Adjust these fractions according to your needs */
-	}
-
-	.label {
-		max-width: 80px;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis; 
-	}
-</style>
