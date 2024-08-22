@@ -95,7 +95,7 @@ const navigateToDashboard = () => {
                         </li>
 
                         <li>
-                            <Button type="button" label="Buy Now" class="m-0 mt-3 md:mt-0 md:ml-5"></Button>
+                            <Button type="button" label="Σύνδεση" class="m-0 mt-3 md:mt-0 md:ml-5"></Button>
                         </li>
                     </ul>
                 </div>

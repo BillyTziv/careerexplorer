@@ -4,9 +4,6 @@ export function useVolunteerStatusMapper(initialStatusMap) {
     const statusMap = ref(initialStatusMap);
 
     const getStatusById = (statusId) => {
-
-        console.log( statusId, statusMap.value )
-
         return statusMap.value.find(status => status.id === statusId);
     };
 
