@@ -4,13 +4,14 @@
     
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
+    import AppFormLayout from '@/Layouts/AppFormLayout.vue';
 
     /* Components */
     import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
     import BaseNumberInput from '@/Components/Base/BaseNumberInput.vue';
     import BaseEmailInput from '@/Components/Base/BaseEmailInput.vue';
     import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
-
+    
     let props = defineProps({
         user: Object,
         userData: Object,
@@ -53,21 +54,23 @@
 <template>
     <AppPageWrapper>
         <template #page-title>
-            <span v-if="!isEditMode">Δημιουργία Χρήστη</span>
-            <span v-else>Επεξεργασία Χρήστη</span>
+            <span v-if="!isEditMode">Δημιουργία</span>
+            <span v-else>Επεξεργασία </span>
+            Χρήστη
         </template>
 
         <template #page-actions> </template>
 
         <template #page-content>
             <form @submit.prevent="submitForm" autocomplete="off">
-                <div class="col-12 lg:col-12">
-                    <div class="grid formgrid p-fluid">
+                <AppFormLayout>
+                    <div class="p-fluid formgrid grid">
                         <BaseTextInput
                             v-model="form.firstname"
                             label="Όνομα"
                             placeholder="Όνομα.."
                             :errors="errors.firstname"
+                            class="col-12 md:col-6"
                         />
 
                         <BaseTextInput
@@ -75,51 +78,35 @@
                             label="Επίθετο"
                             placeholder="Επίθετο.."
                             :errors="errors.lastname"
+                            class="col-12 md:col-6"
                         />
+                    </div>
 
+                    <div class="p-fluid formgrid grid">
                         <BaseNumberInput
                             v-model="form.phone" 
                             label="Τηλέφωνο"
                             placeholder="Τηλέφωνο.."
                             :errors="errors.phone"
+                            class="col-12 md:col-6"
                         />
 
-                        <InputGroup>
-                            <InputGroupAddon>
-                                <i class="pi pi-email"></i>
-                            </InputGroupAddon>
-                            <BaseEmailInput
-                                v-model="form.email" 
-                                label="Email"
-                                placeholder="Email.."
-                                :errors="errors.email"
-                            />
-                        </InputGroup>
+                        <BaseEmailInput
+                            v-model="form.email" 
+                            label="Email"
+                            placeholder="Email.."
+                            :errors="errors.email"
+                            class="col-12 md:col-6"
+                        />
+                    </div>
 
-                        
-
-                        <IconField>
-                            <InputIcon class="pi pi-user" />
-                            <BaseTextInput
-                                v-model="form.username" 
-                                label="Όνομα Χρήστη"
-                                :errors="errors.username"
-                            />
-                        </IconField>
-
-                        <template v-if="!isEditMode">
-                            <BaseTextInput
-                                v-model="form.password" 
-                                label="Κωδικός Χρήστη"
-                                :errors="errors.password"
-                            />
-
-                            <BaseTextInput
-                                v-model="form.password_confirmation" 
-                                label="Επιβεβαίωση Κωδικού"
-                                :errors="errors.password"
-                            />
-                        </template>
+                    <div class="p-fluid formgrid grid">
+                        <BaseTextInput
+                            v-model="form.username" 
+                            label="Όνομα Χρήστη"
+                            :errors="errors.username"
+                            class="col-12 md:col-6"
+                        />
 
                         <BaseDropdownInput
                             :options="roleOptions" 
@@ -127,11 +114,27 @@
                             placeholder="Επιλέξτε ρόλο"
                             label="Ρόλος"
                             :errors="errors.role"
+                            class="col-12 md:col-6"
                         ></BaseDropdownInput>
-
                     </div>
-                </div>
 
+                    <template v-if="!isEditMode">
+                        <BaseTextInput
+                            v-model="form.password" 
+                            label="Κωδικός Χρήστη"
+                            :errors="errors.password"
+                        />
+
+                        <BaseTextInput
+                            v-model="form.password_confirmation" 
+                            label="Επιβεβαίωση Κωδικού"
+                            :errors="errors.password"
+                        />
+                    </template>
+
+
+                </AppFormLayout>
+                
                 <Button 
                     @click="saveUser"
                     label="Αποθήκευση Χρήστη" 

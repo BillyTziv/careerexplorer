@@ -126,8 +126,9 @@
         <template #page-actions> </template>
 
         <template #page-content>
-            <AppFormLayout>
-                <form @submit.prevent="submit" autocomplete="off">
+            <form @submit.prevent="submit" autocomplete="off">
+                <AppFormLayout>
+
                     <Accordion :activeIndex="0">
                         <AccordionTab header="Προσωπικά Στοιχεία">
                             <!-----------------------------------------------------------------------------------------
@@ -153,7 +154,7 @@
                                     :errors="errors['lastname']"
                                     class="col-12 md:col-6"
                                 />
-                          
+                        
                             
                                 <!-- Date of Birth -->
                                 <!-- <BaseCalendarInput
@@ -303,7 +304,7 @@
                             <!-- SOCIAL MEDIA -->
                             <!------------------------------------------------------------------------------------------>
                             <div class="p-fluid formgrid grid">
-                               <!-- Linkedin -->
+                            <!-- Linkedin -->
                                 <BaseTextInput
                                     v-model="volunteerForm.linkedin"
                                     label="Linkedin Profile URL"
@@ -368,7 +369,7 @@
                                     :errors="errors['work.career_status']"
                                 />
 
-                                 <!------------------------------------------------------------------------------------------>
+                                <!------------------------------------------------------------------------------------------>
                                 <!-- CV -->
                                 <!------------------------------------------------------------------------------------------>
                                 <label class="block mb-2 text-sm font-medium text-sm text-gray-500 dark:text-slate-300" for="file_input">
@@ -461,21 +462,22 @@
                             </div>
                         </AccordionTab>
                     </Accordion>
+                    
                     <BaseTextareaInput
                         v-model="volunteerForm.notes"
                         label="Σχόλια"
                         placeholder="Αφήστε ένα σχόλιο για τον εθελοντή"
                         :errors="errors.notes"
                     />
+                </AppFormLayout>
 
-                    <Button 
-                        @click="submit"
-                        label="Αποθήκευση"
-                        raised
-                        class="mb-2 mr-2"
-                    />
-                </form>
-            </AppFormLayout>
+                <Button 
+                    @click="submit"
+                    label="Αποθήκευση"
+                    raised
+                    class="mb-2 mr-2"
+                />
+            </form>
         </template>
     </AppPageWrapper>
 </template>

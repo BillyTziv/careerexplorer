@@ -30,14 +30,20 @@
             {{ label }}
         </label>
 
-        <InputText
-            label="email"
-            type="email" 
-            :placeholder="placeholder" 
-            :value="inputValue"
-            @input="updateValue"
-            class="w-full"
-        />
+        <InputGroup>
+            <InputGroupAddon>
+                <i class="pi pi-envelope"></i>
+            </InputGroupAddon>
+
+            <InputText
+                label="email"
+                type="email" 
+                :placeholder="placeholder" 
+                :value="inputValue"
+                @input="updateValue"
+                class="w-full"
+            />
+        </InputGroup>
 
         <InputError class="mt-2" :message="errors" />
     </div>

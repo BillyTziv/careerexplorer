@@ -40,14 +40,14 @@ class UserController extends Controller {
       
     
         // Apply search filter if provided.
-        // if ($searchTerm = request('search')) {
-        //     $searchTerm = '%' . $searchTerm . '%';
-        //     $query->where(function ($query) use ($searchTerm) {
-        //         $query->where('users.email', 'LIKE', $searchTerm)
-        //             ->orWhere('users.firstname', 'LIKE', $searchTerm)
-        //             ->orWhere('users.lastname', 'LIKE', $searchTerm);
-        //     });
-        // }
+        if ($searchTerm = request('search')) {
+            $searchTerm = '%' . $searchTerm . '%';
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('users.email', 'LIKE', $searchTerm)
+                    ->orWhere('users.firstname', 'LIKE', $searchTerm)
+                    ->orWhere('users.lastname', 'LIKE', $searchTerm);
+            });
+        }
     
         // Apply role filter if provided.
         // if ($roleId = request('role')) {

@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, watch, reactive } from 'vue';
     import { router } from '@inertiajs/vue3'
 
     /* Layouts */
@@ -12,6 +12,8 @@
         filters: Object,
         response: Object,
     });
+    import { useUsersTableStore } from '@/Stores/useUsersTable.store';
+    const usersTableStore = useUsersTableStore();
 
     const selectedUser = ref(null);
     const deleteUserDialog = ref(false);
@@ -39,6 +41,17 @@
     
         // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
     };
+    const filters = reactive( usersTableStore.getTableFilters );
+
+    /* Watch for changes in the filters */
+    watch(() => usersTableStore.getTableFilters, () => {
+        router.get('/users/', usersTableStore.getTableFilters, { preserveState: true, replace: true });
+    }, { deep: true });
+
+    // Export the Users table to CSV
+    const exportUsersAsCSV = () => {
+        usersTableRef.value.exportCSV();
+    };
 </script>
 
 <template>
@@ -48,6 +61,17 @@
         </template>
 
         <template #page-content>
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                </IconField>
+                
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportUsersAsCSV"></Button>
+                </div>
+            </div>
+
             <DataTable ref="usersTableRef" :value="users.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterUsersTable">
                 <template #empty>Δεν βρέθηκαν χρήστες.</template>
                 <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
