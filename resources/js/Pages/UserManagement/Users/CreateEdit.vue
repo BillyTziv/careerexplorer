@@ -118,21 +118,17 @@
                         ></BaseDropdownInput>
                     </div>
 
-                    <template v-if="!isEditMode">
-                        <BaseTextInput
-                            v-model="form.password" 
-                            label="Κωδικός Χρήστη"
-                            :errors="errors.password"
-                        />
+                    <BaseTextInput
+                        v-model="form.password" 
+                        label="Κωδικός Χρήστη"
+                        :errors="errors.password"
+                    />
 
-                        <BaseTextInput
-                            v-model="form.password_confirmation" 
-                            label="Επιβεβαίωση Κωδικού"
-                            :errors="errors.password"
-                        />
-                    </template>
-
-
+                    <BaseTextInput
+                        v-model="form.password_confirmation" 
+                        label="Επιβεβαίωση Κωδικού"
+                        :errors="errors.password"
+                    />
                 </AppFormLayout>
                 
                 <Button 
