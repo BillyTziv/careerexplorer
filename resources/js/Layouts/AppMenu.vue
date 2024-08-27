@@ -162,7 +162,7 @@
                     label: 'Οι Συνεδρίες μου',
                     icon: 'pi pi-fw pi-list',
                     permission: "view-all-session-requests",
-                    url: '/session-requests'
+                    to: '/session-requests'
                 },
                 {
                     label: 'Δημιουργία Συνεδρίας',
