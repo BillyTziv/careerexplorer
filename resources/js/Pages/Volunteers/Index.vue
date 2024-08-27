@@ -201,6 +201,9 @@
 
     const selectedVolunteers = ref();
 
+    const redirectToCreate = () => {    
+        router.visit(`/volunteers/create`);
+    };
 </script>
 
 <template>
@@ -274,6 +277,7 @@
                 
                 <div class="flex">
                     <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportVolunteersAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>
 
@@ -316,12 +320,11 @@
                     </template>
                 </Column>
 
-                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
                     <template #body="{ data }">
                         <span
                             class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
                             :style="{
-                               
                                 'background-color': adjustOpacity(data.status, 0.2),
                                 'color': determineTextColor(data.status),
                             }"

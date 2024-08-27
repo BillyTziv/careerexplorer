@@ -28,15 +28,23 @@ class PermissionController extends Controller
         }
 
         // Datatable filters parameter.
-        if( request('filters') ) {
-            // TODO ..
+        if( request('category') ) {
+            $query->where('entity', 'LIKE', '%'.request('category').'%');
         }
 
         // Get all non deleted users with their roles.
-        $permissions = $query->paginate(19);
+        $permissions = $query->get();
         return $permissions;
     }
 
+    private function getPermissionCategories() {
+        $categories = Permission::select('entity')
+            ->groupBy('entity')
+            ->get();
+
+        return $categories;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -45,9 +53,8 @@ class PermissionController extends Controller
     public function index()
     {
         return Inertia::render('UserManagement/Permissions/Index', [
-            'response' => [],
-            'search' => request('search') ? request('search') : '',
             'permissions' => self::getPermissions(),
+            'permissionCategories' => self::getPermissionCategories(),
         ]);
     }
 
@@ -190,6 +197,8 @@ class PermissionController extends Controller
                 'status' => 'error',
             ]);
         }
+        
+        DB::table('permission_role')->where('permission_id', $permissionId)->delete();
 
         Permission::where('id', $permissionId )->delete();
 

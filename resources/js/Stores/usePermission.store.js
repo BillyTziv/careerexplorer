@@ -11,8 +11,10 @@ export const usePermissionsStore = defineStore({
 		filters: {
 			search: '',
 			status: '',
-			page: 1
-		}
+			page: 1,
+			category: null
+		},
+		categoryDropdownOptions: []
 	}),
 	getters: {
 		getTableHeaders() {
@@ -20,9 +22,21 @@ export const usePermissionsStore = defineStore({
 		},
 		getTableFilters() {
 			return this.filters;
-		}
+		},
+		getCategoryDropdownOptions() {		
+			return this.categoryDropdownOptions.map(category => ({
+				id: category?.entity,
+				label: category?.entity?.toLowerCase()
+				.split('_')
+				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(' ')
+			}));
+		},
 	},
 	actions: {
+		setCategoryDropdownOptions( options ) {
+			this.categoryDropdownOptions = options;
+		},
 		setTableFilterByKey( key, value ) {
 			// Used to reset page if a filter is changed.
 			if( key !== 'page') {
@@ -38,6 +52,7 @@ export const usePermissionsStore = defineStore({
 			this.filters.search = '';
 			this.filters.status = '';
 			this.filters.page = 1;
+			this.filters.category = '';
 		}
 	},
 });

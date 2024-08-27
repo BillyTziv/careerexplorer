@@ -47,6 +47,10 @@
     watch(() => searchFilter.value, (searchTerm) => {
         searchRoles(searchTerm);
     });
+
+    const redirectToCreate = () => {    
+        router.visit(`/roles/create`);
+    };
 </script>
 
 <template>
@@ -56,13 +60,15 @@
         </template>
 
         <template #page-content>
-            <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
-                <div class="inline-flex align-items-center">
-                    <IconField iconPosition="left">
-                        <InputIcon class="pi pi-search" />
-                        <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
-                    </IconField>
-                    <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportCSV"></Button>
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                </IconField>
+
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportRolesAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>
 

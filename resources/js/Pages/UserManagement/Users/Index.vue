@@ -5,6 +5,9 @@
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
+    import { useUsersTableStore } from '@/Stores/useUsersTable.store';
+    const usersTableStore = useUsersTableStore();
+
     let props = defineProps({
         user: Object,
         users: Object, 
@@ -12,8 +15,6 @@
         filters: Object,
         response: Object,
     });
-    import { useUsersTableStore } from '@/Stores/useUsersTable.store';
-    const usersTableStore = useUsersTableStore();
 
     const selectedUser = ref(null);
     const deleteUserDialog = ref(false);
@@ -52,6 +53,10 @@
     const exportUsersAsCSV = () => {
         usersTableRef.value.exportCSV();
     };
+
+    const redirectToCreate = () => {    
+        router.visit(`/users/create`);
+    };
 </script>
 
 <template>
@@ -69,6 +74,7 @@
                 
                 <div class="flex">
                     <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportUsersAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>
 

@@ -102,12 +102,6 @@ class VolunteerController extends Controller {
 
     public function index() {
         return Inertia::render('Volunteers/Index', [
-            'response' => [],
-            // 'filters' => [
-            //     'search' => request('search') ? request('search') : '',
-            //     'role' => request('role') ? request('role') : '',
-            //     'status' => request('status') ? request('status') : ''
-            // ],
             'volunteers' => self::getVolunteers(),
             'volunteerRoleDropdownOptions' => self::getVolunteerRoles(),
             'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()

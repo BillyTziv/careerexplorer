@@ -30,32 +30,31 @@
         },
         {
             label: 'ΕΘΕΛΟΝΤΙΣΜΟΣ',
-            icon: 'pi pi-fw pi-list',
             items: [
                 {
                     label: 'Λίστα Εθελοντών',
-                    icon: 'pi pi-fw pi-list',
+                    icon: 'pi pi-fw pi-users',
                     permission: "view-all-volunteers",
                     to: '/volunteers'
                 },
                 {
-                    label: 'Καταστάσεις Εθελοντών',
-                    icon: 'pi pi-fw pi-list',
+                    label: 'Διαχείριση Καταστάσεων',
+                    icon: 'pi pi-fw pi-cog',
                     permission: "view-all-volunteer-statuses",
                     to: '/volunteer-statuses'
                 },
                 {
-                    label: 'Ρόλοι Εθελοντών',
-                    icon: 'pi pi-fw pi-list',
+                    label: 'Διαχείριση Ρόλων',
+                    icon: 'pi pi-fw pi-cog',
                     permission: "view-all-volunteer-roles",
                     to: '/volunteer-roles'
-                },
-                {
-                    label: 'Δημιουργία Εθελοντή',
-                    icon: 'pi pi-fw pi-plus',
-                    permission: "create-volunteer",
-                    to: '/volunteers/create'
                 }
+                // {
+                //     label: 'Δημιουργία Εθελοντή',
+                //     icon: 'pi pi-fw pi-plus',
+                //     permission: "create-volunteer",
+                //     to: '/volunteers/create'
+                // }
             ]
         },
         {

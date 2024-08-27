@@ -64,7 +64,17 @@
         </template>
 
         <template #page-content>
-            <Button label="Δημιουργία" icon="pi pi-plus" class="m-2" severity="primary" @click="redirectToCreate" />
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                </IconField>
+
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportRolesAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
+                </div>
+            </div>
 
             <DataTable ref="volunteerRoleTableRef" :value="volunteerRoles.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterVolunteerRoleTable">
                 <template #empty>Δεν βρέθηκαν ρόλοι.</template>
