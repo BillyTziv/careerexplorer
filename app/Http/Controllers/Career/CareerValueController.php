@@ -39,7 +39,7 @@ class CareerValueController extends Controller
 
     public function index()
     {
-        return Inertia::render('Values/Index', [
+        return Inertia::render('Careers/Values/Index', [
             'response' => [],
             'filters' => [
                 'search' => request('search') ? request('search') : '',
@@ -60,7 +60,7 @@ class CareerValueController extends Controller
     {
         $hollandCodes = RiasecCode::select('id', 'code as name', 'description')->get();
 
-        return Inertia::render('Values/CreateEdit', [
+        return Inertia::render('Careers/Values/CreateEdit', [
             'response' => [],
             'value' => null,
             'hollandCodes' => $hollandCodes
@@ -80,7 +80,7 @@ class CareerValueController extends Controller
 
         unset($value->riasecCodes);
 
-        return Inertia::render('Values/CreateEdit', [
+        return Inertia::render('Careers/Values/CreateEdit', [
             'response' => [],
             'value' => $value,
             'hollandCodes' => $hollandCodes

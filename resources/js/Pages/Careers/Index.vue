@@ -9,7 +9,7 @@
 
     let props = defineProps({
         career: Object,
-        careers: Object, 
+        careers: Array, 
         roleDropdownOptions: Array,
         filters: Object,
         response: Object,
@@ -170,7 +170,7 @@
                 </div>
             </div>
                     
-            <DataTable ref="careersTableRef" :value="careers.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filtercareersTable">
+            <DataTable ref="careersTableRef" :value="careers" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filtercareersTable">
                 <template #empty>Δεν βρέθηκαν επαγγέλματα.</template>
                 <Column field="name" header="Τίτλος" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
@@ -182,7 +182,7 @@
                 <Column field="holland_code" header="Holland Code" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Holland Code</span>
-                        {{ data.riasec_codes }}
+                        {{ data.riasecCodes }}
                     </template>
                 </Column>
 

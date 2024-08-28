@@ -107,22 +107,29 @@ class CareerController extends Controller
         }
 
         $query->with(['riasecCodes' => function($query) {
-            $query->pluck('career_riasec_code.riasec_code_id');
+            $query->select('symbol');
         }]);
 
         if( empty( Auth::user() ) ) {
-            $careers = $query->where('deleted', false)->where('status', 1)->paginate(19);
+            $careers = $query->where('deleted', false)->where('status', 1);
         }else {
-            $careers = $query->where('deleted', false)->orderby('status')->paginate(19);
+            $careers = $query->where('deleted', false)->orderby('status');
         }
 
-        return $careers;
+        $careerResult = $query->get();
+
+        // Transform the result to include only the symbol
+        $careerResult->each(function($careerValue) {
+            $symbolsArray = $careerValue->riasecCodes->pluck('symbol')->toArray();
+            $careerValue->riasecCodes = implode('', $symbolsArray);
+        });
+
+        return $careerResult;
     }
 
     public function index()
     { 
         return Inertia::render('Careers/Index', [
-            'response' => [],
             'filters' => [
                 'search' => request('search') ? request('search') : '',
             ],
@@ -331,7 +338,7 @@ class CareerController extends Controller
             'interestDropdownOptions' => Interest::all(),
             'skillDropdownOptions' => Skill::all(),
             'courseDropdownOptions' => Course::all(),
-            'universityDropdownOptions' => University::all()
+            //'universityDropdownOptions' => University::all()
         ]);
     }
 

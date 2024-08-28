@@ -61,13 +61,6 @@
     const isEditMode = computed(() => {
         return props.career.id > 0
     });
-    // function submitForm() {
-    //     const transformedForm = Object.fromEntries(
-    //         Object.entries(careerData).map(([key, value]) => [key, value.value])
-    //     );
-
-    //     router.post('/session-requests/', transformedForm);
-    // }
 
     const careerData = reactive({
         id: props.career.id ?? null,
@@ -79,10 +72,10 @@
         link: props.career.link ?? "",
         hollandCodes: props.career.hollandCodes ?? [],
         connections: {
-            skills: props.career.skills ?? [],
+            skills: props.career.skills.map((skill) => skill.id) ?? [],
             universities: props.career.universities ?? [],
-            interests: props.career.interests ?? [],
-            courses: props.career.courses ?? []
+            interests: props.career.interests.map((interest) => interest.id) ?? [],
+            courses: props.career.courses.map((course) => course.id) ?? []
         }
     });
 
@@ -119,7 +112,6 @@
         </template>
 
         <template #page-content>
-            {{ careerData }}
             <form @submit.prevent="submit" autocomplete="off">
                 <!-- Title -->
                 <BaseTextInput
@@ -160,20 +152,23 @@
                 </label>
 
                 <template v-for="(resp, index) in careerData.responsibilities" :key="index">
-                    <div class="flex items-center space-x-2">
+                    <div class="flex">
+                       
                         <Button
                             @click.prevent="removeResponsibility(index)"
                             icon="pi pi-times"
-                            rounded
+                            
+                           text
+                          
                         />
 
-                        <BaseTextInput
-                            v-model="resp.text"
-                            :label="'Αρμοδιότητα #' + index"
-                            accessKey="responsibility"
-                            :errors="errors.responsibility"
-                            class="flex-grow" 
-                        />
+                        <div class="row">
+                            <BaseTextInput
+                                v-model="resp.text"
+                                :errors="errors.responsibility"
+                                placeholder="Π.χ. Σχεδιάζει και αναπτύσσει λογισμικό"
+                            />
+                        </div>
                     </div>
                 </template>
 
