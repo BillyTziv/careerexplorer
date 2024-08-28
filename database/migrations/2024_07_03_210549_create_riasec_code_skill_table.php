@@ -13,23 +13,25 @@ class CreateRiasecCodeSkillTable extends Migration
      */
     public function up()
     {
-        Schema::create('riasec_code_skill', function (Blueprint $table) {
-            $table->unsignedBigInteger('skill_id');
-            $table->unsignedBigInteger('riasec_code_id');
-            $table->timestamps();
+        if (!Schema::hasTable('riasec_code_skill')) {
+            Schema::create('riasec_code_skill', function (Blueprint $table) {
+                $table->unsignedBigInteger('skill_id');
+                $table->unsignedBigInteger('riasec_code_id');
+                $table->timestamps();
 
-            $table->primary(['skill_id', 'riasec_code_id']);
+                $table->primary(['skill_id', 'riasec_code_id']);
 
-            $table->foreign('skill_id')
-                ->references('id')
-                ->on('skills')
-                ->onDelete('cascade');
+                $table->foreign('skill_id')
+                    ->references('id')
+                    ->on('skills')
+                    ->onDelete('cascade');
 
-            $table->foreign('riasec_code_id')
-                ->references('id')
-                ->on('riasec_codes')
-                ->onDelete('cascade');
-        });
+                $table->foreign('riasec_code_id')
+                    ->references('id')
+                    ->on('riasec_codes')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**

@@ -116,6 +116,14 @@
         }
     }
 
+    // Export the careers table to CSV
+    const exportCareersAsCSV = () => {
+        careersTableRef.value.exportCSV();
+    };
+
+    const redirectToCreate = () => {    
+        router.visit(`/careers/create`);
+    };
 </script>
 
 <template>
@@ -124,50 +132,67 @@
             Επαγγέλματα
         </template>
 
-        <template #page-actions>
-            <IconField iconPosition="left">
-                <InputIcon class="pi pi-search" />
-                <InputText type="text" v-model="test" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
-            </IconField>
-            <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportCSV"></Button>
-        </template>
-
         <template #page-content>
-                    <!-- <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
-                        <div class="text-900 text-xl font-semibold mb-3 md:mb-0">Χρηστες</div>
-                        <div class="inline-flex align-items-center">
-                            <IconField iconPosition="left">
-                                <InputIcon class="pi pi-search" />
-                                <InputText type="text" v-model="filtercareersTable.global.value" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
-                            </IconField>
-                            <Button icon="pi pi-upload" class="mx-3 export-target-button" rounded v-tooltip="'Export'" @click="exportCSV"></Button>
-                        </div>
-                    </div> -->
+            <!-- <div class="flex flex-column md:flex-row align-items-start md:align-items-start mb-3 w-full">
+                <BaseDropdownInput
+                    v-model="filters.role"
+                    placeholder="Όλοι οι Ρόλοι"
+                    :options="volunteerStore.getRoleDropdownOptions"
+                    class="mx-1"
+                />
 
-                    <DataTable ref="careersTableRef" :value="careers.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filtercareersTable">
-                        <template #empty>Δεν βρέθηκαν επαγγέλματα.</template>
-                        <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">Όνομα</span>
-                                {{ data.firstname }}
-                            </template>
-                        </Column>
+                <BaseDropdownInput
+                    v-model="filters.status"
+                    placeholder="Όλες οι Καταστάσεις"
+                    :options="volunteerStore.getStatusDropdownOptions"
+                    class="mx-1"
+                />
+            
+                <Button
+                    type="button"
+                    icon="pi pi-filter-slash"
+                    label="Καθαρισμός"
+                    outlined
+                    @click="clearFilters()"
+                    class="mx-1"
+                />
+            </div> -->
 
-                        <Column field="holland_code" header="Holland Code" sortable :headerStyle="{ minWidth: '12rem' }">
-                            <template #body="{ data }">
-                                <span class="p-column-title">HOLLAND CODE</span>
-                                {{ data.holland_code }}
-                            </template>
-                        </Column>
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                </IconField>
+                
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportCareersAsCSV"></Button>
+                    <Button label="Προσθήκη" type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
+                </div>
+            </div>
+                    
+            <DataTable ref="careersTableRef" :value="careers.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filtercareersTable">
+                <template #empty>Δεν βρέθηκαν επαγγέλματα.</template>
+                <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Όνομα</span>
+                        {{ data.title }}
+                    </template>
+                </Column>
 
-                        <Column headerStyle="min-width:10rem;">
-                            <template #body="slotProps">
-                                <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editCareer(slotProps.data)" />
-                                <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteCareer(slotProps.data)" />
-                            </template>
-                        </Column>
-                    </DataTable>
-           
+                <Column field="holland_code" header="Holland Code" sortable :headerStyle="{ minWidth: '12rem' }">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Holland Code</span>
+                        {{ data.riasec_codes }}
+                    </template>
+                </Column>
+
+                <Column headerStyle="min-width:10rem;">
+                    <template #body="slotProps">
+                        <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editCareer(slotProps.data)" />
+                        <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteCareer(slotProps.data)" />
+                    </template>
+                </Column>
+            </DataTable>
         </template>
     </AppPageWrapper>
 
@@ -175,7 +200,7 @@
         <div class="flex align-items-center justify-content-center">
             <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
             <span v-if="selectedCareer">
-                Είστε σίγουροι οτι θέλετε να διαγράψετε τον χρήστη <b>{{ selectedCareer.firstname }} {{ selectedCareer.lastname }}</b>?
+                Είστε σίγουροι οτι θέλετε να διαγράψετε το επάγγελμα <b>{{ selectedCareer.title }}</b>?
             </span
             >
         </div>

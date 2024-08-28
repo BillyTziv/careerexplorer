@@ -6,7 +6,8 @@
         modelValue:         { type: Boolean, default: false },
         label:              { type: String, default: '' },
         errors:             { type: String, default: '' },
-        required:           { type: Boolean, default: false }
+        required:           { type: Boolean, default: false },
+        fullRow:            { type: Boolean, default: false },
     });
 
     let emit = defineEmits([
@@ -25,7 +26,7 @@
 </script>
 
 <template>
-    <div class="field col-12">
+    <div :class="['field', { 'col-12': fullRow }]">
 
         <div class="flex flex-col justify-between">
             <InputSwitch

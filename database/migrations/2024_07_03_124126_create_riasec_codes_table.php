@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('riasec_codes', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('code')->unique();
-            $table->string('symbol');
-            $table->string('description');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('riasec_codes')) {
+            Schema::create('riasec_codes', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('code')->unique();
+                $table->string('symbol');
+                $table->string('description');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

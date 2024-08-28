@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-export const useUsersTableStore = defineStore({
-	id: 'usersTableStore',
+export const useSessionRequestStore = defineStore({
+	id: 'sessionRequests',
 	state: () => ({
 		tableHeaders: [
 			{ id: 1, label: 'ΟΝΟΜΑ', data: 'firstname', type: 'string', excerptLength: 15 },
@@ -20,8 +20,12 @@ export const useUsersTableStore = defineStore({
 			page: 1
 		},
 		dropdownOptions: {
-			status: [],
-			role: []
+			status: [
+				{ id: 1, name: 'Σε Αναμονή'},
+				{ id: 2, name: 'Σε Επεξεργασία'},
+				{ id: 3, name: 'Απορρίφθηκε'},
+				{ id: 4, name: 'Ολοκληρωμένη'},
+			]
 		}
 	}),
 	getters: {
@@ -37,22 +41,9 @@ export const useUsersTableStore = defineStore({
 				label: status.name,
 			}));
 		},
-		getRoleDropdownOptions() {
-			return this.dropdownOptions.role.map(role => ({
-				id: role.id,
-				label: role.name,
-			}));
-		}
 	},
 	actions: {
-		setRoleDropdownOptions( roles ) {
-			this.dropdownOptions.role = roles;
-		},
-		setStatusDropdownOptions( statuses ) {
-			this.dropdownOptions.status = statuses;
-		},
 		setTableFilterByKey( key, value ) {
-			// Used to reset page if a filter is changed.
 			if( key !== 'page') {
 				this.filters.page = 1;
 			}
@@ -62,35 +53,11 @@ export const useUsersTableStore = defineStore({
 		setTableFilters( filters ) {
 			this.filters = filters;
 		},
-		async fetchStatusOptions() {
-			try {
-			  const response = await axios.get('/api/v1/volunteer-statuses');
-			  this.statusOptions = response.data;
-			} catch (error) {
-			  console.error('Failed to fetch status:', error);
-			}
-		},
 		resetTableFilters() {
 			this.filters.search = '';
 			this.filters.status = null;
 			this.filters.role = null;
 			this.filters.page = 1;
-		},
-		async fetchStatusOptions() {
-			try {
-				const response = await axios.get('/api/status-options');
-				this.dropdownOptions.status = response.data;
-			} catch (error) {
-				console.error(error);
-			}
-		},
-		async fetchRoleOptions() {
-			try {
-				const response = await axios.get('/api/role-options');
-				this.dropdownOptions.role = response.data;
-			} catch (error) {
-				console.error(error);
-			}
 		}
 	},
 });

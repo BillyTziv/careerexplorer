@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('career_skill', function (Blueprint $table) {
-            $table->unsignedBigInteger('career_id');
-            $table->unsignedBigInteger('skill_id');
-            $table->timestamps();
+        if (!Schema::hasTable('career_skill')) {
+            Schema::create('career_skill', function (Blueprint $table) {
+                $table->unsignedBigInteger('career_id');
+                $table->unsignedBigInteger('skill_id');
+                $table->timestamps();
 
-            $table->foreign('career_id')->references('id')->on('careers')->onDelete('cascade');
-            $table->foreign('skill_id')->references('id')->on('skills')->onDelete('cascade');
+                $table->foreign('career_id')->references('id')->on('careers')->onDelete('cascade');
+                $table->foreign('skill_id')->references('id')->on('skills')->onDelete('cascade');
 
-            $table->primary(['career_id', 'skill_id']);
-        });
+                $table->primary(['career_id', 'skill_id']);
+            });
+        }
     }
 
     /**

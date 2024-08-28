@@ -58,7 +58,7 @@
             ]
         },
         {
-            label: 'ΜΑΘΗΜΑΤΑ',
+            label: 'ΑΚΑΔΗΜΙΑ',
             icon: 'pi pi-fw pi-list',
             items: [
                 {
@@ -84,56 +84,61 @@
         
         {
             label: 'ΚΑΡΙΕΡΑ',
-            icon: 'pi pi-fw pi-list',
             items: [
                 {
-                    label: 'Δημιουργία',
-                    icon: 'pi pi-fw pi-plus',
-                    items: [
-                        {
-                            label: 'Επάγγελμα',
-                            icon: 'pi pi-fw pi-plus',
-                            permission: "create-career",
-                            to: '/careers/create'
-                        },
-                        {
-                            label: 'Δεξιότητας',
-                            icon: 'pi pi-fw pi-list',
-                            permission: "create-career-skill",
-                            to: '/career-skills/create'
-                        },
-                        {
-                            label: 'Ενδιαφέροντος',
-                            icon: 'pi pi-fw pi-list',
-                            permission: "create-career-interest",
-                            to: '/career-interests/create'
-                        }
-                    ]
-                },
-                {
-                    label: 'Λίστα Επαγγελμάτων',
-                    icon: 'pi pi-fw pi-list',
+                    label: 'Επαγγέλματα',
+                    icon: 'pi pi-fw pi-briefcase',
                     permission: "view-all-careers",
                     to: '/careers'
                 },
                 {
-                    label: 'Λίστα Δεξιοτήτων',
-                    icon: 'pi pi-fw pi-list',
+                    label: 'Εργασιακές Αξίες',
+                    icon: 'pi pi-fw pi-bolt',
+                    permission: "view-all-career-values",
+                    to: '/career-values'
+                },
+                {
+                    label: 'Δεξιότητες',
+                    icon: 'pi pi-fw pi-star',
                     permission: "view-all-career-skills",
                     to: '/career-skills'
                 },
                 {
-                    label: 'Λίστα Ενδιαφερόντων',
-                    icon: 'pi pi-fw pi-list',
+                    label: 'Ενδιαφέροντα',
+                    icon: 'pi pi-fw pi-heart',
                     permission: "view-all-career-interests",
                     to: '/career-interests'
                 },
                 {
-                    label: 'Λίστα Holland Codes',
-                    icon: 'pi pi-fw pi-list',
+                    label: 'Holland Codes',
+                    icon: 'pi pi-fw pi-star',
                     permission: "view-all-career-riasec-codes",
                     to: '/career-riasec-codes'
                 },
+                // {
+                //     label: 'Δημιουργία',
+                //     icon: 'pi pi-fw pi-plus',
+                //     items: [
+                //         {
+                //             label: 'Επάγγελμα',
+                //             icon: 'pi pi-fw pi-plus',
+                //             permission: "create-career",
+                //             to: '/careers/create'
+                //         },
+                //         {
+                //             label: 'Δεξιότητας',
+                //             icon: 'pi pi-fw pi-list',
+                //             permission: "create-career-skill",
+                //             to: '/career-skills/create'
+                //         },
+                //         {
+                //             label: 'Ενδιαφέροντος',
+                //             icon: 'pi pi-fw pi-list',
+                //             permission: "create-career-interest",
+                //             to: '/career-interests/create'
+                //         }
+                //     ]
+                // },
             ]
         },
         {
@@ -159,10 +164,16 @@
             icon: 'pi pi-fw pi-download',
             items: [
                 {
-                    label: 'Οι Συνεδρίες μου',
+                    label: 'Αιτήσεις Συνεδριών',
                     icon: 'pi pi-fw pi-list',
                     permission: "view-all-session-requests",
                     to: '/session-requests'
+                },
+                {
+                    label: 'Οι Συνεδρίες μου',
+                    icon: 'pi pi-fw pi-calendar',
+                    permission: "view-my-session-requests",
+                    to: '/my-session-requests'
                 },
                 {
                     label: 'Δημιουργία Συνεδρίας',
@@ -641,5 +652,3 @@
 <template>
     <AppSubMenu :model="model" />
 </template>
-
-<style lang="scss" scoped></style>

@@ -51,6 +51,11 @@
     const redirectToCreate = () => {    
         router.visit(`/roles/create`);
     };
+
+    // Export the volunteers table to CSV
+    const exportTableDataAsCSV = () => {
+        rolesTableRef.value.exportCSV();
+    };
 </script>
 
 <template>
@@ -67,12 +72,12 @@
                 </IconField>
 
                 <div class="flex">
-                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportRolesAsCSV"></Button>
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportTableDataAsCSV"></Button>
                     <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>
 
-            <DataTable ref="salesTableRef" :value="roles.data" dataKey="id" paginator :rows="10" responsiveLayout="scroll" v-model:filters="filterRolesTable">
+            <DataTable ref="rolesTableRef" :value="roles.data" dataKey="id" paginator :rows="10" responsiveLayout="scroll" v-model:filters="filterRolesTable">
                 <template #empty>Δεν βρέθηκαν ρόλοι.</template>
                 <Column field="name" header="Όνομα Ρόλου" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
@@ -81,7 +86,7 @@
                     </template>
                 </Column>
 
-                <Column headerStyle="min-width:10rem;">
+                <Column header="Ενέργειες" headerStyle="min-width:10rem;">
                     <template #body="slotProps">
                         <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editRole(slotProps.data)" />
                         <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteRole(slotProps.data)" />

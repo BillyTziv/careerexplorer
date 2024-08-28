@@ -11,6 +11,10 @@
         router.post(`/logout/`);
     }
     
+    function navigateTo(route) {
+        router.visit(route);
+    }
+
     const user = reactive({
         firstname: '',
         lastname: '',
@@ -33,7 +37,7 @@
 
             <ul class="list-none m-0 p-0">
                 <li>
-                    <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
+                    <a @click="navigateTo('/profile')" class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
                         <span>
                             <i class="pi pi-user text-xl text-primary"></i>
                         </span>
@@ -54,17 +58,17 @@
                         </div>
                     </a>
                 </li> -->
-                <li>
+                <!-- <li>
                     <a class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
                         <span>
                             <i class="pi pi-cog text-xl text-primary"></i>
                         </span>
                         <div class="ml-3">
-                            <span class="mb-2 font-semibold">Ρυθμίσεις</span>
+                            <span class="mb-2 font-semibold">Ρυθμίσεις</span> -->
                             <!-- <p class="text-color-secondary m-0">Exercitation veniam</p> -->
-                        </div>
+                        <!-- </div>
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a @click="logout()" class="cursor-pointer flex surface-border mb-3 p-3 align-items-center border-1 surface-border border-round hover:surface-hover transition-colors transition-duration-150">
                         <span>

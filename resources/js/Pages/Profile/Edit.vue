@@ -1,46 +1,68 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import { Head } from '@inertiajs/vue3';
+    import { computed, } from 'vue';
+    import { useForm } from '@inertiajs/vue3';
+    
+    /* Layouts */
+    import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
+    import AppFormLayout from '@/Layouts/AppFormLayout.vue';
 
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+    /* Components */
+    import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
+    import BaseNumberInput from '@/Components/Base/BaseNumberInput.vue';
+    import BaseEmailInput from '@/Components/Base/BaseEmailInput.vue';
+    
+    let props = defineProps({
+        auth: Object,
+        userData: Object,
+        errors: Object,
+    });
 </script>
 
 <template>
-    <Head title="Profile" />
-
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>
+    <AppPageWrapper>
+        <template #page-title>
+            <span >Το Προφίλ μου</span>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
-                </div>
+        <template #page-content>
+            <div class="p-fluid formgrid grid">
+                <BaseTextInput
+                    v-model="auth.user.firstName"
+                    label="Όνομα"
+                    placeholder="Όνομα.."
+                    readonly="true"
+                    :errors="errors.firstname"
+                    class="col-12 md:col-6"
+                />
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdatePasswordForm class="max-w-xl" />
-                </div>
-
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <DeleteUserForm class="max-w-xl" />
-                </div>
+                <BaseTextInput
+                    v-model="auth.user.lastName" 
+                    label="Επίθετο"
+                    placeholder="Επίθετο.."
+                    readonly="true"
+                    :errors="errors.lastname"
+                    class="col-12 md:col-6"
+                />
             </div>
-        </div>
-    </AuthenticatedLayout>
+
+            <div class="p-fluid formgrid grid">
+                <BaseTextInput
+                    v-model="auth.user.role" 
+                    label="Ρόλος"
+                    readonly="true"
+                    :errors="errors.role"
+                    class="col-12 md:col-6"
+                />
+
+                <BaseEmailInput
+                    v-model="auth.user.email" 
+                    label="Email"
+                    placeholder="Email.."
+                    readonly="true"
+                    :errors="errors.email"
+                    class="col-12 md:col-6"
+                />
+            </div>
+        </template>
+    </AppPageWrapper>
 </template>

@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 /* Models */
-use App\Models\Interest;
+use App\Models\Career\Interest;
 use App\Models\Career\Skill;
 use App\Models\Career\RiasecCode;
-use App\Models\Course;
+use App\Models\Career\Course;
+use App\Models\Career\CareerResponsibility;
 
 class Career extends Authenticatable
 {

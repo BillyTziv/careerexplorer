@@ -31,17 +31,43 @@
         skillDropdownOptions: Array
     });
 
-    const currentTab = ref('tab_career');
-    const isEditMode = computed(() => {
-        return career.id > 0
+    const skillDropdownOptions = computed(() => {
+        return props.skillDropdownOptions.map((skill) => {
+            return {
+                label: skill.name,
+                id: skill.id
+            }
+        });
     });
-    function submitForm() {
-        const transformedForm = Object.fromEntries(
-            Object.entries(form).map(([key, value]) => [key, value.value])
-        );
 
-        router.post('/session-requests/', transformedForm);
-    }
+    const interestDropdownOptions = computed(() => {
+        return props.interestDropdownOptions.map((interest) => {
+            return {
+                label: interest.name,
+                id: interest.id
+            }
+        });
+    });
+
+    const courseDropdownOptions = computed(() => {
+        return props.courseDropdownOptions.map((course) => {
+            return {
+                label: course.title,
+                id: course.id
+            }
+        });
+    });
+
+    const isEditMode = computed(() => {
+        return props.career.id > 0
+    });
+    // function submitForm() {
+    //     const transformedForm = Object.fromEntries(
+    //         Object.entries(careerData).map(([key, value]) => [key, value.value])
+    //     );
+
+    //     router.post('/session-requests/', transformedForm);
+    // }
 
     const careerData = reactive({
         id: props.career.id ?? null,
@@ -61,22 +87,12 @@
     });
 
     function submit() {
+        console.log( careerData );
+
         if( careerData.id && careerData.id > 0 ) {
-            Inertia.put('/careers/'+ careerData.id, careerData);
+            router.put('/careers/'+ careerData.id, careerData);
         }else {
-            Inertia.post('/careers/', careerData);
-            careerData.id = null;
-            careerData.title = "";
-            careerData.keywords = "";
-            careerData.status = 1;
-            careerData.responsibilities = [];
-            careerData.description = "";
-            careerData.link = "";
-            careerData.hollandCodes = [];
-            careerData.connections.interests =  [];
-            careerData.connections.skills =  [];
-            careerData.connections.universities =  [];
-            careerData.connections.courses =  [];
+            router.post('/careers/', careerData);
         }
     }
 
@@ -96,136 +112,124 @@
 
 <template>
     <AppPageWrapper>
-        <template #page-header-title>
-            <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
-                <div class="text-900 text-xl font-semibold mb-3 md:mb-0">
-                    <span v-if="!isEditMode">Δημιουργία Χρήστη</span>
-                    <span v-if="isEditMode">Επεξεργασία Χρήστη</span>
-                </div>
-            </div>
+        <template #page-title>
+            <span v-if="!isEditMode">Δημιουργία</span>
+            <span v-if="isEditMode">Επεξεργασία</span>
+            Καριέρας
         </template>
 
-        <template #page-header-subtitle>
-
-        </template>
-
-        <template #page-header-actions>
-        
-        </template>
-
-        <template #page-header-disclaimer>
-
-        </template>
-        
         <template #page-content>
-            <form @submit.prevent="submitForm" autocomplete="off">
-                <div class="col-12 lg:col-10">
-                    <div class="grid formgrid p-fluid">
-                        <!-- Title -->
+            {{ careerData }}
+            <form @submit.prevent="submit" autocomplete="off">
+                <!-- Title -->
+                <BaseTextInput
+                    v-model="careerData.title"
+                    label="Τίτλος Επαγγέλματος / Θέσης Εργασίας"
+                    placeholder="Προγραμματιστής Λογισμικού"
+                    :errors="errors.title"
+                />
+
+                <!-- Related Keywords -->
+                <BaseTextInput
+                    v-model="careerData.keywords"
+                    label="Σχετικές λέξεις-κλειδιά"
+                    placeholder="Προγραμματιστής, Developer, Μηχανικός Λογισμικού"
+                    hint="Πως αλλιώς θα μπορούσε να αναζητήσει κανείς το επάγγελμα (συμπλήρωσε λέξεις χωρισμένες με κόμμα);"
+                    :errors="errors.keywords"
+                />
+
+                <!-- Description -->
+                <BaseTextareaInput
+                    v-model="careerData.description"
+                    label="Περιγραφή Επαγγέλματος / Θέσης Εργασίας"
+                    :rows="10"
+                    :errors="errors.description"
+                />
+
+                <!-- LINK -->
+                <BaseTextInput
+                    v-model="careerData.link"
+                    label="Σύνδεσμος προς FG"
+                    type="text"
+                    :errors="errors.keywords"
+                />
+
+
+                <label class="block mb-2 text-md ">
+                    Συμπλήρωσε μια λίστα (τυχαία σειρά) με όλες τις αρμοδιότητες του επαγγέλματος.
+                </label>
+
+                <template v-for="(resp, index) in careerData.responsibilities" :key="index">
+                    <div class="flex items-center space-x-2">
+                        <Button
+                            @click.prevent="removeResponsibility(index)"
+                            icon="pi pi-times"
+                            rounded
+                        />
+
                         <BaseTextInput
-                            v-model="careerData.title"
-                            label="Τίτλος Επαγγέλματος / Θέσης Εργασίας"
-                            :errors="errors.title"
+                            v-model="resp.text"
+                            :label="'Αρμοδιότητα #' + index"
+                            accessKey="responsibility"
+                            :errors="errors.responsibility"
+                            class="flex-grow" 
                         />
+                    </div>
+                </template>
 
-                        <!-- Related Keywords -->
-                        <BaseTextInput
-                            v-model="careerData.keywords"
-                            label="Σχετικές λέξεις-κλειδιά"
-                            type="text"
-                            hint="Πως αλλιώς θα μπορούσε να αναζητήσει κανείς το επάγγελμα (συμπλήρωσε λέξεις χωρισμένες με κόμμα);"
-                            :errors="errors.keywords"
-                        />
+                <!-- Career Responsibilities -->
+                <Button
+                    @click.prevent="addCareerResposibility"
+                    label="Προσθήκη Αρμοδιότητας"
+                    icon="pi pi-plus"
+                    class="mt-2"
+                    outlined
+                />
+        
 
-                        <!-- Description -->
-                        <BaseTextareaInput
-                            v-model="careerData.description"
-                            label="Περιγραφή Επαγγέλματος / Θέσης Εργασίας"
-                            :rows="10"
-                            :errors="errors.description"
-                        />
+                <!-- Δεξιότητες -->
+                <BaseMultiselectInput
+                    :options="skillDropdownOptions" 
+                    v-model="careerData.connections.skills" 
+                    label="Σχετικές Δεξιότητες"
+                    :errors="errors.role"
+                ></BaseMultiselectInput>
 
-                        <!-- LINK -->
-                        <BaseTextInput
-                            v-model="careerData.link"
-                            label="Σύνδεσμος προς FG"
-                            type="text"
-                            :errors="errors.keywords"
-                        />
+                <!-- Ενδιαφέροντα -->
+                <BaseMultiselectInput
+                    :options="interestDropdownOptions" 
+                    v-model="careerData.connections.interests" 
+                    label="Σχετικά Ενδιαφέροντα"
+                    :errors="errors.interests"
+                ></BaseMultiselectInput>
 
-                        <div class="relative">
-                            <div class="relative mt-5">
-                                <label class="block mb-2 text-md text-gray-300 dark:text-gray-100">
-                                    Συμπλήρωσε μια λίστα (τυχαία σειρά) με όλες τις αρμοδιότητες του επαγγέλματος.
-                                </label>
-                            </div>
+                <!-- Μαθήματα -->
+                <BaseMultiselectInput
+                    :options="courseDropdownOptions" 
+                    v-model="careerData.connections.courses" 
+                    label="Σχετικά Μαθήματα"
+                    :errors="errors.courses"
+                ></BaseMultiselectInput>
 
-                            <template v-for="(resp, index) in careerData.responsibilities" :key="index">
-                                <div class="flex items-center space-x-2">
-                                    <button @click.prevent="removeResponsibility(index)" class="inline-flex items-center mt-3 p-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 ">
-                                        <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"></path>
-                                        </svg>
-                                    </button>
+                <!-- Holland Codes -->
+                <label class="block mb-2 text-md ">
+                    Σχετικοί Holland Codes
+                </label>
 
-                                    <BaseTextInput
-                                        v-model="resp.text"
-                                        :label="'Αρμοδιότητα #' + index"
-                                        accessKey="responsibility"
-                                        :errors="errors.responsibility"
-                                        class="flex-grow" 
-                                    />
-                                </div>
-                            </template>
-
-                            <!-- Career Responsibilities -->
-                            <button
-                                @click.prevent="addCareerResposibility"
-                                class="mt-2 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150">
-                                ΠΡΟΣΘΗΚΗ
-                            </button>
-                        </div>    
-
-                        <!-- Δεξιότητες -->
-                        <BaseMultiselectInput
-                            :options="skillDropdownOptions" 
-                            v-model="careerData.connections.skills" 
-                            label="Δεξιότητες"
-                            :errors="errors.role"
-                        ></BaseMultiselectInput>
-
-                        <!-- Ενδιαφέροντα -->
-                        <BaseMultiselectInput
-                            :options="interestDropdownOptions" 
-                            v-model="careerData.connections.interests" 
-                            label="Ενδιαφέροντα"
-                            :errors="errors.interests"
-                        ></BaseMultiselectInput>
-
-                        <!-- Μαθήματα -->
-                        <BaseMultiselectInput
-                            :options="courseDropdownOptions" 
-                            v-model="careerData.connections.courses" 
-                            label="Μαθήματα"
-                            :errors="errors.courses"
-                        ></BaseMultiselectInput>
-
-                        <!-- Holland Codes -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            <template v-for="code in careerData.hollandCodes" :key="code.id">
-                                <BaseToggleSwitch 
-                                    v-model="code.value"
-                                    :label="code.code"
-                                    class="mt-1"
-                                />
-                            </template>
-                        </div>
+                <div class="formgrid grid">
+                    <div class="field col">
+                        <template v-for="code in careerData.hollandCodes" :key="code.id">
+                            <BaseToggleSwitch 
+                                v-model="code.value"
+                                :label="code.name"
+                                class="m-2"
+                            />
+                        </template>
                     </div>
                 </div>
                 
-
                 <Button
-                    @click="submitForm"
+                    @click="submit"
                     label="Αποθήκευση" 
                     raised 
                     class="mb-2 mr-2"

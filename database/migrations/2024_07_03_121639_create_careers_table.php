@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('careers', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('status')->default(0);
-            $table->string('link')->nullable();
-            $table->text('keywords')->nullable();
-            $table->integer('like')->default(0);
-            $table->text('description')->nullable();
-            $table->string('category')->default(0);
-            $table->boolean("deleted")->default(false);
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('careers')) {
+            Schema::create('careers', function (Blueprint $table) {
+                $table->id();
+                $table->string('title');
+                $table->string('status')->default(0);
+                $table->string('link')->nullable();
+                $table->text('keywords')->nullable();
+                $table->integer('like')->default(0);
+                $table->text('description')->nullable();
+                $table->string('category')->default(0);
+                $table->boolean("deleted")->default(false);
+                $table->rememberToken();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

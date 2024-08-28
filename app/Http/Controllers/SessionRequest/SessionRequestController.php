@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 /* Models */
 use App\Models\SessionRequest\SessionRequest;
 use App\Models\UserManagement\User;
-// use App\Models\Volunteer;
+use App\Models\Volunteer\Volunteer;
 
 /* Services */
 use App\Services\HookService;
@@ -28,20 +28,31 @@ class SessionRequestController extends Controller
     private function getAvailableSessionRequests( Request $request ) {
         $query = SessionRequest::query();
 
-        $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
-            ->select('session_requests.id', 'session_requests.status', 'session_requests.firstname', 'session_requests.created_at', 'users.id as assignee_id', 'users.firstname as assignee_firstname')    
-            ->where('session_requests.status', 1);
-            
-            if( request('search') && request('search') !== -1 ) {   
-                $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
-                $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
-                $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
-                $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
-            }
-            
-        $availableSR = $query->paginate(20);
+        if( request('status') ) {
+            $query->where('status', '=', request('status'));
+        }
 
-        return $availableSR;
+        if( request('role') ) {
+            $query->where('role', '=', request('role'));
+        }
+
+        if( request('search') && request('search') !== -1 ) {   
+            $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
+            $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
+            $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
+            $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
+        }
+        
+        $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
+            ->select(
+                'session_requests.*', 
+                'users.id as assignee_id', 
+                'users.firstname as assignee_firstname', 
+                'users.lastname as assignee_lastname'
+            )
+            ->orderBy('session_requests.status');
+
+        return $query->get();
     }
 
     private function getActiveSessionRequests( Request $request ) {
@@ -67,6 +78,45 @@ class SessionRequestController extends Controller
         return $activeSR;
     }
 
+    public function getMySessionRequests(Request $request)
+    {
+        $query = SessionRequest::query();
+
+        if( request('search') && request('search') !== -1 ) {   
+            $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
+            $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
+            $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
+            $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
+        }
+
+        $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
+            ->select(
+                'session_requests.id', 
+                'session_requests.status', 
+                'session_requests.firstname',
+                'session_requests.lastname',
+                'session_requests.email',
+                'session_requests.phone',
+                'session_requests.created_at', 
+                'users.id as assignee_id', 
+                'users.firstname as assignee_firstname',
+                'users.lastname as assignee_lastname',
+            )    
+            ->where('session_requests.status', 2)       // Active
+            ->orWhere('session_requests.status', 3)     // Rejected
+            ->orWhere('session_requests.status', 4)     // Completed
+            ->where('session_requests.assignee', auth()->id())
+            ->orderBy('session_requests.status');
+
+        return Inertia::render('SessionRequests/MySR', [
+            'filters' => [
+                'search' => request('search') ? request('search') : '',
+            ],
+            'sessions' => $query->get(),
+        ]);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -83,6 +133,9 @@ class SessionRequestController extends Controller
             // 'activeSR' => self::getActiveSessionRequests( $request ),
         ]);
     }
+
+
+    
 
     /**
      * Show the form for creating a new resource.
@@ -152,7 +205,8 @@ class SessionRequestController extends Controller
             $sessionRequest->lastname = $request->lastname;
             $sessionRequest->phone = $request->phone;
             $sessionRequest->email = $request->email;
-    
+            $sessionRequest->status = 1;
+
             $sessionRequest->save();
 
             DB::commit();
@@ -281,17 +335,32 @@ class SessionRequestController extends Controller
     }
 
     public function accept( $id ) {
+        $careerCoach = auth()->user();
+
+        // Find how many accepted session requests the carer coach has
+        $acceptedRequests = SessionRequest::where('assignee', $careerCoach->id)
+            ->where('status', 2)
+            ->count();
+        
+        // If accepted request is more than 5, return error
+        if( $acceptedRequests >= 5 ) {
+            return redirect()
+                ->route('session-requests.index', ['session_request' => $id])
+                ->with([
+                    'message' => 'Ο αριθμός των συνεδριών που έχετε αποδεχτεί έχει φτάσει το όριο των 5. Παρακαλούμε απορρίψτε κάποια από τις υπάρχουσες συνεδρίες σας.',
+                    'status' => 'error',
+                ]);
+        }
+
         $sessionRequest = SessionRequest::find( $id );
         $sessionRequest->status = 2;
         $sessionRequest->assignee = auth()->user()->id;
         $sessionRequest->save();
 
-        return redirect()
-            ->route('session-requests.show', ['session_request' => $id])
-            ->with([
-                'message' => 'Η συνεδρία επιβεβαιώθηκε με επιτυχία!',
-                'status' => 'success',
-            ]);
+        return back()->with([
+            'message' => 'Η αίτηση ανατέθηκε με επιτυχία!',
+            'status' => 'success',
+        ]);
     }
 
     public function decline( $id ) {

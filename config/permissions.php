@@ -49,9 +49,10 @@ return [
 
     /* SESSION REQUESTΣ */
     ['name' => 'View All Session Requests', 'code' => 'view-all-session-requests', 'entity' => 'session' ],
-    ['name' => 'View All Career Requests', 'code' => 'view-all-career-requests', 'entity' => 'session' ],
-    ['name' => 'View All Careers', 'code' => 'view-all-careers', 'entity' => 'session' ],
-
+    ['name' => 'View My Session Requests', 'code' => 'view-my-session-requests', 'entity' => 'session' ],
+    ['name' => 'Edit Session Request', 'code' => 'edit-session-request', 'entity' => 'session' ],
+    ['name' => 'Delete Session Request', 'code' => 'delete-session-request', 'entity' => 'session' ],
+    
     /* APPLICATIONS */
     ['name' => 'View All Applications', 'code' => 'view-all-applications', 'entity' => 'application' ],
     ['name' => 'View Application', 'code' => 'view-application', 'entity' => 'application' ],
@@ -84,6 +85,12 @@ return [
     ['name' => 'Create Career Value', 'code' => 'create-career-value', 'entity' => 'career' ],
     ['name' => 'Edit Career Value', 'code' => 'edit-career-value', 'entity' => 'career' ],
     ['name' => 'Delete Career Value', 'code' => 'delete-career-value', 'entity' => 'career' ],
+
+    /* CAREER RIASEC CODES */
+    ['name' => 'View All Career RIASEC Codes', 'code' => 'view-all-career-riasec-codes', 'entity' => 'career' ],
+    ['name' => 'Create Career RIASEC Code', 'code' => 'create-career-riasec-code', 'entity' => 'career' ],
+    ['name' => 'Edit Career RIASEC Code', 'code' => 'edit-career-riasec-code', 'entity' => 'career' ],
+    ['name' => 'Delete Career RIASEC Code', 'code' => 'delete-career-riasec-code', 'entity' => 'career' ],
 
     /* UNIVERSITIES */
     ['name' => 'View All Universities', 'code' => 'view-all-universities', 'entity' => 'career' ],

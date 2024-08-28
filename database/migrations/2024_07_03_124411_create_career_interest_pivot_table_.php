@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('career_interest', function (Blueprint $table) {
-            $table->unsignedBigInteger('career_id');
-            $table->unsignedBigInteger('interest_id');
-            $table->timestamps();
+        if (!Schema::hasTable('career_interest')) {
+            Schema::create('career_interest', function (Blueprint $table) {
+                $table->unsignedBigInteger('career_id');
+                $table->unsignedBigInteger('interest_id');
+                $table->timestamps();
 
-            $table->foreign('career_id')->references('id')->on('careers')->onDelete('cascade');
-            $table->foreign('interest_id')->references('id')->on('interests')->onDelete('cascade');
+                $table->foreign('career_id')->references('id')->on('careers')->onDelete('cascade');
+                $table->foreign('interest_id')->references('id')->on('interests')->onDelete('cascade');
 
-            $table->primary(['career_id', 'interest_id']);
-        });
+                $table->primary(['career_id', 'interest_id']);
+            });
+        }
     }
 
     /**

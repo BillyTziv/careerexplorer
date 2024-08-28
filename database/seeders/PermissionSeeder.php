@@ -13,7 +13,7 @@ use App\Models\UserManagement\Role;
 
 use Exception;
 
-class PermissionsSeeder extends Seeder
+class PermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.

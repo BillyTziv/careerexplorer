@@ -32,12 +32,8 @@ class CareerController extends Controller
 {
     private function syncSkills(Career $career, $skills)
     {
-        if (isset($skills)) {
-            $ids = array_map(function ($item) {
-                return $item['id'];
-            }, $skills);
-
-            $career->skills()->sync($ids);
+        if (isset( $skills )) {
+            $career->skills()->sync( $skills );
         } else {
             $career->skills()->detach();
         }
@@ -45,12 +41,8 @@ class CareerController extends Controller
 
     private function syncInterests(Career $career, $interests)
     {
-        if (isset($interests)) {
-            $ids = array_map(function ($item) {
-                return $item['id'];
-            }, $interests);
-
-            $career->interests()->sync($ids);
+        if (isset( $interests )) {
+            $career->interests()->sync( $interests );
         } else {
             $career->interests()->detach();
         }
@@ -58,12 +50,8 @@ class CareerController extends Controller
 
     private function syncCourses(Career $career, $courses)
     {
-        if (isset($courses)) {
-            $ids = array_map(function ($item) {
-                return $item['id'];
-            }, $courses);
-
-            $career->courses()->sync($ids);
+        if (isset( $courses )) {
+           $career->courses()->sync( $courses );
         } else {
             $career->courses()->detach();
         }

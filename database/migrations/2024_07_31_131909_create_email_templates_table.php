@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('email_templates', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('hook_id')->nullable();
-            $table->string('name');
-            $table->string('subject');
-            $table->text('body');
-            $table->text('placeholders')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('email_templates')) {
+            Schema::create('email_templates', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('hook_id')->nullable();
+                $table->string('name');
+                $table->string('subject');
+                $table->text('body');
+                $table->text('placeholders')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

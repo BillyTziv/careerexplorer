@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('volunteer_roles', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->boolean('deleted')->default(false);
-            $table->timestamps();
-            $table->text('description')->nullable();
-            $table->unsignedInteger('volunteers_needed')->default(0);
-            $table->boolean('is_default')->default(false);  
-        });
+        if (!Schema::hasTable('volunteer_roles')) {
+            Schema::create('volunteer_roles', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('name');
+                $table->boolean('deleted')->default(false);
+                $table->timestamps();
+                $table->text('description')->nullable();
+                $table->unsignedInteger('volunteers_needed')->default(0);
+                $table->boolean('is_default')->default(false);  
+            });
+        }
     }
 
     /**

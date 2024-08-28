@@ -4,6 +4,7 @@ namespace App\Models\SessionRequest;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\UserManagement\User;
 
 class SessionRequest extends Model
 {

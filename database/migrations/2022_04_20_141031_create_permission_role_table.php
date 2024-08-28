@@ -13,11 +13,13 @@ class CreatePermissionRoleTable extends Migration
      */
     public function up()
     {
-        Schema::create('permission_role', function (Blueprint $table) {
-            $table->foreignId('role_id')->constrained('roles');
-            $table->foreignId('permission_id')->constrained('permissions');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('permission_role')) {
+            Schema::create('permission_role', function (Blueprint $table) {
+                $table->foreignId('role_id')->constrained('roles');
+                $table->foreignId('permission_id')->constrained('permissions');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

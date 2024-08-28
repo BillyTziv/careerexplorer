@@ -13,6 +13,7 @@
         fieldType: { type: String, default: 'text' },
         placeholder: { type: String, default: '' },
         required: { type: Boolean, default: false },
+        readonly: { type: Boolean, default: false },
         errors: { type: String, default: "" }
     });
 
@@ -43,6 +44,7 @@
             :placeholder="placeholder" 
             :value="inputValue"
             :invalid="hasErrors"
+            :readonly="readonly"
             @input="updateValue"
             class="w-full"
         />

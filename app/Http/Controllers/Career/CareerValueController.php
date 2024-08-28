@@ -8,12 +8,13 @@ use Inertia\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\CareerValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Career\RiasecCode;
+use App\Models\Career\CareerValue;
 
 use stdClass;
+
 class CareerValueController extends Controller
 {
     private function getCareerValues() {
@@ -31,14 +32,14 @@ class CareerValueController extends Controller
             $query->pluck('career_value_riasec_code.riasec_code_id');
         }]);
 
-        $careerValues = $query->where('deleted', false)->paginate(15);
+        $careerValues = $query->where('deleted', false);
 
         return $careerValues;
     }
 
     public function index()
     {
-        return Inertia::render('CareerValues/Index', [
+        return Inertia::render('Values/Index', [
             'response' => [],
             'filters' => [
                 'search' => request('search') ? request('search') : '',
@@ -59,7 +60,7 @@ class CareerValueController extends Controller
     {
         $hollandCodes = RiasecCode::select('id', 'code as name', 'description')->get();
 
-        return Inertia::render('CareerValues/CreateEdit', [
+        return Inertia::render('Values/CreateEdit', [
             'response' => [],
             'value' => null,
             'hollandCodes' => $hollandCodes
@@ -79,7 +80,7 @@ class CareerValueController extends Controller
 
         unset($value->riasecCodes);
 
-        return Inertia::render('CareerValues/CreateEdit', [
+        return Inertia::render('Values/CreateEdit', [
             'response' => [],
             'value' => $value,
             'hollandCodes' => $hollandCodes
@@ -157,7 +158,7 @@ class CareerValueController extends Controller
     //     $career->status = 2;
     //     $career->save();
 
-    //     return Inertia::render('CareerValues/Index', [
+    //     return Inertia::render('Values/Index', [
     //         'response' => [
     //             'status' => 'success',
     //             'message' => 'Η αξία ενημερώθηκε με επιτυχία.'
