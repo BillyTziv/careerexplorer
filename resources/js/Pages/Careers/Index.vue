@@ -172,9 +172,9 @@
                     
             <DataTable ref="careersTableRef" :value="careers.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filtercareersTable">
                 <template #empty>Δεν βρέθηκαν επαγγέλματα.</template>
-                <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="name" header="Τίτλος" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
-                        <span class="p-column-title">Όνομα</span>
+                        <span class="p-column-title">Τίτλος</span>
                         {{ data.title }}
                     </template>
                 </Column>

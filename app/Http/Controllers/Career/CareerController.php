@@ -266,7 +266,7 @@ class CareerController extends Controller
         }
 
         return redirect()
-            ->route('careers.create2')
+            ->route('careers.create')
             ->with([
                 'message'=> 'Το επάγγελμα δημιουργήθηκε.',
                 'status' => 'success'
