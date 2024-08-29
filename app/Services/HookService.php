@@ -6,7 +6,7 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use App\Mail\DynamicEmailTemplate;
 use Illuminate\Support\Facades\Mail;
-use App\Models\EmailTemplate;
+use App\Models\EmailTemplate\EmailTemplate;
 use App\Services\EmailService;
 
 class HookService

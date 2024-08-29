@@ -16,7 +16,7 @@ use App\Models\Volunteer\Volunteer;
 use App\Models\Volunteer\VolunteerRole;
 use App\Models\Volunteer\VolunteerStatus;
 
-use App\Models\EmailTemplate;
+use App\Models\EmailTemplate\EmailTemplate;
 
 /* Services */
 use App\Services\EmailService;
