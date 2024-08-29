@@ -8,18 +8,18 @@
 
     /* Components */
     import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
-    import BaseMultiselectInput from '@/Components/Base/BaseMultiselectInput.vue';
     import BaseTextareaInput from '@/Components/Base/BaseTextareaInput.vue';
     import BaseInfoText from '@/Components/Base/BaseInfoText.vue';
 
     let props = defineProps({
         user: Object,
-        response: Object,
-        errors: Object,
-        interest: Object,
-        hollandCodes: {
-            type: Array,
-            default: () => []
+        emailTemplate: {
+            type: Object,
+            default: () => null
+        },
+        errors: {
+            type: Object,
+            default: () => ({}),
         }
     });
 
@@ -42,7 +42,7 @@
         }else {
             emailTemplateForm.post('/email-templates/', emailTemplateForm);
         }
-    }    
+    }
 </script>
 
 <template>
