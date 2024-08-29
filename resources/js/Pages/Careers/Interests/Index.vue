@@ -23,7 +23,10 @@
     const interestsTableRef        = ref( null );              // Used for exportCSV
     const filterInterestsTable     = ref( props.filters );     // Used for filtering the table
     
-    /* Component Methods */
+    const redirectToCreate = () => {    
+        router.visit(`/career-interests/create`);
+    };
+
 
     // Export the interest table to CSV
     const exportCSV = () => {
@@ -59,6 +62,18 @@
         </template>
 
         <template #page-content>
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                </IconField>
+                
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportCareerSkillsAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
+                </div>
+            </div>
+
             <DataTable ref="interestsTableRef" :value="interests.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterInterestsTable">
                 <template #empty>Δεν βρέθηκαν ενδιαφέροντα.</template>
                 

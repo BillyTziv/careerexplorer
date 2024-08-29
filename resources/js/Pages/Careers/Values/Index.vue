@@ -1,6 +1,6 @@
 <script setup>
     /* Core */
-    import { ref } from 'vue';
+    import { computed, ref, reactive, provide, watch, onMounted } from 'vue';
     import { router } from '@inertiajs/vue3'
 
     /* Layouts */
@@ -8,11 +8,13 @@
 
     /* Emits Actions */
 
-
     /* Component Properties */
     let props = defineProps({
         user: Object,
-        careerValues: Object, 
+        careerValues: {
+            type: Array,
+            default: ({}) => []
+        }, 
         filters: Object,
         response: Object,
     });
@@ -23,6 +25,10 @@
     const careerValuesTableRef        = ref( null );              // Used for exportCSV
     const filterCareerValuesTable     = ref( props.filters );     // Used for filtering the table
     
+    const redirectToCreate = () => {    
+        router.visit(`/career-values/create`);
+    };
+
     /* Component Methods */
 
     // Export the careerValues table to CSV
@@ -59,6 +65,19 @@
         </template>
 
         <template #page-content>
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                </IconField>
+                
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportCareerSkillsAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
+                </div>
+            </div>
+
+    
             <DataTable ref="careerValuesTableRef" :value="careerValues" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterCareerValuesTable">
                 <template #empty>Δεν βρέθηκαν εργασιακές αξίες.</template>
                 
@@ -86,7 +105,7 @@
         </template>
     </AppPageWrapper>
 
-    <Dialog v-model:visible="deleteCareerValueDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής" :modal="true">
+    <!-- <Dialog v-model:visible="deleteCareerValueDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής" :modal="true">
         <div class="flex align-items-center justify-content-center">
             <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
             <span v-if="selectedCareerValue">
@@ -98,6 +117,6 @@
             <Button label="No" icon="pi pi-times" text @click="deleteCareerValueDialog = false" />
             <Button label="Yes" icon="pi pi-check" text @click="deleteCareerValue" />
         </template>
-    </Dialog>
+    </Dialog> -->
 </template>
 

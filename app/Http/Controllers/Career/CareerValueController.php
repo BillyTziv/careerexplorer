@@ -34,13 +34,12 @@ class CareerValueController extends Controller
 
         $careerValues = $query->where('deleted', false);
 
-        return $careerValues;
+        return $careerValues->get();
     }
 
     public function index()
     {
         return Inertia::render('Careers/Values/Index', [
-            'response' => [],
             'filters' => [
                 'search' => request('search') ? request('search') : '',
                 'role' => request('role') ? request('role') : '',

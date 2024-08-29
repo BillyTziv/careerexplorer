@@ -15,29 +15,29 @@
         user: Object,
         response: Object,
         errors: Object,
-        skill: Object,
+        careerValue: Object,
         hollandCodes: {
             type: Array,
             default: () => []
         }
     });
 
-    const skillForm = useForm({
-        id: props.skill?.id ?? null,
-        name: props.skill?.name ?? null,
-        description: props.skill?.description ?? null,
-        hollandCodes: props.skill?.hollandCodes ?? []
+    const careerValueForm = useForm({
+        id: props.careerValue?.id ?? null,
+        name: props.careerValue?.name ?? null,
+        description: props.careerValue?.description ?? null,
+        hollandCodes: props.careerValue?.hollandCodes ?? []
     });
 
     const isEditMode = computed(() => {
-        return skillForm.id > 0
+        return careerValueForm.id > 0
     });
 
     function submit() {
-        if( skillForm.id && skillForm.id > 0 ) {
-            skillForm.put('/career-skills/'+ skillForm.id, skillForm);
+        if( careerValueForm.id && careerValueForm.id > 0 ) {
+            careerValueForm.put('/career-values/'+ careerValueForm.id, careerValueForm);
         }else {
-            skillForm.post('/career-skills/', skillForm);
+            careerValueForm.post('/career-values/', careerValueForm);
         }
     }    
 </script>
@@ -45,8 +45,9 @@
 <template>
     <AppPageWrapper>
         <template #page-title>
-            <span v-if="!isEditMode">Δημιουργία Δεξιότητας</span>
-            <span v-if="isEditMode">Επεξεργασία Δεξιότητας</span>
+            <span v-if="!isEditMode">Δημιουργία</span>
+            <span v-if="isEditMode">Επεξεργασία</span>
+            Εργασιακής Αξίας
         </template>
 
         <template #page-actions> </template>
@@ -55,22 +56,22 @@
             <form @submit.prevent="submit" autocomplete="off">
                 <AppFormLayout>
                     <BaseTextInput
-                        v-model="skillForm.name"
+                        v-model="careerValueForm.name"
                         label="Όνομα"
-                        placeholder="Όνομα δεξιότητας.."
+                        placeholder="Όνομα εργασιακής αξίας.."
                         :required=true
                         :errors="errors['name']"
                     />
 
                     <BaseTextareaInput
-                        v-model="skillForm.description"
+                        v-model="careerValueForm.description"
                         label="Περιγραφή"
-                        placeholder="Περιέγραψε τη δεξιότητα.."
+                        placeholder="Περιέγραψε την εργασιακής αξίας.."
                         :errors="errors.description"
                     />
 
                     <BaseMultiselectInput
-                        v-model="skillForm.hollandCodes"
+                        v-model="careerValueForm.hollandCodes"
                         :options="hollandCodes"
                         label="Επίλεξε τους κωδικούς Holland"
                         :required=true

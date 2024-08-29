@@ -32,7 +32,7 @@
     });
 
     const skillDropdownOptions = computed(() => {
-        return props.skillDropdownOptions.map((skill) => {
+        return props.skillDropdownOptions?.map((skill) => {
             return {
                 label: skill.name,
                 id: skill.id
@@ -41,7 +41,7 @@
     });
 
     const interestDropdownOptions = computed(() => {
-        return props.interestDropdownOptions.map((interest) => {
+        return props.interestDropdownOptions?.map((interest) => {
             return {
                 label: interest.name,
                 id: interest.id
@@ -50,7 +50,7 @@
     });
 
     const courseDropdownOptions = computed(() => {
-        return props.courseDropdownOptions.map((course) => {
+        return props.courseDropdownOptions?.map((course) => {
             return {
                 label: course.title,
                 id: course.id
@@ -72,10 +72,10 @@
         link: props.career.link ?? "",
         hollandCodes: props.career.hollandCodes ?? [],
         connections: {
-            skills: props.career.skills.map((skill) => skill.id) ?? [],
+            skills: props.career.skills?.map((skill) => skill.id) ?? [],
             universities: props.career.universities ?? [],
-            interests: props.career.interests.map((interest) => interest.id) ?? [],
-            courses: props.career.courses.map((course) => course.id) ?? []
+            interests: props.career.interests?.map((interest) => interest.id) ?? [],
+            courses: props.career.courses?.map((course) => course.id) ?? []
         }
     });
 
