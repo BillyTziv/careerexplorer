@@ -27,6 +27,16 @@
     const editEntity = ( course ) => {    
         router.visit(`/course-companies/${course.id}/edit`);
     };
+
+    // Export the courses table to CSV
+    const exportTableDataAsCSV = () => {
+        courseCompaniesTableRef.value.exportCSV();
+    };
+
+
+    const redirectToCreate = () => {    
+        router.visit(`/course-companies/create`);
+    };
 </script>
 
 <template>
@@ -36,6 +46,18 @@
         </template>
 
         <template #page-content>
+            <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
+                <IconField iconPosition="left">
+                    <!-- <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" /> -->
+                </IconField>
+                
+                <div class="flex">
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportTableDataAsCSV"></Button>
+                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
+                </div>
+            </div>
+
             <DataTable ref="courseCompaniesTableRef" :value="courseCompanies.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterCourseCompaniesTable">
                 <template #empty>Δεν βρέθηκαν φορείς εκπαίδευσης.</template>
                 

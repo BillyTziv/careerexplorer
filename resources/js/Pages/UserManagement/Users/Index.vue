@@ -20,11 +20,11 @@
     const deleteUserDialog = ref(false);
     const usersTableRef = ref(null);
     const filterUsersTable = ref(props.filters);
-    
-    const exportCSV = () => {
-        usersTableRef.value.exportCSV();
-    };
 
+    const redirectToCreate = () => {    
+        router.visit(`/users/create`);
+    };
+    
     const editUser = ( user ) => {    
         router.visit(`/users/${user.id}/edit`);
     };
@@ -36,6 +36,7 @@
 
     const deleteUser = () => {
         router.delete(`/users/${selectedUser.value.id}`)
+
         deleteUserDialog.value = false;
         selectedUser.value = {};
         // users.value = users.value.filter((val) => val.id !== user.value.id);
@@ -54,9 +55,7 @@
         usersTableRef.value.exportCSV();
     };
 
-    const redirectToCreate = () => {    
-        router.visit(`/users/create`);
-    };
+
 </script>
 
 <template>
@@ -69,7 +68,7 @@
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <InputText type="text" v-model="filters.search" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
                 
                 <div class="flex">
@@ -115,7 +114,7 @@
                     </template>
                 </Column>
 
-                <Column headerStyle="min-width:10rem;">
+                <Column header="Ενέργειες" headerStyle="min-width:10rem;">
                     <template #body="slotProps">
                         <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editUser(slotProps.data)" />
                         <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteUser(slotProps.data)" />
