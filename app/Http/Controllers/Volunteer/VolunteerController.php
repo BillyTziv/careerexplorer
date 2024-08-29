@@ -109,11 +109,6 @@ class VolunteerController extends Controller {
     }
 
     public function createPublicApplication() {
-        // return Inertia::render('Volunteers/Create', [
-        //     'volunteer' => new stdClass(),
-        //     'roles' => self::getVolunteerRoles(),
-        //     'assignees' => self::getAssignees(),
-        // ]);
         return Inertia::render('Volunteers/Create', [
             'submitRoute' => [
                 'url' => '/volunteers',
@@ -246,7 +241,7 @@ class VolunteerController extends Controller {
                     'type' => 'file',
                     'value' => '',
                     'accept' => 'application/pdf',
-                    'required' => false,
+                    'required' => true,
                 ],
                 'hasGivenConsent' => [
                     'label' => 'Συναινώ στη συλλογή του βιογραφικού σημειώματος μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.',
@@ -255,13 +250,6 @@ class VolunteerController extends Controller {
                     'required' => true,
                 ],
             ],
-        ]);
-    }
-
-    public function createTEDXApplication() {
-        return Inertia::render('Volunteers/TEDXCreate', [
-            'volunteer' => new stdClass(),
-            'roles' => self::getVolunteerRoles()
         ]);
     }
 
@@ -349,99 +337,14 @@ class VolunteerController extends Controller {
         ]);
     }
     
-   //public function storePublicApplication(Request $request) {
-
-        // $rules = [
-        //     'personalInfo.firstname' => 'required|string|max:255',
-        //     'personalInfo.lastname' => 'required|string|max:255',
-        //     'contactInfo.phone' => 'required|string|max:255|unique:volunteers,phone',
-        //     'contactInfo.email' => 'required|email|max:255|unique:volunteers,email',
-        //     'volunteering.role' => 'required|integer|exists:volunteer_roles,id',
-        //     'personality.description' => 'string',
-        //     'personality.expectations' => 'string',
-        //     'personality.interests' => 'string',
-        //     'personality.reason' => 'string',
-        //     'social.facebook' => 'nullable|string|max:255',
-        //     'social.instagram' => 'nullable|string|max:255',
-        //     'social.linkedin' => 'nullable|string|max:255',
-        //     'studies.university' => 'nullable|string|max:255',
-        //     'studies.department' => 'nullable|string|max:255',
-        //     'studies.otherstudies' => 'nullable|string|max:255'
-        // ];
-        
-        // $messages = [
-        //     'required' => 'Το πεδίο είναι υποχρεωτικό.',
-        //     'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
-        // ];
-        
-        // $validatedData = $request->validate($rules, $messages);
-            
-
-    //     // PHONE already exist.
-    //     $existingVolunteer = Volunteer::firstWhere('phone', $request->contactInfo['phone']);
-    //     if( $existingVolunteer ) {
-    //         return back()
-    //             ->withErrors([
-    //                 'phone' => 'Ο αριθμός τηλεφώνου υπάρχει ήδη.'
-    //             ]);
-    //     }
-
-    //     $existingVolunteer = Volunteer::firstWhere('email', $request->contactInfo['email']);
-    //     if( $existingVolunteer ) {
-    //         return back()
-    //             ->withErrors([
-    //                 'email' => 'Το email υπάρχει ήδη.'
-    //             ]);
-    //     }
-
-    //     $volunteer = new Volunteer();
-    
-    //     // Personal Information
-    //     $volunteer->firstname = $request->personalInfo['firstname'];
-    //     $volunteer->lastname = $request->personalInfo['lastname'];
-    //     $volunteer->cv = $request->personalInfo['cv'];
- 
-    //     // Contact Information
-    //     $volunteer->phone = $request->contactInfo['phone'];
-    //     $volunteer->email = $request->contactInfo['email'];
-
-    //     // Volunteering
-    //     $volunteer->role = $request->volunteering['role'];
-       
-    //     // Personality
-    //     $volunteer->description = $request->personality['description'];
-    //     $volunteer->expectations = $request->personality['expectations'];
-    //     $volunteer->interests = $request->personality['interests'];
-    //     $volunteer->reason = $request->personality['reason'];
-
-    //     // Social
-    //     $volunteer->facebook = $request->social['facebook'];
-    //     $volunteer->instagram = $request->social['instagram'];
-    //     $volunteer->linkedin = $request->social['linkedin'];
-
-    //     // Studies
-    //     $volunteer->department = $request->studies['department'];
-    //     $volunteer->otherstudies = $request->studies['otherstudies'];
-    //     $volunteer->university = $request->studies['university'];
-
-    //     // Find the default status
-    //     $defaultStatus = VolunteerStatus::where('is_default', true)->first();
-    //     $volunteer->status = $defaultStatus->id;
-        
-    //     $volunteer->deleted = false;
-    //     $volunteer->save();
-
-    //     return Inertia::render('Volunteers/ApplicationSuccess', [
-    //         'response' => [],
-    //     ]);
-    // }
     private function validateVolunteer( $request ) {
         $rules = [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'phone' => 'required|string|max:255|unique:volunteers,phone',
             'email' => 'required|email|max:255|unique:volunteers,email',
-            'role' => 'required|integer|exists:volunteer_roles,id'
+            'role' => 'required|integer|exists:volunteer_roles,id',
+            'cv' => 'required|string',
         ];
         
         $messages = [
