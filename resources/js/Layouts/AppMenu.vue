@@ -63,7 +63,7 @@
                 {
                     label: 'Λίστα Προτύπων',
                     icon: 'pi pi-fw pi-envelope',
-                    permission: "view-all-email-template",
+                    permission: "view-all-email-templates",
                     to: '/email-templates'
                 }
             ]
