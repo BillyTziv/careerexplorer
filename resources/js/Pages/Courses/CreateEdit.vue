@@ -52,8 +52,6 @@
             <span v-if="isEditMode">Επεξεργασία Μαθήματος</span>
         </template>
 
-        <template #page-actions> </template>
-
         <template #page-content>
             <form @submit.prevent="submit" autocomplete="off">
                 <AppFormLayout>

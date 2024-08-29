@@ -47,7 +47,7 @@ return [
     ['name' => 'Edit Volunteer Status', 'code' => 'edit-volunteer-status', 'entity' => 'volunteer' ],
     ['name' => 'Delete Volunteer Status', 'code' => 'delete-volunteer-status', 'entity' => 'volunteer' ],
 
-    /* SESSION REQUESTΣ */
+    /* SESSION REQUESTS */
     ['name' => 'View All Session Requests', 'code' => 'view-all-session-requests', 'entity' => 'session' ],
     ['name' => 'View My Session Requests', 'code' => 'view-my-session-requests', 'entity' => 'session' ],
     ['name' => 'Edit Session Request', 'code' => 'edit-session-request', 'entity' => 'session' ],
@@ -69,34 +69,40 @@ return [
     ['name' => 'Career Settings', 'code' => 'view-career-settings', 'entity' => 'career' ],
 
     /* CAREER INTERESTS */
-    ['name' => 'View All Career Interests', 'code' => 'view-all-career-interests', 'entity' => 'career' ],
-    ['name' => 'Create Career Interest', 'code' => 'create-career-interest', 'entity' => 'career' ],
-    ['name' => 'Edit Career Interest', 'code' => 'edit-career-interest', 'entity' => 'career' ],
-    ['name' => 'Delete Career Interest', 'code' => 'delete-career-interest', 'entity' => 'career' ],
+    ['name' => 'View All Career Interests', 'code' => 'view-all-career-interests', 'entity' => 'career_interest' ],
+    ['name' => 'Create Career Interest', 'code' => 'create-career-interest', 'entity' => 'career_interest' ],
+    ['name' => 'Edit Career Interest', 'code' => 'edit-career-interest', 'entity' => 'career_interest' ],
+    ['name' => 'Delete Career Interest', 'code' => 'delete-career-interest', 'entity' => 'career_interest' ],
+
+    /* EMAIL TEMPLATES */
+    ['name' => 'View All Email Templates', 'code' => 'view-all-email-templates', 'entity' => 'email_template' ],
+    ['name' => 'Create Email Template', 'code' => 'create-email-template', 'entity' => 'email_template' ],
+    ['name' => 'Edit Email Template', 'code' => 'edit-email-template', 'entity' => 'email_template' ],
+    ['name' => 'Delete Email Template', 'code' => 'delete-email-template', 'entity' => 'email_template' ],
 
     /* CAREER SKILLS */
-    ['name' => 'View All Career Skills', 'code' => 'view-all-career-skills', 'entity' => 'career' ],
-    ['name' => 'Create Career Skill', 'code' => 'create-career-skill', 'entity' => 'career' ],
-    ['name' => 'Edit Career Skill', 'code' => 'edit-career-skill', 'entity' => 'career' ],
-    ['name' => 'Delete Career Skill', 'code' => 'delete-career-skill', 'entity' => 'career' ],
+    ['name' => 'View All Career Skills', 'code' => 'view-all-career-skills', 'entity' => 'career_skill' ],
+    ['name' => 'Create Career Skill', 'code' => 'create-career-skill', 'entity' => 'career_skill' ],
+    ['name' => 'Edit Career Skill', 'code' => 'edit-career-skill', 'entity' => 'career_skill' ],
+    ['name' => 'Delete Career Skill', 'code' => 'delete-career-skill', 'entity' => 'career_skill' ],
 
     /* CAREER VALUES */
-    ['name' => 'View All Career Values', 'code' => 'view-all-career-values', 'entity' => 'career' ],
-    ['name' => 'Create Career Value', 'code' => 'create-career-value', 'entity' => 'career' ],
-    ['name' => 'Edit Career Value', 'code' => 'edit-career-value', 'entity' => 'career' ],
-    ['name' => 'Delete Career Value', 'code' => 'delete-career-value', 'entity' => 'career' ],
+    ['name' => 'View All Career Values', 'code' => 'view-all-career-values', 'entity' => 'career_value' ],
+    ['name' => 'Create Career Value', 'code' => 'create-career-value', 'entity' => 'career_value' ],
+    ['name' => 'Edit Career Value', 'code' => 'edit-career-value', 'entity' => 'career_value' ],
+    ['name' => 'Delete Career Value', 'code' => 'delete-career-value', 'entity' => 'career_value' ],
 
     /* CAREER RIASEC CODES */
-    ['name' => 'View All Career RIASEC Codes', 'code' => 'view-all-career-riasec-codes', 'entity' => 'career' ],
-    ['name' => 'Create Career RIASEC Code', 'code' => 'create-career-riasec-code', 'entity' => 'career' ],
-    ['name' => 'Edit Career RIASEC Code', 'code' => 'edit-career-riasec-code', 'entity' => 'career' ],
-    ['name' => 'Delete Career RIASEC Code', 'code' => 'delete-career-riasec-code', 'entity' => 'career' ],
+    ['name' => 'View All Career RIASEC Codes', 'code' => 'view-all-career-riasec-codes', 'entity' => 'riasec_code' ],
+    ['name' => 'Create Career RIASEC Code', 'code' => 'create-career-riasec-code', 'entity' => 'riasec_code' ],
+    ['name' => 'Edit Career RIASEC Code', 'code' => 'edit-career-riasec-code', 'entity' => 'riasec_code' ],
+    ['name' => 'Delete Career RIASEC Code', 'code' => 'delete-career-riasec-code', 'entity' => 'riasec_code' ],
 
     /* UNIVERSITIES */
-    ['name' => 'View All Universities', 'code' => 'view-all-universities', 'entity' => 'career' ],
-    ['name' => 'Create University', 'code' => 'create-university', 'entity' => 'career' ],
-    ['name' => 'Edit University', 'code' => 'edit-university', 'entity' => 'career' ],
-    ['name' => 'Delete University', 'code' => 'delete-university', 'entity' => 'career' ],
+    ['name' => 'View All Universities', 'code' => 'view-all-universities', 'entity' => 'university' ],
+    ['name' => 'Create University', 'code' => 'create-university', 'entity' => 'university' ],
+    ['name' => 'Edit University', 'code' => 'edit-university', 'entity' => 'university' ],
+    ['name' => 'Delete University', 'code' => 'delete-university', 'entity' => 'university' ],
 
     /* COURSES */
     ['name' => 'View All Courses', 'code' => 'view-all-courses', 'entity' => 'courses' ],
@@ -106,8 +112,8 @@ return [
     ['name' => 'Course Settings', 'code' => 'view-course-settings', 'entity' => 'course' ],
 
     /* COURSE COMPANIES */
-    ['name' => 'View All Course Companies', 'code' => 'view-all-course-companies', 'entity' => 'course' ],
-    ['name' => 'Create Course Company', 'code' => 'create-course-company', 'entity' => 'course' ],
-    ['name' => 'Edit Course Company', 'code' => 'edit-course-company', 'entity' => 'course' ],
-    ['name' => 'Delete Course Company', 'code' => 'delete-course-company', 'entity' => 'course' ],
+    ['name' => 'View All Course Companies', 'code' => 'view-all-course-companies', 'entity' => 'course_company' ],
+    ['name' => 'Create Course Company', 'code' => 'create-course-company', 'entity' => 'course_company' ],
+    ['name' => 'Edit Course Company', 'code' => 'edit-course-company', 'entity' => 'course_company' ],
+    ['name' => 'Delete Course Company', 'code' => 'delete-course-company', 'entity' => 'course_company' ],
 ];

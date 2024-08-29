@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 
-/* MOdels */
+/* Models */
 use App\Models\UserManagement\User;
 use App\Models\UserManagement\Role;
 use App\Models\UserManagement\Permission;

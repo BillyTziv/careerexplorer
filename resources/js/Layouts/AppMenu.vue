@@ -58,6 +58,17 @@
             ]
         },
         {
+            label: 'ΠΡΟΤΥΠΑ EMAIL',
+            items: [
+                {
+                    label: 'Λίστα Προτύπων',
+                    icon: 'pi pi-fw pi-envelope',
+                    permission: "view-all-email-template",
+                    to: '/email-templates'
+                }
+            ]
+        },
+        {
             label: 'ΑΚΑΔΗΜΙΑ',
             icon: 'pi pi-fw pi-list',
             items: [
@@ -182,7 +193,8 @@
                     to: '/session-requests/create'
                 }
             ]
-        }
+        },
+
     ]);
 
     const model_old = ref([

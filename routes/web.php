@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/user/permissions', [ProfileController::class, 'getUserPermissions']);
 
+    require __DIR__.'/authRoutes/emailTemplateRoutes.php';
+
     /* Volunteer Routes */
     require __DIR__.'/authRoutes/volunteerRoutes.php';
     require __DIR__.'/authRoutes/volunteerRoleRoutes.php';
