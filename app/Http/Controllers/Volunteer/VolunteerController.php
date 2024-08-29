@@ -726,11 +726,15 @@ class VolunteerController extends Controller {
         $vid = $volunteer->id;
 
         if( is_null($request->notes) ) {
-            return redirect()
-                ->route( 'users' )
-                ->with([
-                    'message'=> 'Oups, something went wrong. Volunteeer data was not saved.'
-                ]);
+            return redirect()->back()->with([
+                'message'=> 'Ουπς, κάτι πήγε στραβά. Οι σημειώσεις δεν αποθηκεύτηκαν.'
+            ]);;
+
+            // return redirect()
+            //     ->route( 'users' )
+            //     ->with([
+            //         'message'=> 'Oups, something went wrong. Volunteeer data was not saved.'
+            //     ]);
         }
 
         $volunteer->notes = $request->notes ?? '';
