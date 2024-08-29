@@ -23,6 +23,8 @@
 
     function submit() {
         emit('change', notes.value );
+        display.value = false;
+
     }
 
     const open = () => {
@@ -51,6 +53,6 @@
         />
     </Dialog>
 
-    <Button label="Άνοιγμα Σημειώσεων" class="m-1" icon="pi pi-external-link" style="width: auto" @click="open" />
+    <Button label="Επεξεργασία Σημειώσεων" class="m-1" icon="pi pi-pencil" style="width: auto" @click="open" />
 </template>
   

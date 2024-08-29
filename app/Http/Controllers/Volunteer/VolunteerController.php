@@ -750,13 +750,14 @@ class VolunteerController extends Controller {
             
         if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
 
-        return Inertia::render('Volunteers/Show', [
-            'response' => [],
-            'volunteer' => $volunteer,
-            'roles' => self::getUserRoles(),
-            'assignees' => self::getAssignees(),
-            'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()
-        ]);
+        return redirect()->back();
+
+        // return Inertia::render('Volunteers/Show', [
+        //     'volunteer' => $volunteer,
+        //     'roles' => self::getUserRoles(),
+        //     'assignees' => self::getAssignees(),
+        //     'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()
+        // ]);
     }
 
     // public function acceptApplication( Request $request ) {
