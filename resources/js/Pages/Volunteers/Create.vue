@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
     import { computed, reactive } from 'vue';
 
     // import { useForm } from '@inertiajs/vue3';
@@ -91,12 +91,7 @@
                     </template>
                 </AppFormLayout>
          
-                <!-- <div class="field-checkbox mb-3">
-                    <Checkbox id="checkOption1" name="option" value="true" v-model="form.hasGivenConsent.value" />
-                    <label for="checkOption1">
-                        Συναινώ στη συλλογή των δεδομένων μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.
-                    </label>
-                </div> -->
+          
 
                 <Button
                     @click="submitForm"
@@ -405,4 +400,4 @@
             />
         </form>
 </template>
- -->
+ --> -->

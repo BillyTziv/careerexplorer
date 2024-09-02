@@ -13,6 +13,13 @@ use Inertia\Response;
 use App\Models\UserManagement\User;
 use App\Models\UserManagement\Permission;
 
+use App\Models\Volunteer\Volunteer;
+use App\Models\CareerRequest\CareerRequest;
+use App\Models\Career\Career;
+use App\Models\SessionRequest\SessionRequest;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -51,7 +58,7 @@ class AuthenticatedSessionController extends Controller
                 'isSuperAdmin' => ( $loginUser->secured === 1 ) ? true : false,
                 'permissions' => $userPermissions,
                 'lastVersionSeen' => $loginUser->last_version_seen ?? null
-            ],
+            ]
         ]);
     }
 

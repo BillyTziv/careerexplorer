@@ -188,6 +188,17 @@
                 }
             ]
         },
+        {
+            label: 'ΑΝΑΛΥΣΗ ΟΡΓΑΝΙΣΜΟΥ',
+            items: [
+                {
+                    label: 'Στατιστικά',
+                    icon: 'pi pi-fw pi-chart-bar',
+                    permission: "view-statistics",
+                    to: '/statistics'
+                }
+            ]
+        }
 
     ]);
 

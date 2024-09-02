@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
     import { ref, reactive } from 'vue';
 
     // import { useForm } from '@inertiajs/vue3';
@@ -117,4 +117,4 @@
             </form>
         </template>
     </AppPublicPageWrapper>
-</template>
+</template> -->

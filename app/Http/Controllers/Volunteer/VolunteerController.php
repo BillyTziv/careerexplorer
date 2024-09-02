@@ -108,10 +108,17 @@ class VolunteerController extends Controller {
         ]);
     }
 
-    public function createPublicApplication() {
-        return Inertia::render('Volunteers/Create', [
+    public function getVolunteerApplicationFields() {
+        return Inertia::render('Applications/Create', [
+            'metaData' => [
+                'title' => 'Αίτηση Εθελοντικής Συμμετοχής',
+                'subtitle' => 'Συμπληρώστε την αίτηση για να γίνετε εθελοντής στον οργανισμό μας.',
+                'disclaimer' => 'Συμπληρώστε την αίτηση για να γίνετε εθελοντής στον οργανισμό μας.',
+                'consentMessage' => 'Δηλώνω ότι συναινώ στη συλλογή και επεξεργασία των προσωπικών μου δεδομένων για σκοπούς μελλοντικής επικοινωνίας από την FutureGeneration και τους εξουσιοδοτημένους συνεργάτες της, σύμφωνα με τις διατάξεις του Γενικού Κανονισμού Προστασίας Δεδομένων (GDPR).',
+                'formType' => 'volunteer',
+            ],
             'submitRoute' => [
-                'url' => '/volunteers',
+                'url' => '/applications/fg/submit',
                 'method' => 'post',
             ],
             'formFields' => [
@@ -154,6 +161,13 @@ class VolunteerController extends Controller {
                     'type' => 'tel',
                     'value' => '',
                     'placeholder' => 'Τηλέφωνο..',
+                    'required' => true,
+                ],
+                'cv' => [
+                    'label' => 'Βιογραφικό',
+                    'type' => 'file',
+                    'value' => '',
+                    'accept' => 'application/pdf',
                     'required' => true,
                 ],
                 'expectations' => [
@@ -235,99 +249,86 @@ class VolunteerController extends Controller {
                     'hint' => '',
                     'placeholder' => 'https://www.instagram.com/profile-id/',
                     'required' => false,
-                ],
-                'cv' => [
-                    'label' => 'Βιογραφικό',
-                    'type' => 'file',
-                    'value' => '',
-                    'accept' => 'application/pdf',
-                    'required' => true,
-                ],
-                'hasGivenConsent' => [
-                    'label' => 'Συναινώ στη συλλογή του βιογραφικού σημειώματος μου για μελλοντική επικοινωνία απο το FutureGeneration και τους συνεργάτες του.',
-                    'type' => 'checkbox',
-                    'value' => false,
-                    'required' => true,
-                ],
+                ]
             ],
         ]);
     }
 
-    public function apply(Request $request) {
-        $rules = [
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'phone' => 'required|string|max:255|unique:volunteers,phone',
-            'email' => 'required|email|max:255|unique:volunteers,email',
-            'role' => 'required|integer|exists:volunteer_roles,id'
-        ];
+    // public function apply(Request $request) {
+    //     $rules = [
+    //         'firstname' => 'required|string|max:255',
+    //         'lastname' => 'required|string|max:255',
+    //         'phone' => 'required|string|max:255|unique:volunteers,phone',
+    //         'email' => 'required|email|max:255|unique:volunteers,email',
+    //         'role' => 'required|integer|exists:volunteer_roles,id'
+    //     ];
         
-        $messages = [
-            'required' => 'Το πεδίο είναι υποχρεωτικό.',
-            'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
-        ];
+    //     $messages = [
+    //         'required' => 'Το πεδίο είναι υποχρεωτικό.',
+    //         'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
+    //     ];
         
-        $validatedData = $request->validate($rules, $messages);
+    //     $validatedData = $request->validate($rules, $messages);
 
 
-        // PHONE already exist.
-        $existingVolunteer = Volunteer::firstWhere('phone', $request->contactInfo['phone']);
-        if( $existingVolunteer ) {
-            return back()
-                ->withErrors([
-                    'phone' => 'Ο αριθμός τηλεφώνου υπάρχει ήδη.'
-                ]);
-        }
+    //     // PHONE already exist.
+    //     $existingVolunteer = Volunteer::firstWhere('phone', $request->contactInfo['phone']);
+    //     if( $existingVolunteer ) {
+    //         return back()
+    //             ->withErrors([
+    //                 'phone' => 'Ο αριθμός τηλεφώνου υπάρχει ήδη.'
+    //             ]);
+    //     }
 
-        $existingVolunteer = Volunteer::firstWhere('email', $request->contactInfo['email']);
-        if( $existingVolunteer ) {
-            return back()
-                ->withErrors([
-                    'email' => 'Το email υπάρχει ήδη.'
-                ]);
-        }
+    //     $existingVolunteer = Volunteer::firstWhere('email', $request->contactInfo['email']);
+    //     if( $existingVolunteer ) {
+    //         return back()
+    //             ->withErrors([
+    //                 'email' => 'Το email υπάρχει ήδη.'
+    //             ]);
+    //     }
 
-        $volunteer = new Volunteer();
+    //     $volunteer = new Volunteer();
     
-        // Personal Information
-        $volunteer->firstname = $request->firstname;
-        $volunteer->lastname = $request->lastname;
-        $volunteer->cv = $request->cv;
+    //     // Personal Information
+    //     $volunteer->firstname = $request->firstname;
+    //     $volunteer->lastname = $request->lastname;
+    //     $volunteer->cv = $request->cv;
  
-        // Contact Information
-        $volunteer->phone = $request->contactInfo['phone'];
-        $volunteer->email = $request->contactInfo['email'];
+    //     // Contact Information
+    //     $volunteer->phone = $request->contactInfo['phone'];
+    //     $volunteer->email = $request->contactInfo['email'];
 
-        // Volunteering
-        $volunteer->role = $request->volunteering['role'];
+    //     // Volunteering
+    //     $volunteer->role = $request->volunteering['role'];
        
-        // Personality
-        $volunteer->description = "-";
-        $volunteer->expectations = "-";
-        $volunteer->interests = "-";
-        $volunteer->reason = "-";
+    //     // Personality
+    //     $volunteer->description = "-";
+    //     $volunteer->expectations = "-";
+    //     $volunteer->interests = "-";
+    //     $volunteer->reason = "-";
 
-        // Social
-        $volunteer->facebook = "-";
-        $volunteer->instagram = "-";
-        $volunteer->linkedin = "-";
+    //     // Social
+    //     $volunteer->facebook = "-";
+    //     $volunteer->instagram = "-";
+    //     $volunteer->linkedin = "-";
 
-        // Studies
-        $volunteer->department = "-";
-        $volunteer->otherstudies = "-";
-        $volunteer->university = "-";
+    //     // Studies
+    //     $volunteer->department = "-";
+    //     $volunteer->otherstudies = "-";
+    //     $volunteer->university = "-";
     
-        // Find the default status
-        $defaultStatus = VolunteerStatus::where('is_default', true)->first();
-        $volunteer->status = $defaultStatus->id;
+    //     // Find the default status
+    //     $defaultStatus = VolunteerStatus::where('is_default', true)->first();
+    //     $volunteer->status = $defaultStatus->id;
         
-        $volunteer->deleted = false;
-        $volunteer->save();
+    //     $volunteer->deleted = false;
+    //     $volunteer->save();
 
-        return Inertia::render('Volunteers/ApplicationSuccessTEDX', [
-            'response' => [],
-        ]);
-    }
+    //     return Inertia::render('Volunteers/ApplicationSuccessTEDX', [
+    //         'response' => [],
+    //     ]);
+    // }
 
     public function create() {
         return Inertia::render('Volunteers/CreateEdit', [
@@ -388,7 +389,7 @@ class VolunteerController extends Controller {
         $volunteer->firstname = $request->firstname;
         $volunteer->lastname = $request->lastname;
         $volunteer->cv = $request->cv;
-        $volunteer->cv_consent = $request->hasGivenConsent;
+        $volunteer->cv_consent = true;
 
         // Contact Information
         $volunteer->phone = $request->phone;
@@ -564,7 +565,7 @@ class VolunteerController extends Controller {
         $volunteer->firstname = $request->firstname;
         $volunteer->lastname = $request->lastname;
         $volunteer->cv = $request->cv;
-        $volunteer->cv_consent = $request->hasGivenConsent;
+        $volunteer->cv_consent = true;
         $volunteer->city = $request->city ?? null;
         $volunteer->address = $request->address?? null;
         $volunteer->date_of_birth = $request->date_of_birth ?? null;

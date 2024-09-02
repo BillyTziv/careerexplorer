@@ -5,6 +5,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\Statistics\StatisticsController;
+
 // Route::get('/', function () {
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),
@@ -26,9 +28,16 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::redirect('/applications/fg/volunteer', '/volunteers/join');
+require __DIR__.'/publicRoutes.php';
+
+
 
 Route::middleware('auth')->group(function () {
+    // Route::get('/statistics', function () {
+    //     return Inertia::render('Statistics');
+    // })->name('statistics');
+    Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+
     /*Session Request Routes */
     require __DIR__.'/authRoutes/sessionRequestRoutes.php';
 

@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { computed, watch, ref, onBeforeUnmount } from 'vue';
 import { usePrimeVue } from 'primevue/config';
 import AppTopbar from './AppTopbar.vue';
@@ -13,6 +13,7 @@ const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 const outsideClickListener = ref(null);
 const sidebarRef = ref(null);
 const topbarRef = ref(null);
+alert("sadfsdf");
 
 watch(isSidebarActive, (newVal) => {
     if (newVal) {
@@ -83,7 +84,6 @@ const isOutsideClicked = (event) => {
 
         <div class="layout-content-wrapper">
             <AppTopbar ref="topbarRef" />
-            <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
             <div class="layout-content">
                 <inertia-view></inertia-view>
             </div>
@@ -95,4 +95,4 @@ const isOutsideClicked = (event) => {
         <Toast></Toast>
         <div class="layout-mask"></div>
     </div>
-</template>
+</template> -->

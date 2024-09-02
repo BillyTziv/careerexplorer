@@ -134,8 +134,51 @@ class SessionRequestController extends Controller
         ]);
     }
 
-
-    
+    public function getSessionRequestApplicationFields() {
+        return Inertia::render('Applications/Create', [
+            'metaData' => [
+                'title' => 'Αίτηση Δωρεάν Συνεδρίας Επαγγελματικού Προσανατολισμού',
+                'subtitle' => 'Συμπληρώστε όλα τα στοιχεία σας για να ολοκληρώσετε την αίτηση.',
+                'disclaimer' => 'Ο οργανισμός FutureGeneration, στην προσπάθειά του να ενισχύει συνεχώς τις νέες γενιές με τα εργαλεία και τη γνώση που χρειάζονται για να εξελιχθούν στην καριέρα τους, προσφέρει μια δωρεάν συνεδρία επαγγελματικού προσανατολισμού. Η διάρκεια της συνεδρίας είναι περίπου 30 λεπτά, δεν υπάρχει περιορισμός στην ηλικία και γίνεται ψηφιακά με βάση τη δική σου διαθεσιμότητα. Λόγω μεγάλου όγκου αιτήσεων, θα τηρηθεί σειρά προτεραιότητας. Για να την αποκτήσεις, απλά συμπληρώνεις τα στοιχεία σου και στο email που θα λάβεις, επιλέγεις την ημέρα και την ώρα που θέλεις να γίνει η ψηφιακή συνεδρία επαγγελματικού προσανατολισμού.',
+                'consentMessage' => 'Δηλώνω ότι συναινώ στη συλλογή και επεξεργασία των προσωπικών μου δεδομένων για σκοπούς μελλοντικής επικοινωνίας από την FutureGeneration και τους εξουσιοδοτημένους συνεργάτες της, σύμφωνα με τις διατάξεις του Γενικού Κανονισμού Προστασίας Δεδομένων (GDPR).',
+                'formType' => 'session-request',
+            ],
+            'submitRoute' => [
+                'url' => '/applications/fg/submit',
+                'method' => 'post',
+            ],
+            'formFields' => [
+                'firstname' => [
+                    'label' => 'Όνομα',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => 'Όνομα..',
+                    'required' => true,
+                ],
+                'lastname' => [
+                    'label' => 'Επώνυμο',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => 'Επώνυμο..',
+                    'required' => true,
+                ],
+                'email' => [
+                    'label' => 'Email',
+                    'type' => 'email',
+                    'value' => '',
+                    'placeholder' => 'Email..',
+                    'required' => true,
+                ],
+                'phone' => [
+                    'label' => 'Τηλέφωνο',
+                    'type' => 'tel',
+                    'value' => '',
+                    'placeholder' => 'Τηλέφωνο..',
+                    'required' => true,
+                ]
+            ],
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -144,45 +187,46 @@ class SessionRequestController extends Controller
      */
     public function create()
     {
-        return Inertia::render('SessionRequests/Create', [
-            'submitRoute' => [
-                'url' => '/session-requests',
-                'method' => 'post',
-            ],
-            'formFields' => [
-                'firstname' => [
-                    'label' => 'Όνομα',
-                    'type' => 'text',
-                    'value' => '',
-                    'placeholder' => 'πχ. Γιώργος',
-                    'required' => true,
-                ],
-                'lastname' => [
-                    'label' => 'Επώνυμο',
-                    'type' => 'text',
-                    'value' => '',
-                    'placeholder' => 'πχ. Παπαδόπουλος',
-                    'required' => true,
-                ],
-                'email' => [
-                    'label' => 'Email',
-                    'type' => 'email',
-                    'value' => '',
-                    'placeholder' => 'πχ. gpap@mail.com',
-                    'required' => true,
-                ],
-                'phone' => [
-                    'label' => 'Τηλέφωνο',
-                    'type' => 'tel',
-                    'value' => '',
-                    'placeholder' => 'πχ. 6940********',
-                    'required' => true,
-                ]
-            ],
-        ]);
+        // return Inertia::render('SessionRequests/Create', [
+        //     'submitRoute' => [
+        //         'url' => '/session-requests',
+        //         'method' => 'post',
+        //     ],
+        //     'formFields' => [
+        //         'firstname' => [
+        //             'label' => 'Όνομα',
+        //             'type' => 'text',
+        //             'value' => '',
+        //             'placeholder' => 'πχ. Γιώργος',
+        //             'required' => true,
+        //         ],
+        //         'lastname' => [
+        //             'label' => 'Επώνυμο',
+        //             'type' => 'text',
+        //             'value' => '',
+        //             'placeholder' => 'πχ. Παπαδόπουλος',
+        //             'required' => true,
+        //         ],
+        //         'email' => [
+        //             'label' => 'Email',
+        //             'type' => 'email',
+        //             'value' => '',
+        //             'placeholder' => 'πχ. gpap@mail.com',
+        //             'required' => true,
+        //         ],
+        //         'phone' => [
+        //             'label' => 'Τηλέφωνο',
+        //             'type' => 'tel',
+        //             'value' => '',
+        //             'placeholder' => 'πχ. 6940********',
+        //             'required' => true,
+        //         ]
+        //     ],
+        // ]);
     }
 
     public function store(Request $request): RedirectResponse {
+       
         $rules = [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -199,14 +243,14 @@ class SessionRequestController extends Controller
 
         try {
             DB::beginTransaction();
-
+            
             $sessionRequest = new SessionRequest();
-            $sessionRequest->firstname = $request->firstname;
-            $sessionRequest->lastname = $request->lastname;
-            $sessionRequest->phone = $request->phone;
-            $sessionRequest->email = $request->email;
+            $sessionRequest->firstname = $validatedData['firstname'];
+            $sessionRequest->lastname = $validatedData['lastname'];
+            $sessionRequest->phone = $validatedData['phone'];
+            $sessionRequest->email = $validatedData['email'];
             $sessionRequest->status = 1;
-
+           
             $sessionRequest->save();
 
             DB::commit();

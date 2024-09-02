@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch, ref, onBeforeUnmount } from 'vue';
+import { computed, watch, ref, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import { usePrimeVue } from 'primevue/config';
 import AppTopbar from './AppTopbar.vue';
 import AppSidebar from './AppSidebar.vue';
@@ -69,17 +69,27 @@ const unbindOutsideClickListener = () => {
         outsideClickListener.value = null;
     }
 };
-const isOutsideClicked = (event) => {
+const isOutsideClicked = (event) => {    
     const sidebarEl = sidebarRef?.value.$el;
     const topbarEl = topbarRef?.value.$el.querySelector('.topbar-menubutton');
 
     return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
 };
+
+// TODO - need fix.
+onMounted(() => {
+    nextTick(() => {
+        layoutState.overlayMenuActive.value = false;
+        layoutState.overlaySubmenuActive.value = false;
+        layoutState.staticMenuMobileActive.value = false;
+        layoutState.menuHoverActive.value = false;
+    });
+});
 </script>
 
 <template>
     <div :class="['layout-container', { ...containerClass }]">
-        <AppSidebar ref="sidebarRef" />
+        <AppSidebar id="xexe" ref="sidebarRef" />
 
         <div class="layout-content-wrapper">
             <AppTopbar ref="topbarRef" />

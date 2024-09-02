@@ -30,9 +30,9 @@ Route::post('/volunteers/sendInvitation', [VolunteerController::class, 'sendInvi
 
 Route::post('/volunteers/{volunteer}/notes', [VolunteerController::class, 'updateNotes']);
 
-Route::get('/volunteers/join', [VolunteerController::class, 'createPublicApplication'])
+// Route::get('/volunteers/join', [VolunteerController::class, 'createPublicApplication'])
 // ->middleware('can:create, App\Models\Volunteer')
-->name('volunteers.join');
+// ->name('volunteers.join');
     
 
 // --------------------------------------------------------------------------------
