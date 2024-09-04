@@ -249,7 +249,7 @@
                     </template>
                 </Column>
 
-                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
+                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '20rem' }">
                     <template #body="{ data }">
                         <span
                             class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
@@ -263,23 +263,23 @@
                     </template>
                 </Column>
 
-                <Column field="email" header="Email" sortable :headerStyle="{ minWidth: '12rem' }">
+                <!-- <Column field="email" header="Email" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Email</span>
                         {{ data.email }}
                     </template>
-                </Column>
+                </Column> -->
 
-                <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
+                <!-- <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Τηλέφωνο</span>
                         {{ data.phone }}
                     </template>
-                </Column>
+                </Column> -->
 
-                <Column field="created_at" header="Ημ/νια Έναρξης" sortable :headerStyle="{ minWidth: '12rem' }" :frozen="true">
+                <Column field="created_at" header="Ημ/νια Αίτησης" sortable :headerStyle="{ minWidth: '12rem' }" :frozen="true">
                     <template #body="{ data }">
-                        <span class="p-column-title">Ημ/νια Έναρξης</span>
+                        <span class="p-column-title">Ημ/νια Αίτησης</span>
                         {{ formatDate(data.created_at) }}
                     </template>
                 </Column>
