@@ -193,11 +193,13 @@ class VolunteerStatusController extends Controller {
         try {
             $validatedData = $request->validate($rules, $messages);
         } catch (\Illuminate\Validation\ValidationException $e) {
+            
             return redirect()->back()->withErrors([
                 'message', 'Ουπς, κάτι πήγε στραβά. Ο κατάσταση δεν υπάρχει.'
             ]);
         }
 
+   
         try {
             VolunteerStatus::findOrFail($request->id);
         } catch (ModelNotFoundException $e) {
@@ -209,16 +211,16 @@ class VolunteerStatusController extends Controller {
         try {
             DB::beginTransaction();
 
-            if( $request->isDefault ) {
-                VolunteerStatus::where('is_default', true)->update(['is_default' => false]);
-            }
+            // if( $request->isDefault ) {
+            //     VolunteerStatus::where('is_default', true)->update(['is_default' => false]);
+            // }
 
-            if( $request->isActive ) {
-                VolunteerStatus::where('is_active', true)->update(['is_active' => false]);
-            }
+            // if( $request->isActive ) {
+            //     VolunteerStatus::where('is_active', true)->update(['is_active' => false]);
+            // }
             
             $volunteerStatus = VolunteerStatus::find($request->id);
-
+          
             $volunteerStatus->update([
                 'name' => $request->name,
                 'description' => $request->description,
@@ -235,8 +237,8 @@ class VolunteerStatusController extends Controller {
                 'status' => 'success',
             ]);
         } catch (\Throwable $th) {
-            return back()->with([
-                'message' => 'Ουπς, κάτι πήγε στραβά. Παρακαλούμε ξαναπροσπαθήστε.',
+            return back()->withErrors([
+                'error' => $th->getMessage(),
                 'status' => 'error',
             ]);
         }
