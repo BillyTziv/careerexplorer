@@ -177,10 +177,23 @@ class VolunteerStatusController extends Controller {
     }
 
     public function update( Request $request ) {
-        $validationResult = $this->validateVolunteerStatus($request);
+        $rules = [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'hexColor' => 'required|string|max:7',
+            'isDefault' => 'required|boolean',
+            'isActive' => 'required|boolean',
+        ];
+        
+        $messages = [
+            'required' => 'Το πεδίο είναι υποχρεωτικό.',
+            'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
+        ];
+        
+        $validatedData = $request->validate($rules, $messages);
 
-        if ($validationResult['error']) {
-            return back()->withErrors($validationResult['message']);
+        if ($validatedData['error']) {
+            return back()->withErrors($validatedData['message']);
         }
 
         return redirect()->back()->withErrors([
