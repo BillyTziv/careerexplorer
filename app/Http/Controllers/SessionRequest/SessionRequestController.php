@@ -22,6 +22,7 @@ use App\Models\Volunteer\Volunteer;
 /* Services */
 use App\Services\HookService;
 use App\Services\EmailService;
+use GuzzleHttp\Client;
 
 class SessionRequestController extends Controller
 {
@@ -226,7 +227,6 @@ class SessionRequestController extends Controller
     }
 
     public function store(Request $request): RedirectResponse {
-       
         $rules = [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -241,6 +241,7 @@ class SessionRequestController extends Controller
 
         $validatedData = $request->validate($rules, $messages);
 
+
         try {
             DB::beginTransaction();
             
@@ -252,16 +253,17 @@ class SessionRequestController extends Controller
             $sessionRequest->status = 1;
            
             $sessionRequest->save();
-
+        
             DB::commit();
 
             // DISCORD
+            $client = new Client();
             $response = $client->request('POST', 'https://discord.com/api/webhooks/1279501507259273306/2-WdWBvvhws6PKxQMbg2y0CHpHJqtbtaiG3BzqZ3v8Ddzo4D3CR13v2qzYHMDHxYlWbq', [
                 'json' => [
-                    'content' => 'Ουλαλα! Κάποιος χρειάζεται βοήθεια! Έχουμε νεα αίτηση συνεδρίας επαγγελματικού προσανατολισμού!'
+                    'content' => 'Ο ' . $volunteer->firstname . ' ' . $volunteer->lastname . ' έκανε αίτηση για συνεδρία επαγγελματικού προσανατολισμού και χρειάζεται την βοήθεια μας! '
                 ]
             ]);
-            
+
             return redirect()->route( 'session-requests.submit-success' )->with([
                 'status' => 'success',
                 'message'=> 'Η αίτησή σας ολοκληρώθηκε.'

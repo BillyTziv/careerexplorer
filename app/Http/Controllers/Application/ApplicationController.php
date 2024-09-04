@@ -260,7 +260,7 @@ class ApplicationController extends Controller
                     'email' => $request['form']['email']['value'] ?? 'undefined email',
                 ];
 
-                $sessionRequestRequest = new Request( $sessionData );     
+                $sessionRequestRequest = new Request( (array) $sessionData );     
 
                 try {
                     $sessionRequestController = new SessionRequestController();
