@@ -221,14 +221,14 @@ class VolunteerStatusController extends Controller {
             
             $volunteerStatus = VolunteerStatus::find($request->id);
 
-            $volunteerStatus->name = $request->name;
-            $volunteerStatus->description = $request->description;
-            $volunteerStatus->hex_color = $request->hexColor;
-            $volunteerStatus->is_default = $request->isDefault;
-            $volunteerStatus->is_active = $request->isActive;
-            $volunteerStatus->email_template_id = $request->emailTemplateId ?? null;
-
-            $volunteerStatus->save();
+            $volunteerStatus->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'hex_color' => $request->hexColor,
+                'is_default' => $request->isDefault,
+                'is_active' => $request->isActive,
+                'email_template_id' => $request->emailTemplateId ?? null,
+            ]);
 
             DB::commit();
 
