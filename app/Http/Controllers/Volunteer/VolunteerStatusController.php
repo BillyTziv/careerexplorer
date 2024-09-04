@@ -50,7 +50,8 @@ class VolunteerStatusController extends Controller {
         //     $query->where('name', 'LIKE', '%'.request('search').'%');
         // }
 
-        $volunteerStatuses = $query->where('deleted', false)->paginate(15);
+        $volunteerStatuses = $query->where('deleted', false)->get();
+
         return $volunteerStatuses;
     }
 
@@ -92,7 +93,7 @@ class VolunteerStatusController extends Controller {
 
     private function validateVolunteerStatus( $request ) {
         $rules = [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:volunteer_statuses,name',
             'description' => 'required|string|max:255',
             'hexColor' => 'required|string|max:7',
             'isDefault' => 'required|boolean',
@@ -101,6 +102,7 @@ class VolunteerStatusController extends Controller {
         
         $messages = [
             'required' => 'Το πεδίο είναι υποχρεωτικό.',
+            'name.unique' => 'Το όνομα πρέπει να είναι μοναδικό.',
             'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
         ];
         
@@ -175,10 +177,20 @@ class VolunteerStatusController extends Controller {
     }
 
     public function update( Request $request ) {
+        $validationResult = $this->validateVolunteerStatus($request);
+
+        if ($validationResult['error']) {
+            return back()->withErrors($validationResult['message']);
+        }
+
+        return redirect()->back()->withErrors([
+            'message', 'Ουπς, κάτι πήγε στραβά. Ο κατάσταση δεν υπάρχει.'
+        ]);
+
         try {
             VolunteerStatus::findOrFail($request->id);
         } catch (ModelNotFoundException $e) {
-            return redirect()->back()->with(
+            return redirect()->back()->withErrors(
                 'error', 'Ουπς, κάτι πήγε στραβά. Ο κατάσταση δεν υπάρχει.'
             );
         }

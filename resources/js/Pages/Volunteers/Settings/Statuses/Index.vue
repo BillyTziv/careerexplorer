@@ -28,7 +28,6 @@
         volunteerRoleTableRef.value.exportCSV();
     };
 
-    // Navigate to the edit page of a course
     const editEntity = ( volunteerStatus ) => {    
         router.visit(`/volunteer-statuses/${volunteerStatus.id}/edit`);
     };
@@ -51,7 +50,15 @@
         router.visit(`/volunteer-statuses/create`);
     };
 
+    /* Datatable Size Change */
+    const size = ref({ label: 'Small', value: 'small' });
     
+    const sizeOptions = ref([
+        { label: 'Small', value: 'small' },
+        { label: 'Normal', value: 'null' },
+        { label: 'Large', value: 'large' }
+    ]);
+
 </script>
 
 <template>
@@ -73,8 +80,19 @@
                 </div>
             </div>
 
-            <DataTable ref="volunteerStatusTableRef" :value="volunteerStatuses.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterVolunteerStatusTable">
-                <template #empty>Δεν βρέθηκαν μαθήματα.</template>
+            <DataTable
+            ref="volunteerStatusTableRef" 
+            :value="volunteerStatuses" 
+            dataKey="id" 
+            paginator 
+            :rows="5" 
+            responsiveLayout="scroll" 
+            v-model:filters="filterVolunteerStatusTable"
+            :size="size.value"
+            stripedRows
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            >
+                <template #empty>Δεν βρέθηκαν καταστάσεις εθελοντών.</template>
                 
                 <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
@@ -83,7 +101,7 @@
                     </template>
                 </Column>
 
-                <Column field="hex_color" header="Χρώμα" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="hex_color" header="Χρώμα">
                     <template #body="{ data }">
                         <span class="p-column-title">Χρωμα</span>
                         <span class="flex items-center ">
@@ -92,21 +110,21 @@
                     </template>
                 </Column>
 
-                <Column field="name" header="Περιγραφή" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="name" header="Περιγραφή" :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Περιγραφή</span>
                         {{ data.description }}
                     </template>
                 </Column>
 
-                <Column field="is_default" header="Προεπιλογή" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="is_default" header="Προεπιλογή" :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Προεπιλογή</span>
                         {{ formatBoolean(data.is_default) }}
                     </template>
                 </Column>
 
-                <Column field="is_active" header="Ενεργή" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="is_active" header="Ενεργή" :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Ενεργή</span>
                         {{ formatBoolean(data.is_active) }}
@@ -119,6 +137,14 @@
                         <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDelete(slotProps.data)" />
                     </template>
                 </Column>
+
+                <template #paginatorstart>
+                    <!-- <Dropdown v-model="size" :options="sizeOptions" optionLabel="label" dataKey="label"  class="w-full md:w-15rem" @change="onSortChange($event)" /> -->
+                </template>
+
+                <template #paginatorend>
+                    Υπάρχουν {{ props.volunteerStatuses ? props.volunteerStatuses.length : 0 }} καταστάσεις εθελοντών.
+                </template>
             </DataTable>
         </template>
     </AppPageWrapper>

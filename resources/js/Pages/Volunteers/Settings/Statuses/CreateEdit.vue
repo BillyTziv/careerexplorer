@@ -33,7 +33,8 @@
     })
 
     const isEditMode = computed(() => { return volunteerStatusForm.id > 0 } );
-    
+    const submitButtonLabel = computed(() => { return isEditMode.value ? 'Ενημέρωση' : 'Δημιουργία' });
+
     function saveVolunteerStatus() {
         if( volunteerStatusForm.id > 0 ) {
             volunteerStatusForm.put('/volunteer-statuses/' + volunteerStatusForm.id, {
@@ -124,7 +125,7 @@
 
                 <Button 
                     @click="saveVolunteerStatus"
-                    label="Δημιουργία Ρόλου" 
+                    :label="submitButtonLabel" 
                     raised 
                     class="mb-2 mt-4"
                 />
