@@ -190,15 +190,13 @@ class VolunteerStatusController extends Controller {
             'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
         ];
         
-        $validatedData = $request->validate($rules, $messages);
-
-        if ($validatedData['error']) {
-            return back()->withErrors($validatedData['message']);
+        try {
+            $validatedData = $request->validate($rules, $messages);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors([
+                'message', 'Ουπς, κάτι πήγε στραβά. Ο κατάσταση δεν υπάρχει.'
+            ]);
         }
-
-        return redirect()->back()->withErrors([
-            'message', 'Ουπς, κάτι πήγε στραβά. Ο κατάσταση δεν υπάρχει.'
-        ]);
 
         try {
             VolunteerStatus::findOrFail($request->id);
