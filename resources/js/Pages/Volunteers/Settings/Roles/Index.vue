@@ -24,7 +24,8 @@
     const deleteDialog                 = ref( false );             // Used for delete confirmation
     const volunteerRoleTableRef        = ref( null );              // Used for exportCSV
     const filterVolunteerRoleTable     = ref( props.filters );     // Used for filtering the table
-    
+    const searchFilter                 = ref( '' );                // Used for searching the table
+
     /* Component Methods */
 
     // Export the volunteerRole table to CSV
@@ -32,6 +33,10 @@
         volunteerRoleTableRef.value.exportCSV();
     };
     const { getStatusName, getStatusDecoration, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
+
+    const exportRolesDatatableAsCSV = () => {
+        volunteerRoleTableRef.value.exportCSV();
+    };
 
     // Navigate to the edit page of a course
     const editEntity = ( volunteerRole ) => {    
@@ -66,12 +71,12 @@
         <template #page-content>
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
-                    <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <!-- <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" /> -->
                 </IconField>
 
                 <div class="flex">
-                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportRolesAsCSV"></Button>
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportRolesDatatableAsCSV"></Button>
                     <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>

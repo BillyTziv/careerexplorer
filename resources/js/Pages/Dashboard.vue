@@ -21,6 +21,10 @@
     onMounted(() => {
         userStore.setUser( props.user )
     });
+
+    function redirectTo(route) {
+        router.visit({ name: route });
+    }
 </script>
 
 <template>
@@ -44,10 +48,17 @@
                     </div>
                 </div>
                 <div class="col-12 md:col-6 xl:col-4">
-                    <Button @click="router.push({ name: 'applications.fg.volunteer' });" label="Αίτηση Εγγραφής Εθελοντή" text severity="primary" class="mb-2 mr-2" />
+                    <a href="/applications/fg/volunteer" class="text-primary hover:underline cursor-pointer font-medium">
+                        Αίτηση Εγγραφής Εθελοντή
+                    </a>
 
-                    <Button @click="router.push({ name: 'applications.fg.session-request' });" label="Αίτηση Συνεδρίας Ε.Π." text severity="primary" class="mb-2 mr-2" />
+                    <br /> <br />
 
+                    <a href="/applications/fg/session-request" class="text-primary hover:underline cursor-pointer font-medium">
+                        Αίτηση Συνεδρίας Ε.Π.
+                    </a>
+
+                 
                  
                 </div>
                 <!-- <div class="col-12 md:col-6 xl:col-4">

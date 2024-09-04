@@ -93,6 +93,8 @@ class VolunteerStatusController extends Controller {
     private function validateVolunteerStatus( $request ) {
         $rules = [
             'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'hexColor' => 'required|string|max:7',
             'isDefault' => 'required|boolean',
             'isActive' => 'required|boolean',
         ];
@@ -108,6 +110,7 @@ class VolunteerStatusController extends Controller {
     }
 
     public function store(Request $request) {
+
         $validationResult = $this->validateVolunteerStatus($request);
 
         if ($validationResult['error']) {
@@ -132,7 +135,7 @@ class VolunteerStatusController extends Controller {
             $volunteerStatus->hex_color = $request->hexColor;
             $volunteerStatus->is_default = $request->isDefault;
             $volunteerStatus->is_active = $request->isActive;
-            $volunteerStatus->email_template_id = $request->email_template_id ?? null;;
+            $volunteerStatus->email_template_id = $request->emailTemplateId ?? null;;
 
             $volunteerStatus->save();
 
@@ -198,7 +201,7 @@ class VolunteerStatusController extends Controller {
             $volunteerStatus->hex_color = $request->hexColor;
             $volunteerStatus->is_default = $request->isDefault;
             $volunteerStatus->is_active = $request->isActive;
-            $volunteerStatus->email_template_id = $request->emailTemplateId;
+            $volunteerStatus->email_template_id = $request->emailTemplateId ?? null;
 
             $volunteerStatus->save();
 

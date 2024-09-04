@@ -3,7 +3,8 @@
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
-
+    import AppFormLayout from '@/Layouts/AppFormLayout.vue';
+    
     import { useForm } from '@inertiajs/vue3';
 
     import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
@@ -57,7 +58,7 @@
 
         <template #page-content>
             <form @submit.prevent="saveVolunteerStatus" autocomplete="off">
-                <div class="formgrid grid">
+                <AppFormLayout>
 
                     <!-- Volunteer Status Name -->
                     <BaseTextInput
@@ -119,7 +120,7 @@
                     >
                         Η προεπιλεγμένη κατάσταση είναι πάντα μόνο μια, και ορίζεται αυτόματα σε κάθε εθελοντή, όταν ολοκληρώνεται μια αίτηση.
                     </BaseInfoText>
-                </div>
+                </AppFormLayout>
 
                 <Button 
                     @click="saveVolunteerStatus"

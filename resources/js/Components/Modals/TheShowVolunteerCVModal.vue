@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, computed } from 'vue';
 
     const props = defineProps({
         cv: {
@@ -18,6 +18,10 @@
     const close = () => {
         display.value = false;
     };
+
+    const hasCV = computed(() => {
+        return props.cv !== '';
+    });
 </script>
 
 <template>
@@ -31,6 +35,6 @@
         </template>
     </Dialog>
 
-    <Button label="Άνοιγμα Βιογραφικού" icon="pi pi-external-link" style="width: auto" @click="open" />
+    <Button v-if="hasCV" label="Προβολή CV" icon="pi pi-external-link" style="width: auto" @click="open" />
 </template>
   

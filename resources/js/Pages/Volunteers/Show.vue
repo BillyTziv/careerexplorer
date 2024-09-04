@@ -329,6 +329,7 @@
 					------------------------------------------------------------------------------------------>
 					<VolunteerSection
 						:sectionId="'cv'"
+						v-if="hasCV"
 					>
 						<template #header>
 							<VSectionHeading>Βιογραφικό</VSectionHeading>

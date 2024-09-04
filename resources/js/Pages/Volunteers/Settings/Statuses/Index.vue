@@ -24,11 +24,8 @@
     const volunteerStatusTableRef        = ref( null );              // Used for exportCSV
     const filterVolunteerStatusTable     = ref( props.filters );     // Used for filtering the table
     
-    /* Component Methods */
-
-    // Export the volunteerStatus table to CSV
-    const exportCSV = () => {
-        volunteerStatusTableRef.value.exportCSV();
+    const exportStatusesAsCSV = () => {
+        volunteerRoleTableRef.value.exportCSV();
     };
 
     // Navigate to the edit page of a course
@@ -53,6 +50,8 @@
     const redirectToCreate = () => {    
         router.visit(`/volunteer-statuses/create`);
     };
+
+    
 </script>
 
 <template>
@@ -64,12 +63,12 @@
         <template #page-content>
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
-                    <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <!-- <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" /> -->
                 </IconField>
 
                 <div class="flex">
-                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportRolesAsCSV"></Button>
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportStatusesAsCSV"></Button>
                     <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>
