@@ -429,7 +429,9 @@ class VolunteerController extends Controller {
         
         $client = new Client();
         $selectedRoleName = VolunteerRole::where('id', $volunteer->role)->first();
-        $response = $client->request('POST', 'https://discordapp.com/api/webhooks/1240673991606276136/9N53dEq4rebaC6hBe1880npotoGfEXNxXEngWJs2bdrLr-_SRWliYf0_1y6MWk30GQEe', [
+
+        // DISCORD
+        $response = $client->request('POST', 'https://discord.com/api/webhooks/1279501507259273306/2-WdWBvvhws6PKxQMbg2y0CHpHJqtbtaiG3BzqZ3v8Ddzo4D3CR13v2qzYHMDHxYlWbq', [
             'json' => [
                 'content' => 'Yuppi! Νεα αίτηση εθελοντή με όνομα ' . $volunteer->firstname . ' ' . $volunteer->lastname .  ' και ρόλο ' . $selectedRoleName->name . '!'
             ]

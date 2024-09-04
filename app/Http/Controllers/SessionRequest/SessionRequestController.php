@@ -255,6 +255,13 @@ class SessionRequestController extends Controller
 
             DB::commit();
 
+            // DISCORD
+            $response = $client->request('POST', 'https://discord.com/api/webhooks/1279501507259273306/2-WdWBvvhws6PKxQMbg2y0CHpHJqtbtaiG3BzqZ3v8Ddzo4D3CR13v2qzYHMDHxYlWbq', [
+                'json' => [
+                    'content' => 'Ουλαλα! Κάποιος χρειάζεται βοήθεια! Έχουμε νεα αίτηση συνεδρίας επαγγελματικού προσανατολισμού!'
+                ]
+            ]);
+            
             return redirect()->route( 'session-requests.submit-success' )->with([
                 'status' => 'success',
                 'message'=> 'Η αίτησή σας ολοκληρώθηκε.'
