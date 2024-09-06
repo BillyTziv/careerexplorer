@@ -85,7 +85,7 @@
             :value="volunteerStatuses" 
             dataKey="id" 
             paginator 
-            :rows="5" 
+            :rows="10" 
             responsiveLayout="scroll" 
             v-model:filters="filterVolunteerStatusTable"
             :size="size.value"

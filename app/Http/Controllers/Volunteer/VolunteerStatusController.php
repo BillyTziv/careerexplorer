@@ -126,9 +126,9 @@ class VolunteerStatusController extends Controller {
                 VolunteerStatus::where('is_default', true)->update(['is_default' => false]);
             }
 
-            if( $request->isActive ) {
-                VolunteerStatus::where('is_active', true)->update(['is_active' => false]);
-            }
+            // if( $request->isActive ) {
+            //     VolunteerStatus::where('is_active', true)->update(['is_active' => false]);
+            // }
 
             $volunteerStatus = new VolunteerStatus();
 
@@ -136,7 +136,7 @@ class VolunteerStatusController extends Controller {
             $volunteerStatus->description = $request->description;
             $volunteerStatus->hex_color = $request->hexColor;
             $volunteerStatus->is_default = $request->isDefault;
-            $volunteerStatus->is_active = $request->isActive;
+            $volunteerStatus->is_active = true;
             $volunteerStatus->email_template_id = $request->emailTemplateId ?? null;;
 
             $volunteerStatus->save();
@@ -226,7 +226,7 @@ class VolunteerStatusController extends Controller {
                 'description' => $request->description,
                 'hex_color' => $request->hexColor,
                 'is_default' => $request->isDefault,
-                'is_active' => $request->isActive,
+                'is_active' => true,
                 'email_template_id' => $request->emailTemplateId ?? null,
             ]);
 

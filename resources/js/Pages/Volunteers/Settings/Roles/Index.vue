@@ -81,7 +81,15 @@
                 </div>
             </div>
 
-            <DataTable ref="volunteerRoleTableRef" :value="volunteerRoles.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterVolunteerRoleTable">
+            <DataTable 
+                ref="volunteerRoleTableRef" 
+                :value="volunteerRoles.data" 
+                dataKey="id" 
+                paginator 
+                :rows="10" 
+                responsiveLayout="scroll" 
+                v-model:filters="filterVolunteerRoleTable"
+            >
                 <template #empty>Δεν βρέθηκαν ρόλοι.</template>
                 
                 <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">

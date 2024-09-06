@@ -46,7 +46,12 @@ class VolunteerRoleController extends Controller {
             ->leftJoin('volunteers', 'volunteer_roles.id', '=', 'volunteers.role')
             ->leftJoin('volunteer_statuses', 'volunteers.status', '=', 'volunteer_statuses.id')
             ->where('volunteer_roles.deleted', false)
-            ->select('volunteer_roles.id', 'volunteer_roles.name', 'volunteer_roles.description', 'volunteer_roles.volunteers_needed', DB::raw('COUNT(IF(volunteer_statuses.is_active = 1 AND volunteers.deleted = 0, 1, NULL)) as volunteer_count'))
+            ->select(
+                'volunteer_roles.id', 
+                'volunteer_roles.name', 
+                'volunteer_roles.description', 
+                'volunteer_roles.volunteers_needed', 
+            )
             ->groupBy('volunteer_roles.id', 'volunteer_roles.name', 'volunteer_roles.description', 'volunteer_roles.volunteers_needed');
 
         $volunteerRoles = $query->where('volunteer_roles.deleted', false)->paginate(10);

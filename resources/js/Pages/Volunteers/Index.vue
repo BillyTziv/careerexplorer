@@ -221,7 +221,7 @@
                 stripedRows
                 responsiveLayout="scroll"
                 paginator
-                :rows="5"
+                :rows="10"
                 :rowsPerPageOptions="[5, 10, 20, 50]"
             >
                 <template #empty>Δεν βρέθηκαν εθελοντές.</template>
