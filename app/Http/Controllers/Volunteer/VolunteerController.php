@@ -75,9 +75,10 @@ class VolunteerController extends Controller {
             ->select('volunteers.*', DB::raw("volunteer_roles.name as volunteer_role"))
             ->orderByRaw("CASE 
                 WHEN volunteers.status = 1 THEN 0
-                WHEN volunteers.status = 2 THEN 1
-                WHEN volunteers.status = 3 THEN 2
-                ELSE 3 END")
+                WHEN volunteers.status = 7 THEN 1
+                WHEN volunteers.status = 8 THEN 2
+                WHEN volunteers.status = 9 THEN 3
+                ELSE 4 END")
             ->orderByRaw("CASE WHEN volunteers.status = 1 THEN volunteers.created_at END DESC")
             ->orderByRaw("CASE WHEN volunteers.status != 1 THEN volunteers.created_at END ASC")
             ->get();

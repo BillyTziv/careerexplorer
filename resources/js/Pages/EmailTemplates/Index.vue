@@ -76,6 +76,8 @@
 
         const sucessDeleteMsg = `Το δοκιμαστικό email στάλθηκε επιτυχώς στον παραλήπτη ${testEmailReceiverEmail.value}`;
         notify('success', 'Ολοκληρώθηκε', sucessDeleteMsg);
+
+        sendTestEmailDialog.value = false;
     };
 
     const searchFilter = ref("");
