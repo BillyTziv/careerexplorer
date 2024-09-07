@@ -89,16 +89,26 @@ class VolunteerController extends Controller {
     }
 
     private function getVolunteerRecruiters() {
-        $assignedToIds = Volunteer::where('deleted', false)
-            ->pluck('assigned_to')
-            ->filter(function ($value) {
-                return !is_null($value);
-            })
-            ->toArray();
+        $recruiterRoleId = Role::where('name', 'Recruiter')->first()->id;
 
-        return User::whereIn('id', $assignedToIds)
-            ->select('id', 'firstname', 'lastname')
-            ->get();
+         // Get all users with the role 'Recruiter'
+        $recruiters = User::whereHas('roles', function ($query) use ($recruiterRoleId) {
+            $query->where('role_id', $recruiterRoleId);
+        })->select('id', 'firstname', 'lastname')->get();
+
+        return $recruiters;
+
+
+        // $assignedToIds = Volunteer::where('deleted', false)
+        //     ->pluck('assigned_to')
+        //     ->filter(function ($value) {
+        //         return !is_null($value);
+        //     })
+        //     ->toArray();
+
+        // return User::whereIn('id', $assignedToIds)
+        //     ->select('id', 'firstname', 'lastname')
+        //     ->get();
     }
 
     private function getAssignees() {
@@ -143,19 +153,10 @@ class VolunteerController extends Controller {
                 'method' => 'post',
             ],
             'formFields' => [
-                'role' => [
-                    'label' => 'Θέλω να ασχοληθώ εθελοντικά ως',
-                    'type' => 'select',
-                    'options' => VolunteerRole::get()->map(function($role) {
-                        return [
-                            'id' => $role->id,
-                            'label' => $role->name,
-                        ];
-                    }),
-                    'placeholder' => 'Επιλογή ρόλου',
-                    'value' => null,
-                    'required' => true,
-                ],
+                // 'personal-information-section' => [
+                //     'title' => 'Στοιχεία Επικοινωνίας',
+                //     'type' => 'section',
+                // ],
                 'firstname' => [
                     'label' => 'Όνομα',
                     'type' => 'text',
@@ -184,48 +185,67 @@ class VolunteerController extends Controller {
                     'placeholder' => 'Τηλέφωνο..',
                     'required' => true,
                 ],
-                'cv' => [
-                    'label' => 'Βιογραφικό',
-                    'type' => 'file',
+                // 'volunteering-section' => [
+                //     'title' => 'Εθελοντική Συμμετοχή',
+                //     'type' => 'section',
+                // ],
+                'role' => [
+                    'label' => 'Σε ποιον εθελοντικό ρόλο ενδιαφέρεσαι να ασχοληθείς;',
+                    'type' => 'select',
+                    'options' => VolunteerRole::where('deleted', false)->get()->map(function($role) {
+                        return [
+                            'id' => $role->id,
+                            'label' => $role->name,
+                        ];
+                    }),
+                    'placeholder' => 'Επιλογή ρόλου',
+                    'value' => null,
+                    'required' => true,
+                ],
+                'interests' => [
+                    'label' => 'Τι εμπειρίες ή δεξιότητες έχεις που σε καθιστούν κατάλληλο για αυτόν τον ρόλο;',
+                    'type' => 'textarea',
                     'value' => '',
-                    'accept' => 'application/pdf',
+                    'placeholder' => 'Περιέγραψε τυχόν εμπειρίες, δεξιότητες ή προσόντα.',
                     'required' => true,
                 ],
                 'expectations' => [
-                    'label' => 'Ποιες είναι οι προσδοκίες σου από τον οργανισμό;',
-                    'type' => 'expectations',
-                    'value' => '',
-                    'placeholder' => '',
-                    'required' => false,
-                ],
-                'expectations' => [
-                    'label' => 'Ποιες είναι οι προσδοκίες σου από τον οργανισμό;',
+                    'label' => 'Τι προσδοκίες έχεις από τον οργανισμό και τη συνεργασία μας;',
                     'type' => 'textarea',
                     'value' => '',
                     'placeholder' => '',
-                    'required' => false,
+                    'required' => true,
                 ],
-                'reason' => [
-                    'label' => 'Με τι θα ήθελες να ασχοληθείς;',
+                'hours-per-week' => [
+                    'label' => 'Πόσες ώρες την εβδομάδα μπορείς να αφιερώσεις στον οργανισμό;',
+                    'type' => 'number',
+                    'value' => '',
+                    'placeholder' => 'Εισάγετε ώρες..',
+                    'min' => 1,
+                    'max' => 168,
+                    'required' => true,
+                ],
+                'previous-volunteering' => [
+                    'label' => 'Έχεις ξανασυμμετάσχει σε εθελοντική δράση;',
+                    'type' => 'radio',
+                    'options' => [
+                        ['id' => 'yes', 'label' => 'Ναι'],
+                        ['id' => 'no', 'label' => 'Όχι'],
+                    ],
+                    'value' => null,
+                    'required' => true,
+                ],      
+                'volunteering-details' => [
+                    'label' => 'Αν έχεις ξανασυμμετάσχει, που;',
                     'type' => 'textarea',
                     'value' => '',
-                    'placeholder' => '',
+                    'placeholder' => 'Περιέγραψε τον εθελοντικό ρόλο και τις αρμοδιότητες που είχες..',
                     'required' => false,
-                ],
-                'interests' => [
-                    'label' => 'Τι ενδιαφέροντά έχεις στην προσωπική σου ζωή;',
-                    'type' => 'textarea',
-                    'value' => '',
-                    'placeholder' => '',
-                    'required' => false,
-                ],
-                'description' => [
-                    'label' => 'Πως θα περιέγραφες τον εαυτό σου σε μια παράγραφο;',
-                    'type' => 'textarea',
-                    'value' => '',
-                    'placeholder' => '',
-                    'required' => false,
-                ],
+                ],        
+                // 'studies-section' => [
+                //     'title' => 'Σπουδές',
+                //     'type' => 'section',
+                // ],            
                 'university' => [
                     'label' => 'Σε ποιο εκπαιδευτικό ίδρυμα/πανεπιστήμιο φοιτάς ή φοίτησες;',
                     'type' => 'text',
@@ -241,36 +261,74 @@ class VolunteerController extends Controller {
                     'required' => false,
                 ],
                 'otherstudies' => [
-                    'label' => 'Επιπλέον μεταπτυχιακά, πιστοποιήσεις, σεμινάρια;',
+                    'label' => 'Έχεις επιπλέον μεταπτυχιακά, πιστοποιήσεις ή παρακολουθήσει σεμινάρια;',
                     'type' => 'text',
                     'value' => '',
                     'placeholder' => '',
                     'required' => false,
                 ],
+                // 'social-section' => [
+                //     'title' => 'Βιογραφικό Σημείωμα (CV)',
+                //     'type' => 'section',
+                // ],  
+                'cv' => [
+                    'label' => 'Βιογραφικό',
+                    'type' => 'file',
+                    'value' => '',
+                    'accept' => 'application/pdf',
+                    'required' => true,
+                ],
+                // 'social-section' => [
+                //     'title' => 'Social Media',
+                //     'type' => 'section',
+                // ],   
                 'linkedin' => [
-                    'label' => 'Linkedin Profile URL',
+                    'label' => 'Linkedin',
                     'type' => 'text',
                     'hint' => '',
                     'value' => '',
-                    'placeholder' => 'https://www.linkedin.com/in/profile-id',
+                    'placeholder' => 'Σύνδεμος προς το Linkedin προφίλ σου..',
                     'required' => false,
                 ],
                 'facebook' => [
-                    'label' => 'Facebook Profile URL',
+                    'label' => 'Facebook',
                     'type' => 'text',
                     'hint' => '',
                     'value' => '',
-                    'placeholder' => 'https://www.facebook.com/profile.php?id=00000000',
+                    'placeholder' => 'Σύνδεμος προς το Facebook προφίλ σου..',
                     'required' => false,
                 ],
                 'instagram' => [
-                    'label' => 'Instagram Profile URL',
+                    'label' => 'Instagram',
                     'type' => 'text',
                     'value' => '',
                     'hint' => '',
-                    'placeholder' => 'https://www.instagram.com/profile-id/',
+                    'placeholder' => 'Σύνδεμος προς το Instagram προφίλ σου..',
                     'required' => false,
-                ]
+                ],
+                'tiktok' => [
+                    'label' => 'Τικτοκ',
+                    'type' => 'text',
+                    'value' => '',
+                    'hint' => '',
+                    'placeholder' => 'Σύνδεμος προς το Τικτοκ προφίλ σου..',
+                    'required' => false,
+                ],
+
+
+                
+                
+                // 'reason' => [
+                //     'label' => 'Με τι θα ήθελες να ασχοληθείς;',
+                //     'type' => 'textarea',
+                //     'value' => '',
+                //     'placeholder' => '',
+                //     'required' => false,
+                // ],
+              
+               
+                
+               
             ],
         ]);
     }

@@ -15,6 +15,7 @@
     // import BaseDynamicCalendarInput from '@/Components/Base/Dynamic/BaseDynamicCalendarInput.vue';
     //  import BaseDynamicCheckboxInput from '@/Components/Base/Dynamic/BaseDynamicCheckboxInput.vue';
     import BaseDynamicFileInput from '@/Components/Base/Dynamic/BaseDynamicFileInput.vue';
+    import BaseDynamicSectionTitle from '@/Components/Base/Dynamic/BaseDynamicSectionTitle.vue';
 
     let props = defineProps({
         user: Object,
@@ -43,6 +44,7 @@
         textarea: BaseDynamicTextareaInput,
         select: BaseDynamicDropdownInput,
         file: BaseDynamicFileInput,
+        section: BaseDynamicSectionTitle
     };
     
     const form = reactive( props.formFields );
