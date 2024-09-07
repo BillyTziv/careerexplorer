@@ -35,6 +35,6 @@
         </template>
     </Dialog>
 
-    <Button v-if="hasCV" label="Προβολή CV" icon="pi pi-external-link" style="width: auto" @click="open" />
+    <Button v-if="hasCV" label="Προβολή Βιογραφικού" icon="pi pi-external-link" style="width: auto" @click="open" />
 </template>
   

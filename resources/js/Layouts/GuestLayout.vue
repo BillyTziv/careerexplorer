@@ -80,15 +80,15 @@
                         <slot name="form-title"></slot>
                     </div>
 
-                    <div class="text-900 text-lg font-normal mb-3 md:mb-0">
+                    <div class="text-900 text-lg font-normal mb-5 md:mb-0">
                         <slot name="form-subtitle"></slot>
                     </div>
 
-                    <div class="text-900 text-sm font-light mb-3 md:mb-0">
+                    <!-- <div v-if="" class="text-900 text-sm font-light mb-3 md:mb-0">
                         <BaseInfoText type="info">
                             <slot name="form-disclaimer"></slot>
                         </BaseInfoText>
-                    </div>
+                    </div> -->
 
 					<!-- <div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
 						

@@ -86,7 +86,7 @@
         <template #form-disclaimer>{{ formDisclaimer }}</template>
 
         <template #form-fields>
-            <form @submit.prevent="submit" autocomplete="off">
+            <form @submit.prevent="submit" autocomplete="off" class="mt-3">
                 <AppFormLayout>
 
                     <template 

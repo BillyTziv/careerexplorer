@@ -268,22 +268,7 @@
 								:status="parseInt(volunteer.status)"
 							/>  -->
 
-							<!-- Social Media Links -->
-							<template v-if="hasSocialMedia">
-								<div class="flex flex-row">
-									<template
-										v-for="(sm, smIndex) in volunteer.socialMedia"
-										:key="smIndex"
-									>
-										<SocialMediaLink 
-											v-if="sm.link"
-											:label="sm.label" 
-											:link="sm.link" 
-											class="m-1"
-										/>
-									</template>
-								</div>
-							</template>
+							
 						
 						</div>
 					</div>
@@ -302,6 +287,7 @@
                         <VSectionInfoGridItem label="Επώνυμο" :value="volunteer.lastname" />
                         <VSectionInfoGridItem label="Τηλέφωνο" :value="volunteer.phone" />
                         <VSectionInfoGridItem label="Email" :value="volunteer.email" />
+
                         <VSectionInfoGridItem v-if="volunteer.date_of_birth" label="Ημ/νία Γέννησης" :value="volunteer.date_of_birth" />
                         <VSectionInfoGridItem v-if="volunteer.age" label="Ηλικία" :value="volunteer.age" />
                         <VSectionInfoGridItem v-if="volunteer.gender" label="Φύλλο" :value="volunteer.gender" />
@@ -311,6 +297,30 @@
 						<!-- <VSectionInfoGrid> -->
 
 						<!-- </VSectionInfoGrid> -->
+					</VolunteerSection>
+
+				
+					<!-----------------------------------------------------------------------------------------
+					| VOLUNTEERING EXPERIENCE
+					------------------------------------------------------------------------------------------>
+					<VolunteerSection
+						:sectionId="'volunteering-experience'"
+					>
+						<template #header>
+							<VSectionHeading>Εθελοντική Συμμετοχή</VSectionHeading>
+						</template>
+
+							<VSectionInfoGridItem v-if="volunteer.start_date" label="Ημ/νία Αίτησης" :value="volunteer.start_date" />
+							<VSectionInfoGridItem v-if="volunteer.end_date" label="Ημ/νία Αποχώρησης" :value="volunteer.end_date" />
+
+							<VSectionInfoGridItem v-if="volunteer.hour_per_week" label="Διαθεσιμότητα (h/w)" :value="volunteer.hour_per_week" />
+							<VSectionInfoGridItem v-if="volunteer.previous_volunteering" label="Προηγούμενη εθ. εμπειρία" :value="volunteer.previous_volunteering" />
+
+							
+							<!-- <VSectionInfoGridItem label="Ολοκλήρωση του Onboarding" :value="volunteer.onboarding_completed ? 'Ναι' : 'Όχι'" /> -->
+							<!-- <VSectionInfoGridItem v-if="volunteer" label="Ρόλος Εθελοντή" :value="JSON.parse(volunteer.volunteer_role).name" /> -->
+							<!-- <VSectionInfoGridItem v-if="volunteer.hours_contributed" label="Ώρες Συνεισφοράς" :value="volunteer.hours_contributed" /> -->
+							<!-- <VSectionInfoGridItem v-if="volunteer.previous_volunteer_experience" label="Προυπηρεσία" :value="volunteer.previous_volunteer_experience" /> -->
 					</VolunteerSection>
 
 					<!-----------------------------------------------------------------------------------------
@@ -324,33 +334,9 @@
 							<VSectionHeading>Σπουδές & Εκπαίδευση</VSectionHeading>
 						</template>	
 
-						<!-- <VSectionInfoGrid> -->
-							<VSectionInfoGridItem v-if="volunteer.university" label="Πανεπιστήμιο" :value="volunteer.university" />
-							<VSectionInfoGridItem v-if="volunteer.department" label="Τμήμα" :value="volunteer.department" />
-							<VSectionInfoGridItem v-if="volunteer.otherstuddies" label="Επιπλέον Σπουδές" :value="volunteer.otherstudies" />
-						<!-- </VSectionInfoGrid> -->
-					</VolunteerSection>
-
-					<!-----------------------------------------------------------------------------------------
-					| VOLUNTEERING EXPERIENCE
-					------------------------------------------------------------------------------------------>
-					<VolunteerSection
-						:sectionId="'volunteering-experience'"
-					>
-						<template #header>
-							<VSectionHeading>Εθελοντική Εμπειρία</VSectionHeading>
-						</template>
-
-						<!-- <VSectionInfoGrid> -->
-							<VSectionInfoGridItem v-if="volunteer.assigned_to" label="Ανατέθηκε σε" :value="volunteer.assigned_to"/>
-
-							<!-- <VSectionInfoGridItem label="Ολοκλήρωση του Onboarding" :value="volunteer.onboarding_completed ? 'Ναι' : 'Όχι'" /> -->
-							<!-- <VSectionInfoGridItem v-if="volunteer" label="Ρόλος Εθελοντή" :value="JSON.parse(volunteer.volunteer_role).name" /> -->
-							<VSectionInfoGridItem v-if="volunteer.start_date" label="Ημ/νία Έναρξης" :value="volunteer.start_date" />
-							<VSectionInfoGridItem v-if="volunteer.end_date" label="Ημ/νία Λήξης" :value="volunteer.end_date" />
-							<VSectionInfoGridItem v-if="volunteer.hours_contributed" label="Ώρες Συνεισφοράς" :value="volunteer.hours_contributed" />
-							<VSectionInfoGridItem v-if="volunteer.previous_volunteer_experience" label="Προυπηρεσία" :value="volunteer.previous_volunteer_experience" />
-						<!-- </VSectionInfoGrid> -->
+						<VSectionInfoGridItem v-if="volunteer.university" label="Πανεπιστήμιο" :value="volunteer.university" />
+						<VSectionInfoGridItem v-if="volunteer.department" label="Τμήμα" :value="volunteer.department" />
+						<VSectionInfoGridItem v-if="volunteer.otherstuddies" label="Επιπλέον Σπουδές" :value="volunteer.otherstudies" />
 					</VolunteerSection>
 
 					<!-----------------------------------------------------------------------------------------
@@ -364,36 +350,41 @@
 							<VSectionHeading>Επαγγελματική Εμπειρία</VSectionHeading>
 						</template>
 
-						<!-- <VSectionInfoGrid> -->
 							<VSectionInfoGridItem v-if="volunteer.current_company" label="Εταιρεία" :value="volunteer.current_company" />
 							<VSectionInfoGridItem v-if="volunteer.current_role" label="Ρόλος" :value="volunteer.current_role" />
 							<VSectionInfoGridItem v-if="volunteer.years_experience" label="Χρόνια Εργασίας" :value="volunteer.years_experience" />
 							<VSectionInfoGridItem v-if="volunteer.career_status" label="Κατάσταση Καριέρας" :value="volunteer.career_status" />
-						<!-- </VSectionInfoGrid> -->
 					</VolunteerSection>
 
 					<!-----------------------------------------------------------------------------------------
-					| PROFESSIONAL EXPERIENCE
+					| CV
 					------------------------------------------------------------------------------------------>
-					<VolunteerSection
-						:sectionId="'cv'"
+					<TheShowVolunteerCVModal
 						v-if="hasCV"
-					>
-						<template #header>
-							<VSectionHeading>Βιογραφικό</VSectionHeading>
-						</template>
+						:cv="volunteer.cv"
+					></TheShowVolunteerCVModal>
 
-						<!-- <Button
-							@click="openCVModal = true"
-							:svg-path="['m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10']"
-							:label="'Προβολή Βιογραφικού'"
-							class="my-1"
-						/> -->
-						<TheShowVolunteerCVModal
-							:cv="volunteer.cv"
-						></TheShowVolunteerCVModal>
+					<!-----------------------------------------------------------------------------------------
+						| SOCIAL MEDIA
+					------------------------------------------------------------------------------------------>
+					<VSectionHeading v-if="hasSocialMedia">Social Media</VSectionHeading>
 
-					</VolunteerSection>
+					<template v-if="hasSocialMedia">
+						<div class="flex flex-row">
+							<template
+								v-for="(sm, smIndex) in volunteer.socialMedia"
+								:key="smIndex"
+							>
+								<SocialMediaLink 
+									v-if="sm.link"
+									:label="sm.label" 
+									:link="sm.link" 
+									class="m-1"
+								/>
+							</template>
+						</div>
+					</template>
+
 				</div>
 				<div class="col">
 					<VolunteerSection
@@ -425,7 +416,27 @@
 						<template #header>
 							<VSectionHeading>Προσωπικότητα</VSectionHeading>
 						</template>
+						
+						<template v-if="volunteer.volunteering_details">
+							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+								Περιέγραψε τον εθελοντικό ρόλο και τις αρμοδιότητες που είχες
+							</h5>
+							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.volunteering_details }}</div>
+						</template>
 
+						<template v-if="volunteer.expectations">
+							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+								Τι προσδοκίες έχεις από τον οργανισμό και τη συνεργασία μας;
+							</h5>
+							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.expectations }}</div>
+						</template>
+						
+						<template v-if="volunteer.interests">
+							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+								Τι εμπειρίες ή δεξιότητες έχεις που σε καθιστούν κατάλληλο για αυτόν τον ρόλο;
+							</h5>
+							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.interests }}</div>
+						</template>
 						
 						<template v-if="volunteer.description">
 							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
@@ -434,20 +445,6 @@
 							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.description }}</div>
 						</template>
 
-						<template v-if="volunteer.expectations">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
-								Ποιες είναι οι προσδοκίες σου από το FutureGeneration;
-							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.expectations }}</div>
-						</template>
-						
-						<template v-if="volunteer.interests">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
-								Ποια είναι τα ενδιαφέροντά σου στην προσωπική σου ζωή
-							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.interests }}</div>
-						</template>
-						
 						<template v-if="volunteer.reason">
 							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
 								Με τι θα σε ενδιέφερε να ασχοληθείς στην ομάδα του FutureGeneration και γιατί;

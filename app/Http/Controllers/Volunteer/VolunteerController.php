@@ -143,8 +143,8 @@ class VolunteerController extends Controller {
         return Inertia::render('Applications/Create', [
             'metaData' => [
                 'title' => 'Αίτηση Εθελοντικής Συμμετοχής',
-                'subtitle' => 'Συμπληρώστε την αίτηση για να γίνετε εθελοντής στον οργανισμό μας.',
-                'disclaimer' => 'Συμπληρώστε την αίτηση για να γίνετε εθελοντής στον οργανισμό μας.',
+                'subtitle' => 'Συμπλήρωσε την αίτηση για να γίνεις και εσύ εθελοντής στον οργανισμό FutureGeneration.',
+                // 'disclaimer' => 'Τα στοιχεία σου θα χρησιμοποιηθούν μόνο για την επικοινωνία μεταξύ εσένα και του οργανισμού μας.',
                 'consentMessage' => 'Δηλώνω ότι συναινώ στη συλλογή και επεξεργασία των προσωπικών μου δεδομένων για σκοπούς μελλοντικής επικοινωνίας από την FutureGeneration και τους εξουσιοδοτημένους συνεργάτες της, σύμφωνα με τις διατάξεις του Γενικού Κανονισμού Προστασίας Δεδομένων (GDPR).',
                 'formType' => 'volunteer',
             ],
@@ -153,10 +153,10 @@ class VolunteerController extends Controller {
                 'method' => 'post',
             ],
             'formFields' => [
-                // 'personal-information-section' => [
-                //     'title' => 'Στοιχεία Επικοινωνίας',
-                //     'type' => 'section',
-                // ],
+                'personal-information-section' => [
+                    'title' => 'Στοιχεία Επικοινωνίας',
+                    'type' => 'section',
+                ],
                 'firstname' => [
                     'label' => 'Όνομα',
                     'type' => 'text',
@@ -185,10 +185,21 @@ class VolunteerController extends Controller {
                     'placeholder' => 'Τηλέφωνο..',
                     'required' => true,
                 ],
-                // 'volunteering-section' => [
-                //     'title' => 'Εθελοντική Συμμετοχή',
-                //     'type' => 'section',
-                // ],
+                'cv-section' => [
+                    'title' => 'Βιογραφικό Σημείωμα (CV)',
+                    'type' => 'section',
+                ],  
+                'cv' => [
+                    'label' => 'Βιογραφικό',
+                    'type' => 'file',
+                    'value' => '',
+                    'accept' => 'application/pdf',
+                    'required' => true,
+                ],
+                'volunteering-section' => [
+                    'title' => 'Εθελοντική Συμμετοχή',
+                    'type' => 'section',
+                ],
                 'role' => [
                     'label' => 'Σε ποιον εθελοντικό ρόλο ενδιαφέρεσαι να ασχοληθείς;',
                     'type' => 'select',
@@ -216,18 +227,18 @@ class VolunteerController extends Controller {
                     'placeholder' => '',
                     'required' => true,
                 ],
-                'hours-per-week' => [
+                'hour_per_week' => [
                     'label' => 'Πόσες ώρες την εβδομάδα μπορείς να αφιερώσεις στον οργανισμό;',
                     'type' => 'number',
                     'value' => '',
-                    'placeholder' => 'Εισάγετε ώρες..',
+                    'placeholder' => 'πχ. 4',
                     'min' => 1,
                     'max' => 168,
                     'required' => true,
                 ],
-                'previous-volunteering' => [
+                'previous_volunteering' => [
                     'label' => 'Έχεις ξανασυμμετάσχει σε εθελοντική δράση;',
-                    'type' => 'radio',
+                    'type' => 'select',
                     'options' => [
                         ['id' => 'yes', 'label' => 'Ναι'],
                         ['id' => 'no', 'label' => 'Όχι'],
@@ -235,17 +246,17 @@ class VolunteerController extends Controller {
                     'value' => null,
                     'required' => true,
                 ],      
-                'volunteering-details' => [
-                    'label' => 'Αν έχεις ξανασυμμετάσχει, που;',
+                'volunteering_details' => [
+                    'label' => 'Αν ναι, πες μας την εμπειρία σου',
                     'type' => 'textarea',
                     'value' => '',
                     'placeholder' => 'Περιέγραψε τον εθελοντικό ρόλο και τις αρμοδιότητες που είχες..',
                     'required' => false,
                 ],        
-                // 'studies-section' => [
-                //     'title' => 'Σπουδές',
-                //     'type' => 'section',
-                // ],            
+                'studies-section' => [
+                    'title' => 'Σπουδές',
+                    'type' => 'section',
+                ],            
                 'university' => [
                     'label' => 'Σε ποιο εκπαιδευτικό ίδρυμα/πανεπιστήμιο φοιτάς ή φοίτησες;',
                     'type' => 'text',
@@ -267,21 +278,10 @@ class VolunteerController extends Controller {
                     'placeholder' => '',
                     'required' => false,
                 ],
-                // 'social-section' => [
-                //     'title' => 'Βιογραφικό Σημείωμα (CV)',
-                //     'type' => 'section',
-                // ],  
-                'cv' => [
-                    'label' => 'Βιογραφικό',
-                    'type' => 'file',
-                    'value' => '',
-                    'accept' => 'application/pdf',
-                    'required' => true,
-                ],
-                // 'social-section' => [
-                //     'title' => 'Social Media',
-                //     'type' => 'section',
-                // ],   
+                'social-section' => [
+                    'title' => 'Social Media',
+                    'type' => 'section',
+                ],   
                 'linkedin' => [
                     'label' => 'Linkedin',
                     'type' => 'text',
@@ -307,28 +307,13 @@ class VolunteerController extends Controller {
                     'required' => false,
                 ],
                 'tiktok' => [
-                    'label' => 'Τικτοκ',
+                    'label' => 'Tiktok',
                     'type' => 'text',
                     'value' => '',
                     'hint' => '',
                     'placeholder' => 'Σύνδεμος προς το Τικτοκ προφίλ σου..',
                     'required' => false,
-                ],
-
-
-                
-                
-                // 'reason' => [
-                //     'label' => 'Με τι θα ήθελες να ασχοληθείς;',
-                //     'type' => 'textarea',
-                //     'value' => '',
-                //     'placeholder' => '',
-                //     'required' => false,
-                // ],
-              
-               
-                
-               
+                ]
             ],
         ]);
     }
@@ -430,10 +415,10 @@ class VolunteerController extends Controller {
         $messages = [
             'required' => 'Το πεδίο είναι υποχρεωτικό.',
             'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
+            'role.exists' => 'Ο ρόλος που επιλέξατε δεν υπάρχει στο σύστημα. Διαλέξτε έναν τυχαία και αναφέρετε το σφάλμα στην συνέντευξη.',
         ];
         
         $validatedData = $request->validate($rules, $messages);
-
 
         // PHONE already exist.
         $existingVolunteer = Volunteer::firstWhere('phone', $request->phone);
@@ -458,6 +443,7 @@ class VolunteerController extends Controller {
     public function store(Request $request) {        
         $validationResult = $this->validateVolunteer($request);
 
+     
         if ($validationResult['error']) {
             return back()->withErrors($validationResult['message']);
         }
@@ -465,47 +451,49 @@ class VolunteerController extends Controller {
         $volunteer = new Volunteer();
     
         // Personal Information
-        $volunteer->firstname = $request->firstname;
-        $volunteer->lastname = $request->lastname;
-        $volunteer->cv = $request->cv;
-        $volunteer->cv_consent = true;
-
-        // Contact Information
-        $volunteer->phone = $request->phone;
-        $volunteer->email = $request->email;
-
-        // Status
-        $defaultStatus = VolunteerStatus::where('is_default', true)->first();
-        $volunteer->status = $defaultStatus->id;
-
-        // Role (set the default role if not provided)
-        if( $request->role ) {
-            $volunteer->role = $request->role;
-        }else {
-            $defaultRole = VolunteerRole::where('is_default', true)->first();
-            $volunteer->role = $defaultRole->id;
-        }
+        $volunteer->firstname = $request->firstname; // REQUIRED
+        $volunteer->lastname = $request->lastname; // REQUIRED
+        $volunteer->phone = $request->phone; // REQUIRED
+        $volunteer->email = $request->email; // REQUIRED
+     
+        // CV
+        $volunteer->cv = $request->cv; // REQUIRED
 
         // Personality
-        if( $request->description ) $volunteer->description = $request->description;
-        if( $request->expectations ) $volunteer->expectations = $request->expectations;
-        if( $request->interests ) $volunteer->interests = $request->interests;
-        if( $request->reason ) $volunteer->reason = $request->reason;
+        $volunteer->description = $request->description ?? null;
+        $volunteer->expectations = $request->expectations ?? null;
+        $volunteer->interests = $request->interests ?? null;
+        $volunteer->reason = $request->reason ?? null;
 
-        // Social
-        if( $request->facebook ) $volunteer->facebook = $request->facebook;
-        if( $request->instagram ) $volunteer->instagram = $request->instagram;
-        if( $request->linkedin ) $volunteer->linkedin = $request->linkedin;
+        // Volunteering
+        $volunteer->role = $request->role; // REQUIRED
+        $volunteer->hour_per_week = $request->hour_per_week ?? null;
+        $volunteer->previous_volunteering = $request->previous_volunteering ?? null;
+        $volunteer->volunteering_details = $request->volunteering_details ?? null;
 
         // Studies
-        if( $request->department ) $volunteer->department = $request->department;
-        if( $request->otherstudies ) $volunteer->otherstudies = $request->otherstudies;
-        if( $request->university ) $volunteer->university = $request->university;
+        $volunteer->university = $request->university ?? null;
+        $volunteer->department = $request->department ?? null;
+        $volunteer->otherstudies = $request->otherstudies ?? null;
 
+        // Social
+        $volunteer->facebook = $request->facebook ?? null;
+        $volunteer->instagram = $request->instagram ?? null;
+        $volunteer->linkedin = $request->linkedin ?? null;
+        $volunteer->linkedin = $request->tiktok ?? null;
+     
+        // Find detault status marked with is_default `true` in the volunteer_statuses table.
+        $volunteer->status = VolunteerStatus::where('is_default', true)->first()->id;
+
+        // Additional Information (JSONB COLUMN) -- Under Testing
+        $volunteer->additional_info = $request->additional_info ?? null;
+     
         $volunteer->start_date = now();
         $volunteer->deleted = false;
+        $volunteer->cv_consent = true;
+      
         $volunteer->save();
-        
+       
         $selectedRoleName = VolunteerRole::where('id', $volunteer->role)->first();
 
         // DISCORD
