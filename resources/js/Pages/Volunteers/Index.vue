@@ -14,6 +14,7 @@
     import { useVolunteerRoleMapper } from '@/Composables/useVolunteerRoleMapper';
     import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
     import { useFormatDate } from '@/Composables/useFormatDate';
+	import { useToastNotification } from '@/Composables/useToastNotification';
 
     const volunteerStore = useVolunteersStore();
 
@@ -40,11 +41,16 @@
         volunteerStatusDropdownOptions: {
             type: Array,
             default: () => []
-        }
+        },
+        volunteerAssignedRecruiterDropdownOptions: {
+            type: Array,
+            default: () => []
+        },
     });
     const { getRoleName } = useVolunteerRoleMapper( props.volunteerRoleDropdownOptions );
-    const { getStatusName, getStatusDecoration, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
+    const { getStatusName, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
     const { formatDate } = useFormatDate( );
+	const { notify } = useToastNotification();
 
     // Used to provide the status options into the datatable component that render the status column.
     provide('volunteerStatusDropdownOptions', props.volunteerStatusDropdownOptions);
@@ -83,6 +89,9 @@
 
         router.delete(`/volunteers/${selectVolunteer.value.id}`);
 
+        const sucessDeleteMsg = `Ο εθελοντής ${selectVolunteer.value.firstname} ${selectVolunteer.value.lastname} διαγράφηκε επιτυχώς.`;
+        notify('success', 'Ολοκληρώθηκε', sucessDeleteMsg);
+
         deleteVolunteerDialog.value = false;
         selectVolunteer.value = null;
     };
@@ -109,15 +118,12 @@
     onMounted(() => {
         volunteerStore.setRoleDropdownOptions( props.volunteerRoleDropdownOptions);
         volunteerStore.setStatusDropdownOptions( props.volunteerStatusDropdownOptions );
+        volunteerStore.setRecruiterDropdownOptions( props.volunteerAssignedRecruiterDropdownOptions );
     });
 
     const currentPageReportTemplate = computed(() => {
         return `Προβολή ${props.volunteers.from} μέχρι ${props.volunteers.to} απο ${props.volunteers.total} εγγραφές`;
     });
-
-    function handlePageChange() {
-
-    }
 
     /* Datatable Size Change */
     const size = ref({ label: 'Small', value: 'small' });
@@ -178,6 +184,7 @@
                     v-model="filters.role"
                     placeholder="Όλοι οι Ρόλοι"
                     :options="volunteerStore.getRoleDropdownOptions"
+                    :narrow="true"
                     class="mx-1"
                 />
 
@@ -185,9 +192,18 @@
                     v-model="filters.status"
                     placeholder="Όλες οι Καταστάσεις"
                     :options="volunteerStore.getStatusDropdownOptions"
+                    :narrow="true"
                     class="mx-1"
                 />
             
+                <BaseDropdownInput
+                    v-model="filters.assigned_recruiter"
+                    placeholder="Όλοι οι recruiter"
+                    :options="volunteerStore.getRecruiterDropdownOptions"
+                    :narrow="true"
+                    class="mx-1"
+                />
+
                 <Button
                     type="button"
                     icon="pi pi-filter-slash"
@@ -201,7 +217,7 @@
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <InputText type="text" v-model="filters.search" placeholder="Αναζήτηση με όνομα, email, τηλ.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
                 
                 <div class="flex">
@@ -228,28 +244,28 @@
                 
                 <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
 
-                <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="firstname" header="Όνομα" sortable >
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα</span>
                         {{ data.firstname }}
                     </template>
                 </Column>
 
-                <Column field="lastname" header="Επώνυμο" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="lastname" header="Επώνυμο" sortable >
                     <template #body="{ data }">
                         <span class="p-column-title">Επώνυμο</span>
                         {{ data.lastname }}
                     </template>
                 </Column>
 
-                <Column field="role" header="Ρόλος" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="role" header="Ρόλος" sortable>
                     <template #body="{ data }">
                         <span class="p-column-title">Ρόλος</span>
                         {{ getRoleName(data.role) }}
                     </template>
                 </Column>
 
-                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '20rem' }">
+                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
                     <template #body="{ data }">
                         <span
                             class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
@@ -277,7 +293,7 @@
                     </template>
                 </Column> -->
 
-                <Column field="created_at" header="Ημ/νια Αίτησης" sortable :headerStyle="{ minWidth: '12rem' }" :frozen="true">
+                <Column field="created_at" header="Ημ/νια Αίτησης" sortable :frozen="true">
                     <template #body="{ data }">
                         <span class="p-column-title">Ημ/νια Αίτησης</span>
                         {{ formatDate(data.created_at) }}
@@ -318,3 +334,12 @@
     </Dialog>
 </template>
 
+<style scoped lang="scss">
+    :deep(.p-datatable-frozen-tbody) {
+        font-weight: bold;
+    }
+
+    :deep(.p-datatable-scrollable .p-frozen-column) {
+        font-weight: bold;
+    }
+</style>

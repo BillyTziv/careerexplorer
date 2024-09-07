@@ -12,10 +12,11 @@
     import TheShowVolunteerCVModal from '@/Components/Modals/TheShowVolunteerCVModal.vue';
 	import VolunteerStatusChangeModal from '@/Components/Modals/VolunteerStatusChangeModal.vue';
 	import VolunteerNotesModal from '@/Components/Modals/VolunteerNotesModal.vue';
-
-
 	import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
-	
+
+    import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
+	import { useToastNotification } from '@/Composables/useToastNotification';
+
 	let props = defineProps({
 		user: Object,
 		volunteer: Object,
@@ -25,10 +26,18 @@
         volunteerStatusDropdownOptions: {
             type: Array,
             default: () => []
-        }
+        },
+		volunteerAssignedRecruiterDropdownOptions: {
+			type: Array,
+			default: () => []
+		}
 	});
 
+    const { adjustOpacity, determineTextColor } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
+	const { notify } = useToastNotification();
+
 	const selectedVolunteerStatus = ref(props.volunteer.status);
+	const selectedAssignedRecruiter = ref(props.volunteer.assigned_to);
 
 	function updateNotes( notes ) {
 	 	router.post('/volunteers/' + props.volunteer.id + '/notes', {
@@ -37,17 +46,24 @@
 	 		preserveState: true,
 	 		replace: true
 	 	});
+
+		// Popup a notification
+		let saveNotesMsg = 'Οι σημειώσεις του εθελοντή ενημερώθηκαν επιτυχώς.';
+		notify('success', 'Ολοκληρώθηκε', saveNotesMsg);
 	}
 	
 	function changeVolunteerStatus( form ) {
-		console.log( form );
-
 		router.put('/volunteers/' + props.volunteer.id + '/status', {
 			newStatusValue: selectedVolunteerStatus.value,
 			statusChangeReason: form.reason,
 			sendEmail: form.sendEmail
 		}, { preserveState: true, replace: true });
 
+		// Popup a notification
+		let changeStatusMsg = 'Η κατάσταση του εθελοντή ' + props.volunteer.firstname + ' ' + props.volunteer.lastname + ' άλλαξε επιτυχώς.';
+		notify('success', 'Ολοκληρώθηκε', changeStatusMsg);
+
+		// Close the modal
 		showVolunteerStatusChangeModal.value = false;
 	}
 
@@ -62,7 +78,7 @@
 			case 'female':
 				return '/images/profile_picture_female.png';
 			default:
-				return 'https://placehold.co/32x32';
+				return 'https://placehold.co/100x100';
 		}
 	})
 
@@ -73,16 +89,23 @@
 		}));
 	});
 
-	const calculatedVolunteerStatus = computed( () => {
+	const volAssignedRecruiterDropdownOptions = computed(() => {
+		return props.volunteerAssignedRecruiterDropdownOptions.map(option => ({
+			id: option.id,
+			label: option.firstname + ' ' + option.lastname
+		}));
+	});
+
+	const volunteerStatus = computed( () => {
 	 	let status = "";
 
 	 	status = props.volunteerStatusDropdownOptions.find( (item) => {
 	 		if( item.id === props.volunteer.status ) {
-	 			return item.name;
+	 			return item;
 	 		}
 	 	});
 
-	 	return status?.name ?? 'Άγνωστο';
+	 	return status;
 	 })
 
 	const volunteerRole = computed( () => {
@@ -109,10 +132,27 @@
 
 	const showVolunteerStatusChangeModal = ref(false);
 
-	watch(() => selectedVolunteerStatus.value, (newVal) => {
-		console.log( newVal );
+	watch(() => selectedVolunteerStatus.value, (newVal) => {		
 		showVolunteerStatusChangeModal.value = true;
 	});
+
+	watch(() => selectedAssignedRecruiter.value, (newVal) => {		
+		router.put('/volunteers/' + props.volunteer.id + '/assign-recruiter', {
+			recruiterId: selectedAssignedRecruiter.value,
+		}, { preserveState: true, replace: true });
+
+		// Popup a notification
+		let assignedRecruiterMsg = 'Ο εθελοντής ανατέθηκε επιτυχώς στον Recruiter ' + selectedAssignedRecruiter.value;
+		notify('success', 'Ολοκληρώθηκε', assignedRecruiterMsg);
+	});
+
+
+    const volunteerStatusInfo = computed(() => {
+		return `<span class="whitespace-nowrap text-md mr-2 border-l-2 px-4 py-1 rounded-md shadow-md" 
+					style="background-color: ${adjustOpacity(volunteerStatus.value.id, 0.2)}; color: ${determineTextColor(volunteerStatus.value.id)};">
+					${volunteerStatus.value.name}
+				</span>`;
+    });
 </script>
 
 <style scoped>
@@ -159,31 +199,30 @@
         </template>
 
         <template #page-content>
-			<div class="flex flex-col md:flex-row lg:flex-row xl:flex-row">
-				<div class="flex-1 md:w-2/3 lg:w-2/3 xl:w-2/3 border-r border-slate-600 mx-2">
+			<div class="grid">
+				<div class="col">
 					<!-----------------------------------------------------------------------------------------
 					| HERO SECTION
 					------------------------------------------------------------------------------------------>
 					<div class="flex flex-col md:flex-row items-center gap-6">
-						<!-- Image Section -->
-						<!-- <div class="flex-shrink-0">
-							<img
-								:src="volunteerProfileImage" 
-								:alt="volunteer.firstname + ' ' + volunteer.lastname" 
-								class="w-full md:w-64 h-auto rounded-lg"
-							>
-						</div> -->
-
 						<!-- Text Block Section -->
-						<div class=" gap-2">
-							<h2>
-								{{ volunteer.firstname + " " + volunteer.lastname }}
-							</h2>
-							
-							<p>
-								{{ volunteerRole }}
-							</p>
+						<div class="gap-2">
+							<div class="grid">
+								<div class="col-fixed m-3" style="width:100px">
+									<img :src="volunteerProfileImage" alt="">
+								</div>
+								<div class="col">
+									<div class="text-3xl font-bold text-primary">
+										{{ volunteer.firstname + " " + volunteer.lastname }}
+									</div>
+									
+									<div class="text-xl py-2">
+										{{ volunteerRole }}
+									</div>
 
+									<div v-html="volunteerStatusInfo" class="text-xl mt-2"></div>
+								</div>
+							</div>
 							<!-- <select
 								v-model="selectedVolunteerStatus" 
 								@change="handleStatusChange( $event )" 
@@ -203,6 +242,8 @@
 								@change="changeVolunteerStatus"
 							/>
 
+						
+
 							<BaseDropdownInput
 								v-model="selectedVolunteerStatus"
 								placeholder="Άγνωστη Κατάσταση"
@@ -210,6 +251,13 @@
 								@change="handleStatusChange(event)"
 							/>
 						
+							<BaseDropdownInput
+								v-model="selectedAssignedRecruiter"
+								placeholder="Ανάθεση σε Recruiter"
+								:options="volAssignedRecruiterDropdownOptions"
+								@change="handleAssignedRecruiterChange(event)"
+							/>
+
 							<VSectionInfoGridItem
 								v-if="volunteer.disapproved_reason" 
 								label="Σχόλια Αλλαγής Κατάστασης" 
@@ -347,7 +395,7 @@
 
 					</VolunteerSection>
 				</div>
-				<div class="flex-1 md:w-1/3 lg:w-1/3 xl:w-1/3 mx-2">
+				<div class="col">
 					<VolunteerSection
 						:sectionId="'notes'"
 					>

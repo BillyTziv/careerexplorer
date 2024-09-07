@@ -49,7 +49,8 @@ class EmailTemplateController extends Controller
     public function store(Request $request) {
         $rules = [
             'name' => 'required|string|max:255',
-            'subject' => 'required|string|max:255'
+            'subject' => 'required|string|max:255',
+            'body' => 'required|string',
         ];
         
         $messages = [
@@ -59,11 +60,13 @@ class EmailTemplateController extends Controller
         $validatedData = $request->validate($rules, $messages);
 
         $emailTemplate = new EmailTemplate();
+
         $emailTemplate->name = $request->name;
         $emailTemplate->subject = $request->subject;
         $emailTemplate->body = $request->body;
         $emailTemplate->placeholders = json_encode($request->placeholders);
         $emailTemplate->hook_id = $request->hook_id;
+
         $emailTemplate->save();
         
         return Inertia::render('EmailTemplates/Index', [
@@ -85,6 +88,15 @@ class EmailTemplateController extends Controller
 
     public function edit( $id ) {
         $emailTemplate = EmailTemplate::find( $id );
+
+        if( is_null($emailTemplate) ) {
+            return redirect()
+                ->route( 'email-templates' )
+                ->with([
+                    'message'=> 'Oups, something went wrong. Email template data was not saved.'
+                ]);
+        }
+
         $emailTemplate->placeholders = json_decode($emailTemplate->placeholders, true);
 
         return Inertia::render('EmailTemplates/CreateEdit', [
@@ -94,19 +106,10 @@ class EmailTemplateController extends Controller
     }
 
     public function update(Request $request) {
-        $emailTemplate = EmailTemplate::find( $request->id );
-
-        if( is_null($emailTemplate) ) {
-            return redirect()
-                ->route( 'users' )
-                ->with([
-                    'message'=> 'Oups, something went wrong. Email template data was not saved.'
-                ]);
-        }
-
         $rules = [
             'name' => 'required|string|max:255',
-            'subject' => 'required|string|max:255'
+            'subject' => 'required|string|max:255',
+            'body' => 'required|string',
         ];
         
         $messages = [
@@ -115,29 +118,35 @@ class EmailTemplateController extends Controller
         
         $validatedData = $request->validate($rules, $messages);
 
+        $emailTemplate = EmailTemplate::find( $request->id );
+
+        if( is_null($emailTemplate) ) {
+            return redirect()
+                ->route( 'email-templates' )
+                ->with([
+                    'message'=> 'Oups, something went wrong. Email template data was not saved.'
+                ]);
+        }
+
         $emailTemplate->name = $request->name;
         $emailTemplate->subject = $request->subject;
         $emailTemplate->body = $request->body;
         $emailTemplate->placeholders = json_encode($request->placeholders);
         $emailTemplate->hook_id = $request->hook_id;
+
         $emailTemplate->save();
         
-        return back()->with([
-            'message' => 'Τα στοιχεία ενημερώθηκαν με επιτυχία!',
+        return Inertia::render('EmailTemplates/Index', [
+            'message' => 'Η πρότυπο email αποθηκεύτηκε με επιτυχία!',
             'status' => 'success',
+            'emailTemplates' => self::getEmailTemplates()
         ]);
     }
 
     public function sendTestEmail( Request $request, EmailTemplate $emailTemplate ) {
-        $hookService = new HookService();
+        $hookService = new HookService( new EmailService );
 
-        $hookService->trigger($request->email, 'invite_volunteer');
-
-        //$emailService->sendTestEmail($request->email, $emailTemplate);
-
-        //$data = ['message' => 'Αποστολή Προτύπου Email'];
-        
-        // Mail::to($request->email)
-        //     ->send(new DynamicEmailTemplate( $emailTemplate, $data ));
+        // Find the email template by the hook id.
+        $hookService->trigger($emailTemplate->hook_id, $request->email, '' );
     }
 }

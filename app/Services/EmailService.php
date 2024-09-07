@@ -12,7 +12,7 @@ class EmailService
 {
     public function sendTestEmail($emailTo, EmailTemplate $emailTemplate, $data)
     {
-        Mail::to($emailTo)
+        return Mail::to($emailTo)
             ->send(
                 new DynamicEmailTemplate($emailTemplate, $data)
             );

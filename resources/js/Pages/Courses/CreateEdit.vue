@@ -67,7 +67,7 @@
                         v-model="courseForm.description"
                         label="Περιγραφή"
                         placeholder="Περιέγραψε το μάθημα.."
-                        :errors="errors.description"
+                        :errors="errors['description']"
                     />
 
                     <BaseTextInput
@@ -83,7 +83,7 @@
                         :options="companyDropdownOptions"
                         label="Φορέας"
                         :required=true
-                        :errors="errors.company"
+                        :errors="errors['company_id']"
                     />
                 </AppFormLayout>
                 

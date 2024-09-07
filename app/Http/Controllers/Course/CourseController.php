@@ -104,7 +104,7 @@ class CourseController extends Controller
     {
         $rules = [
             'title' => 'required|string|max:255',
-            'company_id' => 'required',
+            'company_id' => 'required|integer',
             'description' => 'required|string|max:255',
             'link' => 'required|string|max:255'
         ];
@@ -135,6 +135,20 @@ class CourseController extends Controller
 
     public function update(Request $request)
     {
+        $rules = [
+            'title' => 'required|string|max:255',
+            'company_id' => 'required|integer',
+            'description' => 'required|string|max:255',
+            'link' => 'required|string|max:255'
+        ];
+        
+        $messages = [
+            'required' => 'Το πεδίο είναι υποχρεωτικό.'
+        ];
+        
+        $validatedData = $request->validate($rules, $messages);
+
+        
         $course = Course::find( $request->id );
 
         if( is_null($course) ) {

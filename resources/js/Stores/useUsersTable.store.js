@@ -62,35 +62,35 @@ export const useUsersTableStore = defineStore({
 		setTableFilters( filters ) {
 			this.filters = filters;
 		},
-		async fetchStatusOptions() {
-			try {
-			  const response = await axios.get('/api/v1/volunteer-statuses');
-			  this.statusOptions = response.data;
-			} catch (error) {
-			  console.error('Failed to fetch status:', error);
-			}
-		},
+		// async fetchStatusOptions() {
+		// 	try {
+		// 	  const response = await axios.get('/api/v1/volunteer-statuses');
+		// 	  this.statusOptions = response.data;
+		// 	} catch (error) {
+		// 	  console.error('Failed to fetch status:', error);
+		// 	}
+		// },
 		resetTableFilters() {
 			this.filters.search = '';
 			this.filters.status = null;
 			this.filters.role = null;
 			this.filters.page = 1;
 		},
-		async fetchStatusOptions() {
-			try {
-				const response = await axios.get('/api/status-options');
-				this.dropdownOptions.status = response.data;
-			} catch (error) {
-				console.error(error);
-			}
-		},
-		async fetchRoleOptions() {
-			try {
-				const response = await axios.get('/api/role-options');
-				this.dropdownOptions.role = response.data;
-			} catch (error) {
-				console.error(error);
-			}
-		}
+		// async fetchStatusOptions() {
+		// 	try {
+		// 		const response = await axios.get('/api/status-options');
+		// 		this.dropdownOptions.status = response.data;
+		// 	} catch (error) {
+		// 		console.error(error);
+		// 	}
+		// },
+		// async fetchRoleOptions() {
+		// 	try {
+		// 		const response = await axios.get('/api/role-options');
+		// 		this.dropdownOptions.role = response.data;
+		// 	} catch (error) {
+		// 		console.error(error);
+		// 	}
+		// }
 	},
 });

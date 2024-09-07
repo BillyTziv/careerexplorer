@@ -10,7 +10,7 @@
         modelValue: { type: String, default: '' },
         field: { type: Object, default: {} },
         errors: { type: String, default: '' },
-        rows: { type: Number, default: 4 },
+        rows: { type: Number, default: 5 },
         label: { type: String, default: '' },
         placeholder: { type: String, default: '' },
         required: { type: Boolean, default: false },
@@ -44,7 +44,7 @@
             :invalid="hasErrors"
             :placeholder="placeholder"
             :autoResize="true"
-            rows="4"
+            :rows="rows"
             class="w-full"
         />
 

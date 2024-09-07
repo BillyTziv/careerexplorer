@@ -1,12 +1,17 @@
 <script setup>
     /* Core */
-    import { ref, reactive } from 'vue';
+    import { ref, watch } from 'vue';
     import { router } from '@inertiajs/vue3'
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
+    /* Components */
+    import BaseTextInput from '@/Components/Base/BaseTextInput.vue';
+
+    /* Composables */
     import { useFormatDate } from '@/Composables/useFormatDate';
+	import { useToastNotification } from '@/Composables/useToastNotification';
 
     /* Component Properties */
     let props = defineProps({
@@ -21,8 +26,11 @@
     const deleteEmailTemplateDialog     = ref( false );             // Used for delete confirmation
     const emailTemplatesTableRef        = ref( null );              // Used for exportCSV
     const filterEmailTemplatesTable     = ref( props.filters );     // Used for filtering the table
-    
+    const sendTestEmailDialog           = ref(false);
+    const testEmailReceiverEmail        = ref("");
+
     const { formatDate } = useFormatDate( );
+	const { notify } = useToastNotification();
 
     const redirectToCreate = () => {    
         router.visit(`/email-templates/create`);
@@ -54,7 +62,27 @@
         selectedEmailTemplate.value = null;
     };
 
-    const filters = reactive( {} );
+    const openSendTestEmailDialog = ( emailTemplate ) => {
+        selectedEmailTemplate.value = emailTemplate;
+        sendTestEmailDialog.value = true;
+    };
+
+    const sendTestEmail = () => {
+        try {
+            router.post(`/email-templates/${selectedEmailTemplate.value.id}/send-test-email`, {email: testEmailReceiverEmail.value});
+        } catch (error) {
+            console.log(error);
+        }
+
+        const sucessDeleteMsg = `Το δοκιμαστικό email στάλθηκε επιτυχώς στον παραλήπτη ${testEmailReceiverEmail.value}`;
+        notify('success', 'Ολοκληρώθηκε', sucessDeleteMsg);
+    };
+
+    const searchFilter = ref("");
+
+    watch(() => searchFilter, () => {
+        router.get('/email-templates/', { search: searchFilter.value }, { preserveState: true, replace: true });
+    }, { deep: true });
 </script>
 
 <template>
@@ -67,7 +95,7 @@
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
                 
                 <div class="flex">
@@ -102,25 +130,29 @@
 
                 <Column headerStyle="min-width:10rem;">
                     <template #body="slotProps">
+                        <Button icon="pi pi-send" class="mr-2" rounded outlined severity="warning" @click="openSendTestEmailDialog(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editEntity(slotProps.data)" />
-                        <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmdeleteEmailTemplate(slotProps.data)" />
+                        <Button icon="pi pi-trash" class="mt-2" rounded severity="danger" @click="confirmdeleteEmailTemplate(slotProps.data)" />
                     </template>
                 </Column>
             </DataTable>
         </template>
     </AppPageWrapper>
 
-    <Dialog v-model:visible="deleteEmailTemplateDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής" :modal="true">
+    <!------------------------------------------------------------
+        MODAL DIALOGS DEFINITION
+    ------------------------------------------------------------->
+    <Dialog v-model:visible="sendTestEmailDialog" :style="{ width: '450px' }" header="Αποστολή Δοκιμαστικού Email" :modal="true">
         <div class="flex align-items-center justify-content-center">
-            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-            <span v-if="selectedEmailTemplate">
+            <!-- <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" /> -->
+            <!-- <span v-if="selectedEmailTemplate">
                 Είστε σίγουροι οτι θέλετε να διαγράψετε το πρότυπα <b>{{ selectedEmailTemplate.name }}</b>?
-            </span
-            >
+            </span -->
+            <BaseTextInput v-model="testEmailReceiverEmail" label="Email Παραλήπτη"/>
         </div>
         <template #footer>
-            <Button label="No" icon="pi pi-times" text @click="deleteEmailTemplateDialog = false" />
-            <Button label="Yes" icon="pi pi-check" text @click="deleteEmailTemplate" />
+            <Button label="Ακύρωση" icon="pi pi-times" text @click="sendTestEmailDialog = false" />
+            <Button label="Αποστολή Δοκιμαστικού Email" icon="pi pi-send"  @click="sendTestEmail" />
         </template>
     </Dialog>
 </template>

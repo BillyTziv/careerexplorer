@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
-//import { useRoute } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 import MailSidebar from './MailSidebar.vue';
 import Reply from './Reply.vue';

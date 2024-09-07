@@ -65,6 +65,10 @@ class VolunteerController extends Controller {
             });
         }
         
+        if( request('assigned_recruiter') ) {
+            $query->where('assigned_to', '=', request('assigned_recruiter'));
+        }
+
         $query->where('volunteers.deleted', '=', 0);
 
         $volunteers = $query->leftjoin('volunteer_roles', 'volunteer_roles.id', '=', 'volunteers.role')
@@ -79,6 +83,19 @@ class VolunteerController extends Controller {
             ->get();
 
         return $volunteers;
+    }
+
+    private function getVolunteerRecruiters() {
+        $assignedToIds = Volunteer::where('deleted', false)
+            ->pluck('assigned_to')
+            ->filter(function ($value) {
+                return !is_null($value);
+            })
+            ->toArray();
+
+        return User::whereIn('id', $assignedToIds)
+            ->select('id', 'firstname', 'lastname')
+            ->get();
     }
 
     private function getAssignees() {
@@ -100,11 +117,12 @@ class VolunteerController extends Controller {
         return VolunteerStatus::where('deleted', false)->get();
     }
 
-    public function index() {
+    public function index() {        
         return Inertia::render('Volunteers/Index', [
             'volunteers' => self::getVolunteers(),
             'volunteerRoleDropdownOptions' => self::getVolunteerRoles(),
-            'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()
+            'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses(),
+            'volunteerAssignedRecruiterDropdownOptions' => self::getVolunteerRecruiters(),
         ]);
     }
 
@@ -481,7 +499,8 @@ class VolunteerController extends Controller {
             'volunteer' => $volunteer,
             'roles' => self::getUserRoles(),
             'assignees' => self::getAssignees(),
-            'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()
+            'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses(),
+            'volunteerAssignedRecruiterDropdownOptions'=> self::getVolunteerRecruiters()
         ]);
     }
 
@@ -625,6 +644,19 @@ class VolunteerController extends Controller {
             'status' => 'success',
         ]);
     }
+    
+    public function assignRecruiter( Request $request, $volunteer ) {
+
+        $volunteer = Volunteer::find( $volunteer );
+        $vid = $volunteer->id;
+
+        $volunteer->assigned_to = $request->recruiterId ?? null;
+        $volunteer->save();
+
+        $query = Volunteer::query();
+
+        return redirect()->back();
+    }
 
     public function updateNotes( Request $request, $volunteer ) {
 
@@ -661,13 +693,6 @@ class VolunteerController extends Controller {
         if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
 
         return redirect()->back();
-
-        // return Inertia::render('Volunteers/Show', [
-        //     'volunteer' => $volunteer,
-        //     'roles' => self::getUserRoles(),
-        //     'assignees' => self::getAssignees(),
-        //     'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses()
-        // ]);
     }
 
     // public function acceptApplication( Request $request ) {

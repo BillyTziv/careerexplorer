@@ -47,7 +47,7 @@ class HookService
             }
         }
         
-        $this->emailService->sendTestEmail($emailTo, $emailTemplate, $data);
+        return $this->emailService->sendTestEmail($emailTo, $emailTemplate, $data);
     }
 }
 ?>

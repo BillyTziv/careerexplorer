@@ -12,6 +12,7 @@
         label:          { type: String, default: '' },
         placeholder:    { type: String, default: '' },
         errors:         { type: String, default: '' },
+        narrow:         { type: Boolean, default: false },
     });
 
     const inputValue = ref(props.modelValue);
@@ -26,7 +27,7 @@
 </script>
 
 <template>
-    <div class="field">
+    <div :class="['field', { 'col-12': !props.narrow }]">
         <label class="font-medium text-900"> 
             {{ label }}
         </label>

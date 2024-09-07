@@ -95,7 +95,7 @@
                         label="Placeholders"
                         type="text"
                         accessKey="placeholders"
-                        placeholder=""
+                        placeholder="eg. {firstname}, {lastname}, {email}, {userrole}."
                         :errors="errors.placeholders"
                     />
 
@@ -111,7 +111,7 @@
                         label="Hook ID"
                         type="text"
                         accessKey="hook_id"
-                        placeholder=""
+                        placeholder="eg. accept_volunteer_invitation"
                         :errors="errors.hook_id"
                     />
 
@@ -120,26 +120,6 @@
                     >
                         Το Hook ID, αφορά μια κωδική λέξη που δεν πρέπει να αλλάξει. Είναι ένα ID για κάθε πρότυπο email πχ. invite_volunteer ή accept_volunteer_invitation
                     </BaseInfoText>
-
-                 
-
-                  
-
-                    <!-- 
-                    <BaseTextareaInput
-                        v-model="emailTemplateForm.description"
-                        label="Περιγραφή"
-                        placeholder="Περιέγραψε το ενδιαφέρον.."
-                        :errors="errors.description"
-                    />
-
-                    <BaseMultiselectInput
-                        v-model="emailTemplateForm.hollandCodes"
-                        :options="hollandCodes"
-                        label="Επίλεξε τους κωδικούς Holland"
-                        :required=true
-                        :errors="errors.hollandCodes"
-                    /> -->
                 </AppFormLayout>
                 
                 <Button 

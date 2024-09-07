@@ -18,11 +18,13 @@ export const useVolunteersStore = defineStore({
 			search: '',
 			status: null,
 			role: null,
-			page: 1
+			page: 1,
+			assigned_recruiter: null
 		},
 		dropdownOptions: {
 			status: [],
-			role: []
+			role: [],
+			assigned_recruiter: []
 		}
 	}),
 	getters: {
@@ -43,6 +45,12 @@ export const useVolunteersStore = defineStore({
 				id: role.id,
 				label: role.name,
 			}));
+		},
+		getRecruiterDropdownOptions() {
+			return this.dropdownOptions.assigned_recruiter.map(recruiter => ({
+				id: recruiter.id,
+				label: recruiter.firstname + ' ' + recruiter.lastname,
+			}));
 		}
 	},
 	actions: {
@@ -51,6 +59,9 @@ export const useVolunteersStore = defineStore({
 		},
 		setStatusDropdownOptions( statuses ) {
 			this.dropdownOptions.status = statuses;
+		},
+		setRecruiterDropdownOptions( recruiter ) {
+			this.dropdownOptions.assigned_recruiter = recruiter;
 		},
 		setTableFilterByKey( key, value ) {
 			// Used to reset page if a filter is changed.
@@ -63,35 +74,36 @@ export const useVolunteersStore = defineStore({
 		setTableFilters( filters ) {
 			this.filters = filters;
 		},
-		async fetchStatusOptions() {
-			try {
-			  const response = await axios.get('/api/v1/volunteer-statuses');
-			  this.statusOptions = response.data;
-			} catch (error) {
-			  console.error('Failed to fetch status:', error);
-			}
-		},
 		resetTableFilters() {
 			this.filters.search = '';
 			this.filters.status = null;
 			this.filters.role = null;
 			this.filters.page = 1;
+			this.filters.assigned_recruiter = null;
 		},
-		async fetchStatusOptions() {
-			try {
-				const response = await axios.get('/api/status-options');
-				this.dropdownOptions.status = response.data;
-			} catch (error) {
-				console.error(error);
-			}
-		},
-		async fetchRoleOptions() {
-			try {
-				const response = await axios.get('/api/role-options');
-				this.dropdownOptions.role = response.data;
-			} catch (error) {
-				console.error(error);
-			}
-		}
+		// async fetchRecruiterOptions() {
+		// 	try {
+		// 		const response = await axios.get('/api/recruiter-options');
+		// 		this.dropdownOptions.status = response.data;
+		// 	} catch (error) {
+		// 		console.error(error);
+		// 	}
+		// },
+		// async fetchStatusOptions() {
+		// 	try {
+		// 		const response = await axios.get('/api/status-options');
+		// 		this.dropdownOptions.status = response.data;
+		// 	} catch (error) {
+		// 		console.error(error);
+		// 	}
+		// },
+		// async fetchRoleOptions() {
+		// 	try {
+		// 		const response = await axios.get('/api/role-options');
+		// 		this.dropdownOptions.role = response.data;
+		// 	} catch (error) {
+		// 		console.error(error);
+		// 	}
+		// }
 	},
 });

@@ -108,6 +108,7 @@ import VirtualScroller from 'primevue/virtualscroller';
 export default {
     install(app) {
         app.use(PrimeVue, { ripple: true });
+        app.use(Toast);
         app.use(ToastService);
         app.use(DialogService);
         app.use(ConfirmationService);
