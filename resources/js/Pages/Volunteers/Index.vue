@@ -11,6 +11,7 @@
 
     import { useVolunteersStore } from '@/Stores/useVolunteer.store';
 
+    import { useVolunteerAssigneeRecruiterMapper } from '@/Composables/useVolunteerAssigneeRecruiterMapper';
     import { useVolunteerRoleMapper } from '@/Composables/useVolunteerRoleMapper';
     import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
     import { useFormatDate } from '@/Composables/useFormatDate';
@@ -47,6 +48,8 @@
             default: () => []
         },
     });
+    
+    const { getRecruiterName } = useVolunteerAssigneeRecruiterMapper( props.volunteerAssignedRecruiterDropdownOptions );
     const { getRoleName } = useVolunteerRoleMapper( props.volunteerRoleDropdownOptions );
     const { getStatusName, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
     const { formatDate } = useFormatDate( );
@@ -262,6 +265,13 @@
                     <template #body="{ data }">
                         <span class="p-column-title">Ρόλος</span>
                         {{ getRoleName(data.role) }}
+                    </template>
+                </Column>
+
+                <Column field="assigneeRecruiter" header="Υπεύθυνος" sortable>
+                    <template #body="{ data }">
+                        <span class="p-column-title">Υπεύθυνος</span>
+                        {{ getRecruiterName(data.assigned_to) }}
                     </template>
                 </Column>
 
