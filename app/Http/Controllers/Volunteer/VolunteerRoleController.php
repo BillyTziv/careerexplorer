@@ -42,8 +42,13 @@ class VolunteerRoleController extends Controller {
 
 
     private function getVolunteerRoles() {
-        $query = VolunteerRole::query()
-            ->leftJoin('volunteers', 'volunteer_roles.id', '=', 'volunteers.role')
+        $query = VolunteerRole::query();
+
+        if( request('search') ) {
+            $query->where('volunteer_roles.name', 'like', '%' . request('search') . '%');
+        }
+
+        $query->leftJoin('volunteers', 'volunteer_roles.id', '=', 'volunteers.role')
             ->leftJoin('volunteer_statuses', 'volunteers.status', '=', 'volunteer_statuses.id')
             ->where('volunteer_roles.deleted', false)
             ->select(
@@ -52,28 +57,26 @@ class VolunteerRoleController extends Controller {
                 'volunteer_roles.description', 
                 'volunteer_roles.volunteers_needed', 
             )
-            ->groupBy('volunteer_roles.id', 'volunteer_roles.name', 'volunteer_roles.description', 'volunteer_roles.volunteers_needed');
+            ->groupBy(
+                'volunteer_roles.id', 
+                'volunteer_roles.name', 
+                'volunteer_roles.description', 
+                'volunteer_roles.volunteers_needed'
+            );
 
-        $volunteerRoles = $query->where('volunteer_roles.deleted', false)->paginate(10);
+        // foreach ($volunteerRoles as $role) {            
+        //     if ($role->volunteers_needed != 0) {
+        //         $role->coverage_percentage = min(100, ($role->volunteer_count / $role->volunteers_needed) * 100);
+        //     } else {
+        //         $role->coverage_percentage = 0;
+        //     }
+        // }
 
-        foreach ($volunteerRoles as $role) {            
-            if ($role->volunteers_needed != 0) {
-                $role->coverage_percentage = min(100, ($role->volunteer_count / $role->volunteers_needed) * 100);
-            } else {
-                $role->coverage_percentage = 0;
-            }
-        }
-
-        return $volunteerRoles;
+        return $query->get();
     }
     public function index() {
         return Inertia::render('Volunteers/Settings/Roles/Index', [
             'response' => [],
-            // 'filters' => [
-            //     'search' => request('search') ? request('search') : '',
-            //     'role' => request('role') ? request('role') : '',
-            //     'status' => request('status') ? request('status') : ''
-            // ],
             'volunteerRoles' => self::getVolunteerRoles(),
         ]);
     }

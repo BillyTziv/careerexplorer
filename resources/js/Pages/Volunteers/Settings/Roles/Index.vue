@@ -1,6 +1,6 @@
 <script setup>
     /* Core */
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import { router } from '@inertiajs/vue3'
 
     /* Layouts */
@@ -60,6 +60,10 @@
     const redirectToCreate = () => {    
         router.visit(`/volunteer-roles/create`);
     };
+
+    watch(() => searchFilter, () => {
+        router.get('/volunteer-roles/', { search: searchFilter.value }, { preserveState: true, replace: true });
+    }, { deep: true });
 </script>
 
 <template>
@@ -71,8 +75,8 @@
         <template #page-content>
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
-                    <!-- <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="searchFilter" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" /> -->
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
 
                 <div class="flex">
@@ -83,7 +87,7 @@
 
             <DataTable 
                 ref="volunteerRoleTableRef" 
-                :value="volunteerRoles.data" 
+                :value="volunteerRoles" 
                 dataKey="id" 
                 paginator 
                 :rows="10" 

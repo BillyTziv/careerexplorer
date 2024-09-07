@@ -9,11 +9,26 @@
     const usersTableStore = useUsersTableStore();
 
     let props = defineProps({
-        user: Object,
-        users: Object, 
-        roleDropdownOptions: Array,
-        filters: Object,
-        response: Object,
+        user: {
+            type: Object,
+            default: () => ({})
+        },
+        users: {
+            type: Array,
+            default: () => []
+        }, 
+        roleDropdownOptions: {
+            type: Array,
+            default: () => []
+        },
+        filters: {
+            type: Object,
+            default: () => ({})
+        },
+        response: {
+            type: Object,
+            default: () => ({})
+        },
     });
 
     const selectedUser = ref(null);
@@ -77,7 +92,7 @@
                 </div>
             </div>
 
-            <DataTable ref="usersTableRef" :value="users.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterUsersTable">
+            <DataTable ref="usersTableRef" :value="users" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterUsersTable">
                 <template #empty>Δεν βρέθηκαν χρήστες.</template>
                 <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">

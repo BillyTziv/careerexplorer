@@ -61,7 +61,7 @@ class UserController extends Controller {
     
         // Group by the user id to ensure that each user is listed once with their roles aggregated.
         // Pagination is applied to make the query more efficient on large datasets.
-        return $query->paginate(20);
+        return $query->get();
     }
 
     private function getUserRoles() {
