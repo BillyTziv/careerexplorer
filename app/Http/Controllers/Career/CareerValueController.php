@@ -57,7 +57,7 @@ class CareerValueController extends Controller
      */
     public function create()
     {
-        $hollandCodes = RiasecCode::select('id', 'code as name', 'description')->get();
+        $hollandCodes = RiasecCode::select('id', 'code as label', 'description')->get();
 
         return Inertia::render('Careers/Values/CreateEdit', [
             'response' => [],
@@ -67,7 +67,7 @@ class CareerValueController extends Controller
     }
 
     public function edit( $id ) {
-        $hollandCodes = RiasecCode::select('id', 'code as name', 'description')->get();
+        $hollandCodes = RiasecCode::select('id', 'code as label', 'description')->get();
 
         $value = CareerValue::with(['riasecCodes:id'])
             ->select('id', 'name', 'description', 'status')

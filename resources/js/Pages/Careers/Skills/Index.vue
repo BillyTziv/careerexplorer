@@ -1,13 +1,9 @@
 <script setup>
-    /* Core */
-    import { ref } from 'vue';
+    import { ref , watch} from 'vue';
     import { router } from '@inertiajs/vue3'
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
-
-    /* Emits Actions */
-
 
     /* Component Properties */
     let props = defineProps({
@@ -21,7 +17,6 @@
     const selectedSkill         = ref( null );              // Used for delete confirmation
     const deleteSkillDialog     = ref( false );             // Used for delete confirmation
     const skillsTableRef        = ref( null );              // Used for exportCSV
-    const filterSkillsTable     = ref( props.filters );     // Used for filtering the table
     
     const redirectToCreate = () => {    
         router.visit(`/career-skills/create`);
@@ -30,7 +25,7 @@
     /* Component Methods */
 
     // Export the skills table to CSV
-    const exportCSV = () => {
+    const exportCareerSkillsAsCSV = () => {
         skillsTableRef.value.exportCSV();
     };
 
@@ -54,6 +49,12 @@
         deleteSkillDialog.value = false;
         selectedSkill.value = null;
     };
+
+    const searchFilter = ref("");
+
+    watch(() => searchFilter, () => {
+        router.get('/career-skills/', { search: searchFilter.value }, { preserveState: true, replace: true });
+    }, { deep: true });
 </script>
 
 <template>
@@ -66,7 +67,7 @@
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="filters.search" placeholder="Search" :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <InputText type="text" v-model="searchFilter" placeholder="Αναζήτηση με όνομα.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
                 
                 <div class="flex">
@@ -75,7 +76,7 @@
                 </div>
             </div>
 
-            <DataTable ref="skillsTableRef" :value="skills.data" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterSkillsTable">
+            <DataTable ref="skillsTableRef" :value="skills" dataKey="id" paginator :rows="10" responsiveLayout="scroll" v-model="searchFilter" >
                 <template #empty>Δεν βρέθηκαν δεξιότητες.</template>
                 
                 <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">

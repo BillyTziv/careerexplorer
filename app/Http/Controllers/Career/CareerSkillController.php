@@ -33,7 +33,7 @@ class CareerSkillController extends Controller
             $query->pluck('riasec_code_skill.riasec_code_id');
         }]);
 
-        $skills = $query->paginate(10);
+        $skills = $query->get();
 
         return $skills;
     }

@@ -99,6 +99,7 @@
                     v-model="filters.category"
                     placeholder="Κατηγορία"
                     :options="permissionsStore.getCategoryDropdownOptions"
+                     :narrow="true"
                     class="mx-1"
                 />
 
