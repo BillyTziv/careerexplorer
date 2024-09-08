@@ -13,6 +13,7 @@
 	import VolunteerStatusChangeModal from '@/Components/Modals/VolunteerStatusChangeModal.vue';
 	import VolunteerNotesModal from '@/Components/Modals/VolunteerNotesModal.vue';
 	import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
+	import HistoryCard from './HistoryCard.vue';
 
     import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
 	import { useToastNotification } from '@/Composables/useToastNotification';
@@ -28,6 +29,10 @@
             default: () => []
         },
 		volunteerAssignedRecruiterDropdownOptions: {
+			type: Array,
+			default: () => []
+		},
+		volunteerHistory: {
 			type: Array,
 			default: () => []
 		}
@@ -395,7 +400,7 @@
 								Σημειώσεις
 							</VSectionHeading>
 						</template>
-						
+
 						<p style="white-space: pre-wrap;" class="dark:text-slate-100 dark:text-sm">
 							{{ volunteer.notes }}
 						</p>
@@ -451,6 +456,23 @@
 							</h5>
 							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.reason }}</div>
 						</template>
+					</VolunteerSection>
+
+
+					<VolunteerSection
+						:sectionId="'personality'"
+					>
+						<template #header>
+							<VSectionHeading>Ιστορικό Ενεργειών</VSectionHeading>
+						</template>
+
+						<div class="flex flex-row gap-0 md:flex-column overflow-auto">
+							<HistoryCard
+								v-for="user in volunteerHistory" 
+								:key="user" 
+								:user="user"
+							/>
+						</div>
 					</VolunteerSection>
 				</div>
 			</div>

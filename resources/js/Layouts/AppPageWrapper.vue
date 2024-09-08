@@ -8,6 +8,13 @@ import AppProfileSidebar from './AppProfileSidebar.vue';
 // import AppBreadCrumb from './AppBreadcrumb.vue';
 import { useLayout } from '@/Layouts/composables/layout';
 
+const props = defineProps({
+    applyCardLayout: {
+        type: Boolean,
+        default: true
+    }
+});
+
 const $primevue = usePrimeVue();
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 const outsideClickListener = ref(null);
@@ -95,7 +102,7 @@ onMounted(() => {
             <AppTopbar ref="topbarRef" />
             <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
             <div class="layout-content">
-                <div class="card">
+                <div :class="{ card: applyCardLayout }"> 
 					<div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
 						<div class="text-900 text-2xl font-semibold mb-3 md:mb-0">
 							<slot name="page-title"></slot>

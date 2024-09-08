@@ -4,13 +4,13 @@ namespace App\Models\Test;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Test\Question;
+use App\Models\Test\Test;
 
-class Test extends Model
+class Question extends Model
 {
     use HasFactory;
 
-    public function questions() {
-        return $this->hasMany(Question::class);
+    public function tests() {
+        return $this->belongsTo(Test::class);
     }
 }

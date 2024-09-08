@@ -1,6 +1,5 @@
 <script setup>
-    /* Core */
-    import { onMounted } from 'vue';
+    import { ref, onMounted, watch } from 'vue';
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
@@ -9,18 +8,114 @@
     import { useUserStore } from '@/Stores/useUser.store';
 
     import BaseOverviewCard from '@/Components/Base/Graph/BaseOverviewCard.vue';
+    import BaseBarChart from '@/Components/Base/Graph/BaseBarChart.vue';
+    import BasePieChart from '@/Components/Base/Graph/BasePieChart.vue';
+    import BaseLineChart from '@/Components/Base/Graph/BaseLineChart.vue';
 
     const userStore = useUserStore();
 
     /* Component Properties */
     let props = defineProps({
         user: Object,
-        statistics: Object,
+        summary: {
+            type: Object,
+            default: () => ({
+                volunteers: 0,
+                sessionRequests: 0,
+                testSubmissions: 0,
+                careers: 0,
+            }),
+        },
         testSubmissions: Array,
-        volunteers: Array,
+        volunteers: {
+            type: Object,
+            default: () => ({
+                labels: [],
+                data: [],
+            }),
+        },
+        volunteerRoles: {
+            type: Object,
+            default: () => ({
+                labels: [],
+                data: [],
+            }),
+        },
         careerRequests: Array,
-        sessionRequests: Array,
+        sessionRequests: {
+            type: Object,
+            default: () => ({
+                labels: [],
+                data: [],
+            }),
+        }
     });
+
+
+    // const barData = ref({});
+    // const documentStyle = getComputedStyle(document.documentElement);
+    // const textColor = documentStyle.getPropertyValue('--text-color');
+    
+    // barData.value = {
+    //     labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+    //     datasets: [
+    //         {
+    //             label: 'Revenue',
+    //             backgroundColor: documentStyle.getPropertyValue('--primary-500'),
+    //             barThickness: 12,
+    //             borderRadius: 12,
+    //             data: selectedWeek.value.data[0]
+    //         },
+    //         {
+    //             label: 'Profit',
+    //             backgroundColor: documentStyle.getPropertyValue('--primary-200'),
+    //             barThickness: 12,
+    //             borderRadius: 12,
+    //             data: selectedWeek.value.data[1]
+    //         }
+    //     ]
+    // };
+ 
+    // Function to update bar chart data based on the selected week
+    // const updateChartData = () => {
+    //         pieData.value = {
+    //         labels: ['Electronics', 'Fashion', 'Household'],
+    //         datasets: [
+    //             {
+    //                 data: [300, 50, 100],
+    //                 backgroundColor: [documentStyle.getPropertyValue('--primary-700'), documentStyle.getPropertyValue('--primary-400'), documentStyle.getPropertyValue('--primary-100')],
+    //                 hoverBackgroundColor: [documentStyle.getPropertyValue('--primary-600'), documentStyle.getPropertyValue('--primary-300'), documentStyle.getPropertyValue('--primary-200')]
+    //             }
+    //         ]
+    //     };
+    // };
+
+    // Function to handle the week change
+    // const onWeekChange = () => {
+    //     updateChartData();
+    // };
+
+    // const weeks = ref([
+    //     {
+    //         label: 'Last Week',
+    //         value: 0,
+    //         data: [
+    //             [65, 59, 80, 81, 56, 55, 40],
+    //             [28, 48, 40, 19, 86, 27, 90]
+    //         ]
+    //     },
+    //     {
+    //         label: 'This Week',
+    //         value: 1,
+    //         data: [
+    //             [35, 19, 40, 61, 16, 55, 30],
+    //             [48, 78, 10, 29, 76, 77, 10]
+    //         ]
+    //     }
+    // ]);
+    // const selectedWeek = ref(weeks.value[0]);
+
+    // watch(selectedWeek, updateChartData, { immediate: true });
 
     onMounted(() => {
         userStore.setUser( props.user )
@@ -28,96 +123,81 @@
 </script>
 
 <template>
-    <AppPageWrapper>
+    <AppPageWrapper :apply-card-layout="false">
         <template #page-title>
-            Στατιστικά {{ statistics }}
+            Στατιστικά
         </template>
 
         <template #page-content>
             <div class="grid">
                 <div class="col-12 md:col-6 xl:col-3">
                     <BaseOverviewCard
-                        title="Εθελοντές"
-                        :value="statistics.volunteers"
+                        title="Συνολικές Αιτήσεις Εθελοντών"
+                        :value="summary.volunteerApplications"
                         percentageChange="+12%"
                         :isPositiveChange="true"
                     />
                 </div>
                 <div class="col-12 md:col-6 xl:col-3">
-                    <div class="card h-full">
-                        <span class="font-semibold text-lg">Revenue</span>
-                        <div class="flex justify-content-between align-items-start mt-3">
-                            <div class="w-6">
-                                <span class="text-4xl font-bold text-900">$4500</span>
-                                <div class="text-green-500">
-                                    <span class="font-medium">+20%</span>
-                                    <i class="pi pi-arrow-up text-xs ml-2"></i>
-                                </div>
-                            </div>
-                            <!-- <div class="w-6">
-                                <svg width="100%" viewBox="0 0 115 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M1 35.6498L2.24444 32.4319C3.48889 29.214 5.97778 22.7782 8.46667 20.3627C10.9556 17.9473 13.4444 19.5522 15.9333 21.7663C18.4222 23.9803 20.9111 26.8035 23.4 30.6606C25.8889 34.5176 28.3778 39.4085 30.8667 37.2137C33.3556 35.0189 35.8444 25.7383 38.3333 26.3765C40.8222 27.0146 43.3111 37.5714 45.8 38.9013C48.2889 40.2311 50.7778 32.3341 53.2667 31.692C55.7556 31.0499 58.2444 37.6628 60.7333 39.4617C63.2222 41.2607 65.7111 38.2458 68.2 34.9205C70.6889 31.5953 73.1778 27.9597 75.6667 23.5955C78.1556 19.2313 80.6444 14.1385 83.1333 13.8875C85.6222 13.6365 88.1111 18.2272 90.6 20.2425C93.0889 22.2578 95.5778 21.6977 98.0667 18.8159C100.556 15.9341 103.044 10.7306 105.533 7.37432C108.022 4.01806 110.511 2.50903 111.756 1.75451L113 1"
-                                        :style="{ strokeWidth: '1px', stroke: 'var(--primary-color)' }"
-                                    />
-                                </svg>
-                            </div> -->
-                        </div>
-                    </div>
+                    <BaseOverviewCard
+                        title="Συνολικές Συνεδρίες Ε,Π."
+                        :value="summary.sessionRequests"
+                        percentageChange="+12%"
+                        :isPositiveChange="true"
+                    />
                 </div>
                 <div class="col-12 md:col-6 xl:col-3">
-                    <div class="card h-full">
-                        <span class="font-semibold text-lg">Visitors</span>
-                        <div class="flex justify-content-between align-items-start mt-3">
-                            <div class="w-6">
-                                <span class="text-4xl font-bold text-900">360</span>
-                                <div class="text-pink-500">
-                                    <span class="font-medium">+24%</span>
-                                    <i class="pi pi-arrow-down text-xs ml-2"></i>
-                                </div>
-                            </div>
-                            <div class="w-6">
-                                <svg width="100%" viewBox="0 0 115 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M1.5 1L2.74444 2.61495C3.98889 4.2299 6.47778 7.4598 8.96667 9.07151C11.4556 10.6832 13.9444 10.6767 16.4333 11.6127C18.9222 12.5487 21.4111 14.4271 23.9 16.6724C26.3889 18.9178 28.8778 21.5301 31.3667 20.1977C33.8556 18.8652 36.3444 13.5878 38.8333 11.3638C41.3222 9.13969 43.8111 9.96891 46.3 11.9894C48.7889 14.0099 51.2778 17.2217 53.7667 16.2045C56.2556 15.1873 58.7444 9.9412 61.2333 11.2783C63.7222 12.6155 66.2111 20.5359 68.7 21.4684C71.1889 22.401 73.6778 16.3458 76.1667 16.0009C78.6556 15.6561 81.1444 21.0217 83.6333 24.2684C86.1222 27.515 88.6111 28.6428 91.1 27.4369C93.5889 26.2311 96.0778 22.6916 98.5667 22.7117C101.056 22.7317 103.544 26.3112 106.033 29.7859C108.522 33.2605 111.011 36.6302 112.256 38.3151L113.5 40"
-                                        :style="{ strokeWidth: '1px', stroke: 'var(--pink-500)' }"
-                                    />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    <BaseOverviewCard
+                        title="Ολοκληρωμένα Test"
+                        :value="summary.testSubmissions"
+                        percentageChange="+12%"
+                        :isPositiveChange="true"
+                    />
                 </div>
                 <div class="col-12 md:col-6 xl:col-3">
-                    <div class="card h-full">
-                        <span class="font-semibold text-lg">Stock</span>
-                        <div class="flex justify-content-between align-items-start mt-3">
-                            <div class="w-6">
-                                <span class="text-4xl font-bold text-900">164</span>
-                                <div class="text-green-500">
-                                    <span class="font-medium">+30%</span>
-                                    <i class="pi pi-arrow-up text-xs ml-2"></i>
-                                </div>
-                            </div>
-                            <div class="w-6 text-right">
-                                <Knob v-model="knobValue" valueTemplate="90%" readonly :strokeWidth="2" :size="90" class="-mt-5"></Knob>
-                            </div>
-                        </div>
-                    </div>
+                    <BaseOverviewCard
+                        title="Συνολικά Επαγγέλματα"
+                        :value="summary.careers"
+                        percentageChange="+12%"
+                        :isPositiveChange="true"
+                    />
                 </div>
-                <div class="col-12 xl:col-9">
-                    <div class="card h-full">
-                        <div class="flex align-items-start justify-content-between mb-6">
-                            <span class="text-900 text-xl font-semibold">Revenue Overview</span>
-                            <Dropdown :options="weeks" v-model="selectedWeek" class="w-10rem" optionLabel="label" @change="onWeekChange"></Dropdown>
-                        </div>
-                        <Chart type="bar" :height="300" :data="barData" :options="barOptions"></Chart>
-                    </div>
+
+                <div class="col-12 xl:col-6">
+                    <!-- <Dropdown 
+                        :options="weeks" 
+                        v-model="selectedWeek" 
+                        class="w-10rem" 
+                        optionLabel="label" 
+                        @change="onWeekChange" 
+                    /> -->
+                    
+                    <!-- <BaseBarChart title="Σύνολο" /> -->
+                    <!-- <BasePieChart title="Πωλήσεις ανά Κατηγορία" /> -->
+                    <BaseLineChart 
+                        title="Αιτήσεις Εθελοντικής Συμμετοχής" 
+                        label="Πλήθος Αιτήσεων"
+                        :data="volunteers.data"
+                        :labels="volunteers.labels"
+                        color="#6366F1"
+                    />
+
+                    <BaseLineChart 
+                        title="Αιτήσεις για Συνεδρία Ε.Π." 
+                        label="Πλήθος Αιτήσεων"
+                        :data="sessionRequests.data"
+                        :labels="sessionRequests.labels"
+                        color="#6366F1"
+                    />
                 </div>
-                <div class="col-12 xl:col-3">
-                    <div class="card h-full">
-                        <div class="text-900 text-xl font-semibold mb-6">Sales by Category</div>
-                        <Chart type="pie" :data="pieData" :height="300" :options="pieOptions"></Chart>
-                    </div>
+                <div class="col-12 xl:col-6">
+                    <BasePieChart 
+                        title="Κατανομή Εθελοντών" 
+                        label="Εθελοντές "
+                        :data="volunteerRoles.data"
+                        :labels="volunteerRoles.labels"
+                        color="#6366F1"
+                    />
                 </div>
             </div>
 
@@ -155,10 +235,8 @@ const weeks = ref([
     }
 ]);
 const selectedWeek = ref(weeks.value[0]);
-const pieOptions = ref({});
 const barOptions = ref({});
-const barData = ref({});
-const pieData = ref({});
+
 const salesTableRef = ref(null);
 const filterSalesTable = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
@@ -174,101 +252,12 @@ watch(layoutConfig.colorScheme, () => {
 });
 const setChartData = () => {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-    pieData.value = {
-        labels: ['Electronics', 'Fashion', 'Household'],
-        datasets: [
-            {
-                data: [300, 50, 100],
-                backgroundColor: [documentStyle.getPropertyValue('--primary-700'), documentStyle.getPropertyValue('--primary-400'), documentStyle.getPropertyValue('--primary-100')],
-                hoverBackgroundColor: [documentStyle.getPropertyValue('--primary-600'), documentStyle.getPropertyValue('--primary-300'), documentStyle.getPropertyValue('--primary-200')]
-            }
-        ]
-    };
-    pieOptions.value = {
-        animation: {
-            duration: 0
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                labels: {
-                    color: textColor,
-                    usePointStyle: true,
-                    font: {
-                        weight: 700
-                    },
-                    padding: 28
-                },
-                position: 'bottom'
-            }
-        }
-    };
-    barData.value = {
-        labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
-        datasets: [
-            {
-                label: 'Revenue',
-                backgroundColor: documentStyle.getPropertyValue('--primary-500'),
-                barThickness: 12,
-                borderRadius: 12,
-                data: selectedWeek.value.data[0]
-            },
-            {
-                label: 'Profit',
-                backgroundColor: documentStyle.getPropertyValue('--primary-200'),
-                barThickness: 12,
-                borderRadius: 12,
-                data: selectedWeek.value.data[1]
-            }
-        ]
-    };
-    barOptions.value = {
-        animation: {
-            duration: 0
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                labels: {
-                    color: textColor,
-                    usePointStyle: true,
-                    font: {
-                        weight: 700
-                    },
-                    padding: 28
-                },
-                position: 'bottom'
-            }
-        },
-        scales: {
-            x: {
-                ticks: {
-                    color: textColorSecondary,
-                    font: {
-                        weight: 500
-                    }
-                },
-                grid: {
-                    display: false,
-                    drawBorder: false
-                }
-            },
-            y: {
-                ticks: {
-                    color: textColorSecondary
-                },
-                grid: {
-                    color: surfaceBorder,
-                    drawBorder: false
-                }
-            }
-        }
-    };
+    
+    
+    
+   
 };
 const formatCurrency = (value) => {
     return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });

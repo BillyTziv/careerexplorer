@@ -17,6 +17,7 @@ use App\Models\Volunteer\VolunteerRole;
 use App\Models\Volunteer\VolunteerStatus;
 
 use App\Models\EmailTemplate\EmailTemplate;
+use App\Models\VolunteerHistory;
 
 /* Services */
 use App\Services\EmailService;
@@ -28,14 +29,14 @@ use App\Mail\InviteVolunteer;
 use App\Mail\CreateUserAccount;
 use App\Mail\DynamicEmailTemplate;
 
-/* Support */
+/* Helpers */
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\TryCatch;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
-
 use stdClass;
 
 class VolunteerController extends Controller {
@@ -504,6 +505,14 @@ class VolunteerController extends Controller {
             ]
         ]);
 
+        // Log the action
+        VolunteerHistory::create([
+            'volunteer_id' => $volunteer->id,
+            'user_id' => Auth::id(),
+            'action' => 'created',
+            'description' => 'Volunteer created with ID ' . $volunteer->id,
+        ]);
+
         //$emailService->sendTestEmail($request, $emailTemplate);
 
         // $data = ['message' => 'Dummy Data'];
@@ -543,13 +552,20 @@ class VolunteerController extends Controller {
             
         if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
 
+        $volunteerHistory = DB::table('volunteer_histories')
+            ->join('users', 'volunteer_histories.user_id', '=', 'users.id')
+            ->where('volunteer_histories.volunteer_id', $id)
+            ->select('volunteer_histories.*', DB::raw("CONCAT(users.firstname, ' ', users.lastname) as fullname"))
+            ->get();
+
         return Inertia::render('Volunteers/Show', [
             'response' => [],
             'volunteer' => $volunteer,
             'roles' => self::getUserRoles(),
             'assignees' => self::getAssignees(),
             'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses(),
-            'volunteerAssignedRecruiterDropdownOptions'=> self::getVolunteerRecruiters()
+            'volunteerAssignedRecruiterDropdownOptions'=> self::getVolunteerRecruiters(),
+            'volunteerHistory' => $volunteerHistory,
         ]);
     }
 
@@ -591,6 +607,7 @@ class VolunteerController extends Controller {
 
         // Change the status of the volunteer.
         $volunteer = Volunteer::findOrFail($volunteer);
+        $oldStatus = $volunteer->status;
 
         $volunteer->status = $request->newStatusValue;
         $volunteer->disapproved_reason = $request->statusChangeReason ?? null;
@@ -598,6 +615,15 @@ class VolunteerController extends Controller {
 
         $volunteer->save();
 
+        // Log the status change
+        VolunteerHistory::create([
+            'volunteer_id' => $volunteer->id,
+            'user_id' => Auth::id(),
+            'action' => 'status changed',
+            'description' => 'Status changed from ' . $oldStatus . ' to ' . $volunteer->status,
+        ]);
+
+        // Assuming the user is authenticated
         if( !$request->sendEmail ) {
             return back()->with([
                 'message' => 'Η κατάσταση του εθελοντή ενημερώθηκε! Δεν έγινε αποστολή email.',
