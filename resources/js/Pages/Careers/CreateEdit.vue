@@ -80,8 +80,6 @@
     });
 
     function submit() {
-        console.log( careerData );
-
         if( careerData.id && careerData.id > 0 ) {
             router.put('/careers/'+ careerData.id, careerData);
         }else {
