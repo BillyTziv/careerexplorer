@@ -90,13 +90,17 @@
     const deleteVolunteer = () => {
         if( !selectVolunteer.value.id || selectVolunteer.value.id <= 0 ) return;
 
-        router.delete(`/volunteers/${selectVolunteer.value.id}`);
-
-        const sucessDeleteMsg = `Ο εθελοντής ${selectVolunteer.value.firstname} ${selectVolunteer.value.lastname} διαγράφηκε επιτυχώς.`;
-        notify('success', 'Ολοκληρώθηκε', sucessDeleteMsg);
-
-        deleteVolunteerDialog.value = false;
-        selectVolunteer.value = null;
+        router.delete(`/volunteers/${selectVolunteer.value.id}`, 
+            { 
+                preserveState: true, 
+                replace: true, 
+                onSuccess: () => {
+                    notify('success', 'Ολοκληρώθηκε', `Ο εθελοντής ${selectVolunteer.value.firstname} ${selectVolunteer.value.lastname} διαγράφηκε επιτυχώς.`);
+                    deleteVolunteerDialog.value = false;
+                    selectVolunteer.value = null;
+                }
+            }
+        );
     };
 
     const filters = reactive( volunteerStore.getTableFilters );

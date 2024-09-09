@@ -734,7 +734,6 @@ class VolunteerController extends Controller {
     }
 
     public function updateNotes( Request $request, $volunteer ) {
-
         $volunteer = Volunteer::find( $volunteer );
         $vid = $volunteer->id;
 

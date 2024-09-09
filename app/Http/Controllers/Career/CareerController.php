@@ -138,94 +138,6 @@ class CareerController extends Controller
         ]);
     }
 
-    /**
-     * Retrieves a 
-     *  of careers based on search criteria.
-     * 
-     * @param Request $request The request object containing search parameters.
-     * @return \Inertia\Response The rendered view of career listings.
-     *
-     * - search         String Search keyword or ''
-     * - order          String 'desc', 'asc'
-     * - hollandCode    String 'RIASEC'
-     * 
-     * eg. /careers/list?search=x&code=RIA&order=desc
-     */
-    public function list( Request $request )
-    {
-        // Set active career status.
-        $activeCareerStatus = 2;
-
-        // Get the requested order (default: 'desc').
-        $order = $request->query('order', 'desc');
-
-        // Get the search keyword (default: empty string).
-        $searchKeyword = $request->query('search', '');
-
-        // Get the Holland code filter (default: null).
-        $hollandCode = $request->query('code');
-        $hollandCodeArray = [];
-
-        // Convert Holland code string to an array, if not empty.
-        if( !empty( $hollandCode ) ) {
-            $hollandCodeArray = str_split( $hollandCode );
-        }
-
-        // Prepare query that will fetch all filtered available careers. 
-        $careers = Career::query()
-            ->when($searchKeyword, function ($query, $search) {
-                $query->where('title', 'LIKE', "%{$search}%");
-            })
-            ->where('deleted', false)
-            ->where('status', $activeCareerStatus)
-            ->orderBy('created_at', $order)
-            ->with('riasecCodes');
-
-        // Apply Holland code filter, if provided.
-        if( !empty($hollandCodeArray) ) {
-            $careers->whereHas('riasecCodes', function ($query) use ($hollandCodeArray) {
-                $query->whereIn('symbol', $hollandCodeArray);
-            });
-        }
-
-        // Select return field and add pagination.
-        $careers = $careers->paginate(7)
-            ->through(function ($career) {
-                return [
-                    'id' => $career->id,
-                    'title' => $career->title,
-                    'description' => $career->description,
-                    'riasec_codes' => $career->riasecCodes->pluck('symbol')
-                ];
-            })
-            ->withQueryString();
-
-        // Log search requests with no results for further analysis.
-        if( $careers->isEmpty() ) {
-            $pendingCareerRequestStatus = 1;
-            $inboundEmail = 'reply@careerexplorer.gr';
-
-            // Create a new CareerRequest entry to keep track of the unsuccessful search.
-            $careerRequest = new CareerRequest([
-                'keyword' => $searchKeyword,
-                'email' => $inboundEmail,
-                'status' => $pendingCareerRequestStatus
-            ]);
-
-            $careerRequest->save();
-        }
-
-        return Inertia::render('Careers/List', [
-            'careers' => $careers,
-            'filters' => [
-                'search' => $searchKeyword,
-                'page' => $careers->currentPage(),
-                'order' => $order,
-                'hollandCode' => $hollandCode
-            ]
-        ]);
-    }
-
     public function create()
     {
         return Inertia::render('Careers/CreateEdit', [
@@ -423,4 +335,100 @@ class CareerController extends Controller
             'response' => []
         ]);
     }
+
+     /**
+     * Retrieves a 
+     *  of careers based on search criteria.
+     * 
+     * @param Request $request The request object containing search parameters.
+     * @return \Inertia\Response The rendered view of career listings.
+     *
+     * - search         String Search keyword or ''
+     * - order          String 'desc', 'asc'
+     * - hollandCode    String 'RIASEC'
+     * 
+     */
+    public function exploreCareers( Request $request )
+    {
+        // Set active career status.
+        $activeCareerStatus = 2;
+
+        // Get the requested order (default: 'desc').
+        $order = $request->query('order', 'desc');
+
+        // Get the search keyword (default: empty string).
+        $searchKeyword = $request->query('search', '');
+
+        // Get the Holland code filter (default: null).
+        $hollandCode = $request->query('code');
+        $hollandCodeArray = [];
+
+        // Convert Holland code string to an array, if not empty.
+        if( !empty( $hollandCode ) ) {
+            $hollandCodeArray = str_split( $hollandCode );
+        }
+
+        // Prepare query that will fetch all filtered available careers. 
+        $careers = Career::query()
+            ->when($searchKeyword, function ($query, $search) {
+                $query->where('title', 'LIKE', "%{$search}%");
+            })
+            ->where('deleted', false)
+            ->orderBy('created_at', $order)
+            ->with('riasecCodes');
+
+        // Apply Holland code filter, if provided.
+        if( !empty($hollandCodeArray) ) {
+            $careers->whereHas('riasecCodes', function ($query) use ($hollandCodeArray) {
+                $query->whereIn('symbol', $hollandCodeArray);
+            });
+        }
+        
+        $careers = $careers->get()
+            ->map(function ($career) {
+                return [
+                    'id' => $career->id,
+                    'title' => $career->title,
+                    'description' => $career->description,
+                    'riasec_codes' => $career->riasecCodes->pluck('symbol')
+                ];
+            });
+
+     
+
+        // Log search requests with no results for further analysis.
+        if( $careers->isEmpty() ) {
+            $pendingCareerRequestStatus = 1;
+            $inboundEmail = 'reply@careerexplorer.gr';
+
+            // Create a new CareerRequest entry to keep track of the unsuccessful search.
+            $careerRequest = new CareerRequest([
+                'keyword' => $searchKeyword,
+                'email' => $inboundEmail,
+                'status' => $pendingCareerRequestStatus
+            ]);
+
+            $careerRequest->save();
+        }
+
+        return Inertia::render('Careers/ExploreCareers', [
+            'careers' => $careers,
+            'filters' => [
+                'search' => $searchKeyword,
+                // 'page' => $careers,
+                'order' => $order,
+                'hollandCode' => $hollandCode
+            ]
+        ]);
+    }
+
+    public function singleCareer( $id )
+    {
+
+        return Inertia::render('Careers/SingleCareer', [
+            'career' =>  Career::with(['riasecCodes', 'interests', 'skills', 'responsibilities', 'courses'])->find($id)
+
+        ]);
+    }
+
 }

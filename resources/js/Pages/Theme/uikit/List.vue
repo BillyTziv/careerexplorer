@@ -2,6 +2,15 @@
 import { ref, onMounted } from 'vue';
 import { ProductService } from '@/Services/ProductService';
 
+const props = defineProps({
+        careers: {
+            type: Object,
+            required: true
+        },
+        filters: Object,
+        response: Object,
+    });
+    
 const picklistValue = ref([
     [
         { name: 'San Francisco', code: 'SF' },

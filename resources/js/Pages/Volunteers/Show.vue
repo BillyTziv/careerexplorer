@@ -49,12 +49,12 @@
 	 		notes: notes
 	 	}, {
 	 		preserveState: true,
-	 		replace: true
+	 		replace: true,
+			onSuccess: () => {
+				let saveNotesMsg = 'Οι σημειώσεις του εθελοντή ενημερώθηκαν επιτυχώς.';
+				notify('success', 'Ολοκληρώθηκε', saveNotesMsg);
+			},
 	 	});
-
-		// Popup a notification
-		let saveNotesMsg = 'Οι σημειώσεις του εθελοντή ενημερώθηκαν επιτυχώς.';
-		notify('success', 'Ολοκληρώθηκε', saveNotesMsg);
 	}
 	
 	function changeVolunteerStatus( form ) {
@@ -62,14 +62,18 @@
 			newStatusValue: selectedVolunteerStatus.value,
 			statusChangeReason: form.reason,
 			sendEmail: form.sendEmail
-		}, { preserveState: true, replace: true });
+		}, { 
+			preserveState: true, 
+			replace: true,
+			onSuccess: () => {
+				// Popup a notification
+				let changeStatusMsg = 'Η κατάσταση του εθελοντή ' + props.volunteer.firstname + ' ' + props.volunteer.lastname + ' άλλαξε επιτυχώς.';
+				notify('success', 'Ολοκληρώθηκε', changeStatusMsg);
 
-		// Popup a notification
-		let changeStatusMsg = 'Η κατάσταση του εθελοντή ' + props.volunteer.firstname + ' ' + props.volunteer.lastname + ' άλλαξε επιτυχώς.';
-		notify('success', 'Ολοκληρώθηκε', changeStatusMsg);
-
-		// Close the modal
-		showVolunteerStatusChangeModal.value = false;
+				// Close the modal
+				showVolunteerStatusChangeModal.value = false;
+			}
+		});
 	}
 
 	const volunteerProfileImage = computed( () => {
@@ -144,11 +148,15 @@
 	watch(() => selectedAssignedRecruiter.value, (newVal) => {		
 		router.put('/volunteers/' + props.volunteer.id + '/assign-recruiter', {
 			recruiterId: selectedAssignedRecruiter.value,
-		}, { preserveState: true, replace: true });
-
-		// Popup a notification
-		let assignedRecruiterMsg = 'Ο εθελοντής ανατέθηκε επιτυχώς στον Recruiter ' + selectedAssignedRecruiter.value;
-		notify('success', 'Ολοκληρώθηκε', assignedRecruiterMsg);
+		}, {
+			preserveState: true, 
+			replace: true,
+			onSuccess: () => {
+				// Popup a notification
+				let assignedRecruiterMsg = 'Ο εθελοντής ανατέθηκε επιτυχώς στον Recruiter ' + selectedAssignedRecruiter.value;
+				notify('success', 'Ολοκληρώθηκε', assignedRecruiterMsg);
+			}
+		});
 	});
 
 
@@ -246,8 +254,6 @@
 								@update:isOpen="showVolunteerStatusChangeModal = $event"
 								@change="changeVolunteerStatus"
 							/>
-
-						
 
 							<BaseDropdownInput
 								v-model="selectedVolunteerStatus"

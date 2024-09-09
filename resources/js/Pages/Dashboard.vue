@@ -58,7 +58,12 @@
                         Αίτηση Συνεδρίας Ε.Π.
                     </a>
 
-                 
+                    <br /> <br />
+
+                    <a href="/explore-careers" class="text-primary hover:underline cursor-pointer font-medium">
+                        Εύρεση Επαγγέλματος
+                    </a>
+
                  
                 </div>
                 <!-- <div class="col-12 md:col-6 xl:col-4">

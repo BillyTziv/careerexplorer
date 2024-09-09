@@ -115,24 +115,31 @@
                 </div>
             </div>
                     
-            <DataTable ref="careersTableRef" :value="careers" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterCareerTable">
+            <DataTable 
+                ref="careersTableRef" 
+                :value="careers" 
+                dataKey="id" 
+                paginator 
+                :rows="20" responsiveLayout="scroll" 
+                v-model:filters="filterCareerTable"
+            >
                 <template #empty>Δεν βρέθηκαν επαγγέλματα.</template>
                 
-                <Column field="name" header="Τίτλος" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="name" header="Τίτλος" sortable>
                     <template #body="{ data }">
                         <span class="p-column-title">Τίτλος</span>
                         {{ data.title }}
                     </template>
                 </Column>
 
-                <Column field="name" header="Σύνδεσμος" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="name" header="Σύνδεσμος">
                     <template #body="{ data }">
                         <span class="p-column-title">Σύνδεσμος</span>
-                        <Button @click="openLink(data.link)" icon="pi pi-link" text rounded />
+                        <Button v-if="data.link" @click="openLink(data.link)" icon="pi pi-link" text rounded />
                     </template>
                 </Column>
 
-                <Column field="holland_code" header="Holland Code" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="holland_code" header="Holland Code" sortable>
                     <template #body="{ data }">
                         <span class="p-column-title">Holland Code</span>
                         {{ data.riasecCodes }}

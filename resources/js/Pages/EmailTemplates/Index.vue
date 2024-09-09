@@ -68,16 +68,17 @@
     };
 
     const sendTestEmail = () => {
-        try {
-            router.post(`/email-templates/${selectedEmailTemplate.value.id}/send-test-email`, {email: testEmailReceiverEmail.value});
-        } catch (error) {
-            console.log(error);
-        }
-
-        const sucessDeleteMsg = `Το δοκιμαστικό email στάλθηκε επιτυχώς στον παραλήπτη ${testEmailReceiverEmail.value}`;
-        notify('success', 'Ολοκληρώθηκε', sucessDeleteMsg);
-
-        sendTestEmailDialog.value = false;
+        router.post( `/email-templates/${selectedEmailTemplate.value.id}/send-test-email`, {
+            email: testEmailReceiverEmail.value
+        }, { 
+                preserveState: true, 
+                replace: true, 
+                onSuccess: () => {
+                    notify('success', 'Ολοκληρώθηκε', `Το δοκιμαστικό email στάλθηκε επιτυχώς στον παραλήπτη ${testEmailReceiverEmail.value}`);
+                    sendTestEmailDialog.value = false;
+                }
+            }
+        );
     };
 
     const searchFilter = ref("");
