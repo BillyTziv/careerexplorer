@@ -45,7 +45,7 @@
         date_of_birth: props.volunteer.date_of_birth || "",
         cv: props.volunteer.cv || "",
         hasGivenConsent: props.volunteer.cvConsent || true,
-        phone: props.volunteer.phone ? parseInt(props.volunteer.phone) : null,
+        phone: props.volunteer.phone ? props.volunteer.phone : null,
         email: props.volunteer.email ? props.volunteer.email : "",
         start_date: props.volunteer.start_date || "",
         end_date: props.volunteer.end_date || "",
@@ -208,7 +208,7 @@
                             ------------------------------------------------------------------------------------------>
                             <div class="p-fluid formgrid grid">
                                 <!-- Phone -->
-                                <BaseNumberInput
+                                <BaseTextInput
                                     v-model="volunteerForm.phone"
                                     label="Τηλέφωνο"
                                     placeholder="Τηλέφωνο.."
