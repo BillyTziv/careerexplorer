@@ -7,7 +7,7 @@
                         <div class="flex align-items-start">
                             <!-- <img src="/images/blocks/logos/hyper.svg" alt="Image" height="40" class="mr-3"> -->
                             <div>
-                                <div class="text-xl font-semibold text-900 mb-2">
+                                <div class="text-2xl font-semibold text-900 mb-2">
                                     <div>
                                         <template v-for="(code, index) in hollandCodes" :key="index">
                                             <Tag :value="''" :style="{ 
@@ -48,92 +48,72 @@
                 </div>
 
                 <div class="grid">
-                    <div class="col-12 lg:col-2">
-                        <div class="flex flex-row lg:flex-column lg:border-right-1 surface-border gap-5 mb-4 lg:px-5">
-                            <div class="text-900 flex flex-row align-items-center justify-content-end"><span
-                                    class="font-semibold mr-3">71</span><i class="pi pi-bookmark"></i></div>
-                            <div class="text-900 flex flex-row align-items-center justify-content-end"><span
-                                    class="font-semibold mr-3">298</span><i class="pi pi-heart"></i></div>
-                            <div class="text-900 flex flex-row align-items-center justify-content-end"><span
-                                    class="font-semibold mr-3">34</span><i class="pi pi-comments"></i></div>
-                        </div>
-                    </div>
-                    <div class="col-12 lg:col lg:px-5">
-                        <div class="flex flex-wrap align-items-center justify-content-between mb-5 gap-5">
-                            <div class="flex flex-row">
-                                <span class="text-900 surface-100 inline-flex font-semibold py-2 px-3 mr-2 border-round">New</span>
-                                
-                                
-                            </div>
-                            <div class="flex align-items-center gap-4"><i class="pi pi-twitter cursor-pointer"></i><i
-                                    class="pi pi-facebook cursor-pointer"></i><i class="pi pi-link cursor-pointer"></i></div>
-                        </div>
+                   
+                    <div class="col-12 lg:col">
+                       
                         <div class="line-height-3 text-xl text-900 mb-5">
+                            <div>
+                                <p class="text-sm">
+                                    {{ career.description }}
+                                </p>
 
-                            <div class="border-1 border-solid surface-border border-round p-4" style="min-height: 20rem;">
-                    <div>
-                        <p>
-                            {{ career.description }}
-                        </p>
+                                <template v-if="hasInterests">
+                                    <h2 class="text-lg font-bold">Ενδιαφέροντα</h2>
+                                    <ul class="text-sm">
+                                        <li v-for="(interest, index) in career.interests" :key="index">
+                                            {{ interest.name }}
+                                        </li>
+                                    </ul>
+                                </template>
 
-                        <template v-if="hasInterests">
-                            <h2 class="text-sm font-bold">Ενδιαφέροντα</h2>
-                            <ul>
-                                <li v-for="(interest, index) in career.interests" :key="index">
-                                    {{ interest.name }}
-                                </li>
-                            </ul>
-                        </template>
+                                <template v-if="hasSkills">
+                                    <h2 class="text-sm font-bold">Δεξιότητες / Προσόντα</h2>
+                                    <ul class="text-sm">
+                                        <li v-for="(skill, index) in career.skills" :key="index">
+                                            {{ skill.name }}
+                                        </li>
+                                    </ul>
+                                </template>
 
-                        <template v-if="hasSkills">
-                            <h2 class="text-sm font-bold">Δεξιότητες / Προσόντα</h2>
-                            <ul>
-                                <li v-for="(skill, index) in career.skills" :key="index">
-                                    {{ skill.name }}
-                                </li>
-                            </ul>
-                        </template>
+                                <template v-if="hasResponsibilities">
+                                    <h2 class="text-sm font-bold">Αρμοδιότητες / Καθήκοντα</h2>
+                                    <ul class="text-sm">
+                                        <li v-for="(respo, index) in career.responsibilities" :key="index">
+                                            {{ respo.name }}
+                                        </li>
+                                    </ul>
+                                </template>
 
-                        <template v-if="hasResponsibilities">
-                            <h2 class="text-sm font-bold">Αρμοδιότητες / Καθήκοντα</h2>
-                            <ul>
-                                <li v-for="(respo, index) in career.responsibilities" :key="index">
-                                    {{ respo.name }}
-                                </li>
-                            </ul>
-                        </template>
+                                <template v-if="hasCourses">
+                                    <h2 class="text-sm font-bold">Μαθήματα</h2>
 
-                        <template v-if="hasCourses">
-                            <h2 class="text-sm font-bold">Μαθήματα</h2>
+                                    <div class="text-900 w-full md:w-10">
+                                        <div class="grid mt-0 mr-0">
+                                            <div v-for="(course, index) in career.courses" :key="index" class="col-12 md:col-6">
+                                                <div class="p-3 border-1 surface-border border-round surface-card">
+                                                    <div class="text-900 mb-2">
+                                                        <!-- <i class="pi pi-github mr-2"></i> -->
+                                                        <span class="font-bold text-sm">{{ course.title }}</span>
+                                                    </div>
 
-                            <div class="text-900 w-full md:w-10">
-                                <div class="grid mt-0 mr-0">
-                                    <div v-for="(course, index) in career.courses" :key="index" class="col-12 md:col-6">
-                                        <div class="p-3 border-1 surface-border border-round surface-card">
-                                            <div class="text-900 mb-2">
-                                                <i class="pi pi-github mr-2"></i>
-                                                <span class="font-medium">{{ course.title }}</span>
+                                                    <div class="text-700 text-sm">{{ course.description }}</div>
+                                                </div>
                                             </div>
-
-                                            <div class="text-700">{{ course.description }}</div>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
+
                             </div>
-                        </template>
-                        <!-- 
-                    
-                        {{ career.courses }} -->
-                    </div>
-                </div>
 
-
-                            <div class="flex align-items-center cursor-pointer"><span class="font-bold mr-3">View Post
-                                    Statistics</span><i class="pi pi-arrow-right"></i></div>
+                            <!-- <div class="flex align-items-center cursor-pointer">
+                                <span class="font-bold mr-3"></span>
+                                <i class="pi pi-arrow-right"></i>
+                            </div> -->
                         </div>
                     </div>
                     <div class="col-12 lg:col-3 lg:border-left-1 surface-border">
-                        <div class="p-3">
+                        <div class="p-2">
+                            This is a sidebar.
                             <!-- <div class="flex border-bottom-1 surface-border pb-4 mb-5"><img
                                     src="/images/blocks/avatars/circle/avatar-f-1.png" class="mr-3 h-5rem w-5rem">
                                 <div class="flex flex-column align-items-start"><span
