@@ -151,8 +151,6 @@ class VolunteerStatusController extends Controller {
         } catch (\Throwable $ex) {
             DB::rollBack();
 
-            dd($ex);
-
             return back()->with([
                 'message' => 'Ουπς, κάτι πήγε στραβά. Παρακαλούμε ξαναπροσπαθήστε.',
                 'status' => 'error',

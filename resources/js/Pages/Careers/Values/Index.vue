@@ -32,7 +32,7 @@
     /* Component Methods */
 
     // Export the careerValues table to CSV
-    const exportCSV = () => {
+    const exportCareerValuesAsCSV = () => {
         careerValuesTableRef.value.exportCSV();
     };
 
@@ -72,7 +72,7 @@
                 </IconField>
                 
                 <div class="flex">
-                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportCareerSkillsAsCSV"></Button>
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportCareerValuesAsCSV"></Button>
                     <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>

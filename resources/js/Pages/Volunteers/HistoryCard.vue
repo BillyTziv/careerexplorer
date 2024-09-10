@@ -1,22 +1,20 @@
 <script setup>
-import { computed } from 'vue';
-import { useFormatDate } from '@/Composables/useFormatDate';
+    import { useFormatDate } from '@/Composables/useFormatDate';
 
 
-const props = defineProps({
-    user: {
-        type: Object,
-        required: true
-    }
-});
+    const props = defineProps({
+        user: {
+            type: Object,
+            required: true
+        }
+    });
 
-const { formatDate } = useFormatDate( );
-
+    const { formatDate } = useFormatDate();
 </script>
 
 <template>
     <div
-        class="flex flex-nowrap justify-content-between align-items-center p-2 cursor-pointer select-none hover:surface-hover transition-colors transition-duration-150"
+        class="flex flex-nowrap justify-content-between align-items-center p-2 hover:surface-hover transition-colors transition-duration-150"
         tabindex="0"
     >
         <div class="flex align-items-center">
@@ -31,11 +29,11 @@ const { formatDate } = useFormatDate( );
             <div class="flex-column hidden md:flex">
                 <span class="text-900 font-semibold block">{{ user.fullname }}</span>
                 <!-- Display the description directly from the user prop -->
-                <span class="block text-600 text-overflow-ellipsis overflow-hidden white-space-nowrap w-10rem text-sm">{{ user.description }}</span>
+                <span class="block text-600 white-space-nowrap w-10rem text-sm">{{ user.description }}</span>
             </div>
         </div>
         
         <!-- Display the created_at directly from the user prop -->
-        <span class="text-700 font-semibold ml-auto hidden md:inline">{{ formatDate(user.created_at) }}</span>
+        <span class="text-700 font-light ml-auto hidden md:inline">{{ formatDate(user.created_at, true) }}</span>
     </div>
 </template>

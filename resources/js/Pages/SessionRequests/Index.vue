@@ -13,6 +13,7 @@
     import { useSessionRequestStore } from '@/Stores/useSessionRequest.store';
 
     const sessionRequestStore = useSessionRequestStore();
+    import { useFormatDate } from '@/Composables/useFormatDate';
 
     let props = defineProps({
         user: Object,
@@ -23,39 +24,14 @@
     });
 
     const { getStatusName } = useSessionRequestStatusMapper();
+    const { formatDate } = useFormatDate( );
 
-    const deleteUserDialog = ref(false);
-    const selectedSessionRequest = ref(null);
+    // const deleteUserDialog = ref(false);
+    // const selectedSessionRequest = ref(null);
     const sessionRequestsTableRef = ref(null);
     const filterUsersTable = ref(props.filters);
 
     const filters = reactive( sessionRequestStore.getTableFilters );
-
-    const exportCSV = () => {
-        sessionRequestsTableRef.value.exportCSV();
-    };
-
-    const editSessionRequest = ( user ) => {
-        router.visit(`/session-requests/${user.id}/edit`);
-    };
-
-    const assignSessionRequest = ( sessionRequest ) => {
-        router.visit(`/session-requests/${sessionRequest.id}/assign`);
-    };
-
-    const confirmDeleteSessionRequest = ( editUser ) => {
-        selectedSessionRequest.value = editUser;
-        deleteUserDialog.value = true;
-    };
-
-    const deleteSessionRequest = () => {
-        router.delete(`/session-requests/${selectedSessionRequest.value.id}`)
-        deleteUserDialog.value = false;
-        selectedSessionRequest.value = {};
-        // users.value = users.value.filter((val) => val.id !== user.value.id);
-    
-        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
-    };
 
     /* Watch for changes in the filters */
     watch(() => sessionRequestStore.getTableFilters, () => {
@@ -71,17 +47,38 @@
     };
 
     const acceptSessionRequest = (sessionRequest) => {
-        router.put(`/session-requests/${sessionRequest.id}/accept`)
-        // users.value = users.value.filter((val) => val.id !== user.value.id);
-    
-        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
+        router.put(`/session-requests/${sessionRequest.id}/accept`, {
+            preserveState: true, 
+            replace: true, 
+            onSuccess: () => {
+                notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας έχει ανατεθεί σε σύμβουλο Ε.Π. επιτυχώς.`);
+            }
+        })
     };
 
     const completeSessionRequest = (sessionRequest) => {
-        router.put(`/session-requests/${sessionRequest.id}/complete`)
-        // users.value = users.value.filter((val) => val.id !== user.value.id);
-    
-        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
+        router.put(`/session-requests/${sessionRequest.id}/complete`, { 
+            preserveState: true, 
+            replace: true, 
+            onSuccess: () => {
+                notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας του χρήστη ${sessionRequest.firstname} ${sessionRequest.lastname} ολοκληρώθηκε επιτυχώς.`);
+            }
+        })
+    };
+
+    // const confirmDeleteSessionRequest = ( editUser ) => {
+    //     selectedSessionRequest.value = editUser;
+    //     deleteUserDialog.value = true;
+    // };
+
+    // const deleteSessionRequest = () => {
+    //     router.delete(`/session-requests/${selectedSessionRequest.value.id}`)
+    //     deleteUserDialog.value = false;
+    //     selectedSessionRequest.value = {};
+    // };
+
+    const exportSessionRequestsAsCSV = () => {
+        sessionRequestsTableRef.value.exportCSV();
     };
 </script>
 
@@ -102,6 +99,7 @@
                     placeholder="Όλες οι Καταστάσεις"
                     :options="sessionRequestStore.getStatusDropdownOptions"
                     class="mx-1"
+                    :narrow="true"
                 />
             
                 <Button
@@ -121,12 +119,19 @@
                 </IconField>
                 
                 <div class="flex">
-                    <!-- <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportAsCSV"></Button> -->
+                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportSessionRequestsAsCSV"></Button>
                     <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
             </div>
 
-            <DataTable ref="sessionRequestsTableRef" :value="sessions" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterUsersTable">
+            <DataTable
+                ref="sessionRequestsTableRef" 
+                :value="sessions" dataKey="id" 
+                paginator 
+                :rows="15" 
+                responsiveLayout="scroll" 
+                v-model:filters="filterUsersTable"
+            >
                 <template #empty>Δεν βρέθηκαν συνεδρίες.</template>
                 
                 <Column field="id" header="A/A">
@@ -136,14 +141,14 @@
                     </template>
                 </Column>
 
-                <Column field="firstname" header="Όνομα Υποψηφίου" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="firstname" header="Όνομα Υποψηφίου" sortable>
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα Υποψηφίου</span>
                         {{ data.firstname }}
                     </template>
                 </Column>
 
-                <Column field="lastname" header="Επίθετο Υποψηφίου" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="lastname" header="Επίθετο Υποψηφίου" sortable>
                     <template #body="{ data }">
                         <span class="p-column-title">Επίθετο Υποψηφίου</span>
                         {{ data.lastname }}
@@ -174,12 +179,12 @@
                     </template>
                 </Column> -->
 
-                <!-- <Column field="email" header="Email" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="email" header="Ημ/νία Αίτησης" sortable>
                     <template #body="{ data }">
-                        <span class="p-column-title">Email</span>
-                        {{ data.email }}
+                        <span class="p-column-title">Ημ/νία Αίτησης</span>
+                        {{ formatDate(data.created_at) }}
                     </template>
-                </Column> -->
+                </Column> 
 
                <Column field="actions" header="Ενέργειες" headerStyle="min-width:10rem;">
                     <template #body="slotProps">

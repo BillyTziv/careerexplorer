@@ -327,58 +327,32 @@ class ApplicationController extends Controller
                 // --------------------------------------------------------------------
                 $volunteer = new \stdClass();
 
-                $volunteer->firstname = $request['form']['firstname']['value'] ?? 'undefined firstname';
-                $volunteer->lastname = $request['form']['lastname']['value'] ?? 'undefined lastname';
+                $volunteer->firstname = ucfirst(strtolower($request['form']['firstname']['value'])) ?? 'undefined firstname';
+                $volunteer->lastname = ucfirst(strtolower($request['form']['lastname']['value'])) ?? 'undefined lastname';
                 $volunteer->phone = $request['form']['phone']['value'] ?? 'undefined phone';
                 $volunteer->email = $request['form']['email']['value'] ?? 'undefined email';
                 
                 // Volunteering
-                $volunteer->role = $request['form']['role']['value'] ?? 1;
-                $volunteer->interests = $request['form']['interests']['value'] ?? 1;
-                $volunteer->expectations = $request['form']['expectations']['value'] ?? 1;
-                $volunteer->hour_per_week = $request['form']['hour_per_week']['value'] ?? 1;
-                $volunteer->previous_volunteering = $request['form']['previous_volunteering']['value'] ?? 1;
-                $volunteer->volunteering_details = $request['form']['volunteering_details']['value'] ?? 1;
+                $volunteer->role = $request['form']['role']['value'] ?? null;
+                $volunteer->interests = $request['form']['interests']['value'] ?? null;
+                $volunteer->expectations = $request['form']['expectations']['value'] ?? null;
+                $volunteer->hour_per_week = $request['form']['hour_per_week']['value'] ?? null;
+                $volunteer->previous_volunteering = $request['form']['previous_volunteering']['value'] ?? null;
+                $volunteer->volunteering_details = $request['form']['volunteering_details']['value'] ?? null;
 
                 // Studies
-                $volunteer->university = $request['form']['university']['value'] ?? 1;
-                $volunteer->department = $request['form']['department']['value'] ?? 1;
-                $volunteer->otherstudies = $request['form']['otherstudies']['value'] ?? 1;
+                $volunteer->university = $request['form']['university']['value'] ?? null;
+                $volunteer->department = $request['form']['department']['value'] ?? null;
+                $volunteer->otherstudies = $request['form']['otherstudies']['value'] ?? null;
 
                 // Social Media
-                $volunteer->facebook = $request['form']['facebook']['value'] ?? '';
-                $volunteer->instagram = $request['form']['instagram']['value'] ?? '';
-                $volunteer->tiktok = $request['form']['tiktok']['value'] ?? '';
-                $volunteer->linkedin = $request['form']['linkedin']['value'] ?? '';
+                $volunteer->facebook = $request['form']['facebook']['value'] ?? null;
+                $volunteer->instagram = $request['form']['instagram']['value'] ?? null;
+                $volunteer->tiktok = $request['form']['tiktok']['value'] ?? null;
+                $volunteer->linkedin = $request['form']['linkedin']['value'] ?? null;
 
                 // CV
-                $volunteer->cv = $request['form']['cv']['value'] ?? '';
-              
-                // Storing the data as a structured array under relevant sections
-                $volunteer->additional_info = [
-                    'volunteering' => [
-                        'role' => $request['form']['role']['value'] ?? 1,
-                        'interests' => $request['form']['interests']['value'] ?? 1,
-                        'expectations' => $request['form']['expectations']['value'] ?? 1,
-                        'hour_per_week' => $request['form']['hour_per_week']['value'] ?? 1,
-                        'previous_volunteering' => $request['form']['previous_volunteering']['value'] ?? 1,
-                        'volunteering_details' => $request['form']['volunteering_details']['value'] ?? 1,
-                    ],
-                    'studies' => [
-                        'university' => $request['form']['university']['value'] ?? 1,
-                        'department' => $request['form']['department']['value'] ?? 1,
-                        'other_studies' => $request['form']['other_studies']['value'] ?? 1,
-                    ],
-                    'social_media' => [
-                        'facebook' => $request['form']['facebook']['value'] ?? '',
-                        'instagram' => $request['form']['instagram']['value'] ?? '',
-                        'tiktok' => $request['form']['tiktok']['value'] ?? '',
-                        'linkedin' => $request['form']['linkedin']['value'] ?? '',
-                    ],
-                ];
-               
-                // Convert object to JSON before saving to the database
-                $volunteer->additional_info = json_encode($volunteer->additional_info);
+                $volunteer->cv = $request['form']['cv']['value'] ?? null;
               
                 $volunteerRequest = new Request( (array) $volunteer );     
 
@@ -391,8 +365,6 @@ class ApplicationController extends Controller
                         'message' => 'Η αίτησή σας ολοκληρώθηκε.'
                     ]);
                 } catch (\Exception $e) {
-                    dd( $e->getMessage() );
-                     
                     return Inertia::render('Error', [
                         'status' => 'error',
                         'message' => 'Ουπς, κάτι πήγε στραβά. Παρακαλούμε ξαναπροσπαθήστε.',

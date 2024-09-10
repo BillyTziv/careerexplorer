@@ -66,6 +66,7 @@
         id: props.career.id ?? null,
         title: props.career.title ?? "",
         keywords: props.career.keywords ?? "",
+        isPopular: props.career.isPopular ?? false,
         description: props.career.description ?? "",
         status: props.career.status ?? 1,
         responsibilities: props.career.responsibilities ?? [],
@@ -126,6 +127,12 @@
                     placeholder="Προγραμματιστής, Developer, Μηχανικός Λογισμικού"
                     hint="Πως αλλιώς θα μπορούσε να αναζητήσει κανείς το επάγγελμα (συμπλήρωσε λέξεις χωρισμένες με κόμμα);"
                     :errors="errors.keywords"
+                />
+
+                <!-- Popular -->
+                <BaseToggleSwitch
+                    v-model="careerData.isPopular"
+                    label="Δημοφιλές Επάγγελμα"
                 />
 
                 <!-- Description -->

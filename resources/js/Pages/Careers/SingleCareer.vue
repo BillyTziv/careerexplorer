@@ -7,7 +7,7 @@
                         <div class="flex align-items-start">
                             <!-- <img src="/images/blocks/logos/hyper.svg" alt="Image" height="40" class="mr-3"> -->
                             <div>
-                                <div class="text-2xl font-semibold text-900 mb-2">
+                                <div class="mb-2">
                                     <div>
                                         <template v-for="(code, index) in hollandCodes" :key="index">
                                             <Tag :value="''" :style="{ 
@@ -19,7 +19,9 @@
                                         </template>
                                     </div>
 
-                                    {{ career.title }}
+                                    <span class="text-2xl font-bold text-900">
+                                        {{ career.title }}
+                                    </span>
                                 </div>
                                 <!-- <div class="font-medium text-500 mb-3 text-sm">
                                     <pre>{{ career.category }}</pre>
@@ -28,7 +30,7 @@
                         </div>
 
                         <div class="flex gap-3">
-                            <button class="p-button p-component p-button-icon-only p-button-rounded p-button-outlined"
+                            <button class="p-button p-component p-button-icon-only p-button-rounded p-button-text"
                                 type="button" data-pc-name="button" data-pc-section="root" data-pd-ripple="true"><span
                                     class="p-button-icon pi pi-heart" data-pc-section="icon"></span><span class="p-button-label"
                                     data-pc-section="label">&nbsp;</span><!----><span role="presentation" aria-hidden="true"
@@ -36,7 +38,7 @@
                                     data-pc-section="root"></span>
                             </button>
 
-                            <button class="p-button p-component p-button-icon-only p-button-rounded p-button-outlined"
+                            <button class="p-button p-component p-button-icon-only p-button-rounded p-button-text"
                                 type="button" data-pc-name="button" data-pc-section="root" data-pd-ripple="true"><span
                                     class="p-button-icon pi pi-share-alt" data-pc-section="icon"></span><span
                                     class="p-button-label" data-pc-section="label">&nbsp;</span><!----><span role="presentation"
@@ -57,17 +59,8 @@
                                     {{ career.description }}
                                 </p>
 
-                                <template v-if="hasInterests">
-                                    <h2 class="text-lg font-bold">Ενδιαφέροντα</h2>
-                                    <ul class="text-sm">
-                                        <li v-for="(interest, index) in career.interests" :key="index">
-                                            {{ interest.name }}
-                                        </li>
-                                    </ul>
-                                </template>
-
                                 <template v-if="hasSkills">
-                                    <h2 class="text-sm font-bold">Δεξιότητες / Προσόντα</h2>
+                                    <h2 class="text-lg font-light">Δεξιότητες / Προσόντα</h2>
                                     <ul class="text-sm">
                                         <li v-for="(skill, index) in career.skills" :key="index">
                                             {{ skill.name }}
@@ -76,16 +69,25 @@
                                 </template>
 
                                 <template v-if="hasResponsibilities">
-                                    <h2 class="text-sm font-bold">Αρμοδιότητες / Καθήκοντα</h2>
+                                    <h2 class="text-lg font-light">Αρμοδιότητες / Καθήκοντα</h2>
                                     <ul class="text-sm">
                                         <li v-for="(respo, index) in career.responsibilities" :key="index">
-                                            {{ respo.name }}
+                                            {{ respo.text }}
+                                        </li>
+                                    </ul>
+                                </template>
+
+                                <template v-if="hasInterests">
+                                    <h2 class="text-lg font-light">Ενδιαφέροντα</h2>
+                                    <ul class="text-sm">
+                                        <li v-for="(interest, index) in career.interests" :key="index">
+                                            {{ interest.name }}
                                         </li>
                                     </ul>
                                 </template>
 
                                 <template v-if="hasCourses">
-                                    <h2 class="text-sm font-bold">Μαθήματα</h2>
+                                    <h2 class="text-lg font-light">Μαθήματα</h2>
 
                                     <div class="text-900 w-full md:w-10">
                                         <div class="grid mt-0 mr-0">
@@ -113,7 +115,9 @@
                     </div>
                     <div class="col-12 lg:col-3 lg:border-left-1 surface-border">
                         <div class="p-2">
-                            This is a sidebar.
+                            <h2 class="text-sm font-bold">TOP 5 Careers</h2>
+
+
                             <!-- <div class="flex border-bottom-1 surface-border pb-4 mb-5"><img
                                     src="/images/blocks/avatars/circle/avatar-f-1.png" class="mr-3 h-5rem w-5rem">
                                 <div class="flex flex-column align-items-start"><span

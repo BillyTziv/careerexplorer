@@ -201,6 +201,13 @@ class VolunteerController extends Controller {
                     'title' => 'Εθελοντική Συμμετοχή',
                     'type' => 'section',
                 ],
+                'marketing_channel' => [
+                    'label' => 'Πώς έμαθες για το FutureGeneration;',
+                    'type' => 'text',
+                    'value' => '',
+                    'placeholder' => 'πχ. Linkedin, Facebook, Event, Φίλος, Google Search..',
+                    'required' => true,
+                ],
                 'role' => [
                     'label' => 'Σε ποιον εθελοντικό ρόλο ενδιαφέρεσαι να ασχοληθείς;',
                     'type' => 'select',
@@ -486,8 +493,29 @@ class VolunteerController extends Controller {
         // Find detault status marked with is_default `true` in the volunteer_statuses table.
         $volunteer->status = VolunteerStatus::where('is_default', true)->first()->id;
 
-        // Additional Information (JSONB COLUMN) -- Under Testing
-        $volunteer->additional_info = $request->additional_info ?? null;
+        // Storing the data as a structured array under relevant sections
+        $volunteer->additional_info = json_encode([
+            'volunteering' => [
+                'role' => $request['form']['role']['value'] ?? null,
+                'interests' => $request['form']['interests']['value'] ?? null,
+                'expectations' => $request['form']['expectations']['value'] ?? null,
+                'hour_per_week' => $request['form']['hour_per_week']['value'] ?? null,
+                'previous_volunteering' => $request['form']['previous_volunteering']['value'] ?? null,
+                'volunteering_details' => $request['form']['volunteering_details']['value'] ?? null,
+                'marketing_channel' => $request['form']['marketing_channel']['value'] ?? null,
+            ],
+            'studies' => [
+                'university' => $request['form']['university']['value'] ?? null,
+                'department' => $request['form']['department']['value'] ?? null,
+                'other_studies' => $request['form']['other_studies']['value'] ?? null,
+            ],
+            'social_media' => [
+                'facebook' => $request['form']['facebook']['value'] ?? null,
+                'instagram' => $request['form']['instagram']['value'] ?? null,
+                'tiktok' => $request['form']['tiktok']['value'] ?? null,
+                'linkedin' => $request['form']['linkedin']['value'] ?? null,
+            ],
+        ]);
      
         $volunteer->start_date = now();
         $volunteer->deleted = false;
@@ -510,7 +538,7 @@ class VolunteerController extends Controller {
             'volunteer_id' => $volunteer->id,
             'user_id' => Auth::id(),
             'action' => 'created',
-            'description' => 'Volunteer created with ID ' . $volunteer->id,
+            'description' => 'Δημιουργήθηκε νέα αίτηση εθελοντικής συμμετοχής.',
         ]);
 
         //$emailService->sendTestEmail($request, $emailTemplate);
@@ -620,7 +648,7 @@ class VolunteerController extends Controller {
             'volunteer_id' => $volunteer->id,
             'user_id' => Auth::id(),
             'action' => 'status changed',
-            'description' => 'Status changed from ' . $oldStatus . ' to ' . $volunteer->status,
+            'description' => 'Η κατάσταση άλλαξε από ' . $oldStatus . ' σε ' . $volunteer->status,
         ]);
 
         // Assuming the user is authenticated
@@ -720,15 +748,24 @@ class VolunteerController extends Controller {
         ]);
     }
     
-    public function assignRecruiter( Request $request, $volunteer ) {
-
+    public function assignRecruiter( Request $request, $volunteer )
+    {
         $volunteer = Volunteer::find( $volunteer );
+
         $vid = $volunteer->id;
 
         $volunteer->assigned_to = $request->recruiterId ?? null;
         $volunteer->save();
 
         $query = Volunteer::query();
+
+        // Log the status change
+        VolunteerHistory::create([
+            'volunteer_id' => $volunteer->id,
+            'user_id' => Auth::id(),
+            'action' => 'status changed',
+            'description' => 'Ο εθελοντής ανατέθηκε στον recruiter ' . User::find($request->recruiterId)->firstname . ' ' . User::find($request->recruiterId)->lastname,
+        ]);
 
         return redirect()->back();
     }
@@ -741,12 +778,6 @@ class VolunteerController extends Controller {
             return redirect()->back()->with([
                 'message'=> 'Ουπς, κάτι πήγε στραβά. Οι σημειώσεις δεν αποθηκεύτηκαν.'
             ]);;
-
-            // return redirect()
-            //     ->route( 'users' )
-            //     ->with([
-            //         'message'=> 'Oups, something went wrong. Volunteeer data was not saved.'
-            //     ]);
         }
 
         $volunteer->notes = $request->notes ?? '';

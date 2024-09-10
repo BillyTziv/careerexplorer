@@ -11,6 +11,7 @@
         options:        { type: Array, default: [] },
         label:          { type: String, default: '' },
         placeholder:    { type: String, default: '' },
+        required:       { type: Boolean, default: false },
         errors:         { type: String, default: '' },
         narrow:         { type: Boolean, default: false },
     });
@@ -30,6 +31,7 @@
     <div :class="['field', { 'col-12': !props.narrow }]">
         <label class="font-medium text-900"> 
             {{ label }}
+            <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
 
         <Dropdown

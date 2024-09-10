@@ -157,6 +157,7 @@ class CareerController extends Controller
 
         $career->title = $request->title;
         $career->keywords = $request->keywords;
+        $career->is_popular = $request->isPopular;
         $career->status = 1;
         $career->category = 1;
         $career->link = $request->link;
@@ -267,6 +268,7 @@ class CareerController extends Controller
         $career->keywords = $request->keywords;
         $career->status = $request->status;
         $career->category = 1;
+        $career->is_popular = $request->isPopular;
         $career->link = $request->link;
         $career->description = $request->description;
 
@@ -390,6 +392,7 @@ class CareerController extends Controller
                     'id' => $career->id,
                     'title' => $career->title,
                     'description' => $career->description,
+                    'is_popular' => $career->is_popular,
                     'riasec_codes' => $career->riasecCodes->pluck('symbol')
                 ];
             });

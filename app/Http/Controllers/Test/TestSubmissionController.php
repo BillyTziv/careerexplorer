@@ -64,8 +64,6 @@ class TestSubmissionController extends Controller
     }
 
     private function getCareersByHollandCode( $hollandCode ) {
-        //dd( $hollandCode );
-
         $careers = Career::query()
             ->where('deleted', false)
             ->where('status', 2)

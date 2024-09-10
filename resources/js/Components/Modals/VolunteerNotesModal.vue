@@ -9,7 +9,8 @@
     const props = defineProps({
         notes: {
             type: String,
-            required: true
+            required: true,
+            default: ''
         },
     })
 

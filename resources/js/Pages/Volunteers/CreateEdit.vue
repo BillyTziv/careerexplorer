@@ -13,7 +13,8 @@
     import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
     import BaseTextareaInput from '@/Components/Base/BaseTextareaInput.vue';
     import BaseCalendarInput from '@/Components/Base/BaseCalendarInput.vue';
-
+    import BaseDynamicFileInput from '@/Components/Base/Dynamic/BaseDynamicFileInput.vue';
+    
     let props = defineProps({
         user: Object,
         response: Object,
@@ -49,7 +50,7 @@
         email: props.volunteer.email ? props.volunteer.email : "",
         start_date: props.volunteer.start_date || "",
         end_date: props.volunteer.end_date || "",
-        hours_contributed: props.volunteer.hours_contributed || "",
+        hours_contributed: props.volunteer.hours_contributed || null,
         onboarding_completed: props.volunteer.onboarding_completed || false,
         previous_volunteer_experience: parseInt(props.volunteer.previous_volunteer_experience) || null,
         disapproved_reason: props.volunteer.disapproved_reason || "",
@@ -128,61 +129,128 @@
         <template #page-content>
             <form @submit.prevent="submit" autocomplete="off">
                 <AppFormLayout>
+                    <div class="p-fluid formgrid grid">
+                        <!-- FirstName -->
+                        <BaseTextInput
+                            v-model="volunteerForm.firstname"
+                            label="Όνομα" 
+                            placeholder="Όνομα.."
+                            :required="true"
+                            :errors="errors['firstname']"
+                            class="col-12 md:col-6"
+                        />
+
+                        <!-- LastName -->
+                        <BaseTextInput
+                            v-model="volunteerForm.lastname"
+                            label="Επώνυμο"
+                            placeholder="Επώνυμο.."
+                            :required="true"
+                            :errors="errors['lastname']"
+                            class="col-12 md:col-6"
+                        />
+                    </div>
+
+                    <div class="p-fluid formgrid grid">
+                        <!-- Phone -->
+                        <BaseTextInput
+                            v-model="volunteerForm.phone"
+                            label="Τηλέφωνο"
+                            placeholder="Τηλέφωνο.."
+                            :required="true"
+                            :errors="errors['phone']"
+                            class="col-12 md:col-6"
+                        />
+
+                        <!-- Email -->
+                        <BaseEmailInput
+                            v-model="volunteerForm.email"
+                            label="Email"
+                            placeholder="Email.."
+                            :required="true"
+                            :errors="errors['email']"
+                            class="col-12 md:col-6"
+                        />
+                    </div>
+
+                    <div class="p-fluid formgrid grid">
+                        <BaseDropdownInput
+                            v-model="volunteerForm.role"
+                            :options="roleDropdownList"
+                            label="Ρόλος"
+                            :required=true
+                            :errors="errors.role"
+                            class="col-12 md:col-6"
+                        />
+                    </div>
+
+                    <div class="p-fluid formgrid grid">
+                        <BaseTextareaInput
+                            v-model="volunteerForm.notes"
+                            label="Σχόλια"
+                            placeholder="Αφήστε ένα σχόλιο για τον εθελοντή"
+                            :errors="errors.notes"
+                            class="col-12 md:col-12"
+                        />
+                    </div>
+                    
+                    <div class="p-fluid formgrid grid">
+                        <BaseDynamicFileInput
+                            v-model="volunteerForm.cv"
+                            :properties="{ label: 'Βιογραφικό', required: true }"
+                            :errors="errors['cv']"
+                        />
+                    </div>
 
                     <Accordion :activeIndex="0">
-                        <AccordionTab header="Προσωπικά Στοιχεία">
+                        <AccordionTab header="Εθελοντική Συμμετοχή">
+                            <div class="p-fluid formgrid grid">
+                                
+
+                                <!-- Start Date -->
+                                <!-- <BaseCalendarInput
+                                    v-model="volunteerForm.start_date"
+                                    label="Ημ/νία Έναρξης"
+                                    :errors="errors['date_of_birth']"
+                                /> -->
+
+                                <!-- End Date -->
+                                <!-- <BaseCalendarInput
+                                    v-model="volunteerForm.end_date"
+                                    label="Ημ/νία Ολοκλήρωσης"
+                                    :errors="errors['date_of_birth']"
+                                /> -->
+
+                                <!-- Hours Contributed -->
+                                <BaseNumberInput
+                                    v-model="volunteerForm.hours_contributed"
+                                    label="Ώρες Συνεισφοράς"
+                                    placeholder="Ώρες Συνεισφοράς.."
+                                    :errors="''"
+                                />
+
+                                <!-- Previous Volunteer Experience -->
+                                <BaseNumberInput
+                                    v-model="volunteerForm.previous_volunteer_experience"
+                                    label="Προυπηρεσία σε Εθελοντισμό"
+                                    placeholder="Προυπηρεσία σε Εθελοντισμό.."
+                                    :errors="''"
+                                />
+
+                                <!-- Reject Reason -->
+                                <BaseTextInput
+                                    v-model="volunteerForm.disapproved_reason"
+                                    label="Λόγος Απόρριψης"
+                                    placeholder="Λόγος Απόρριψης.."
+                                    :errors="''"
+                                />
+                            </div>
+                        </AccordionTab>
+                        <AccordionTab header="Επιπλέον Προσωπικά Στοιχεία">
                             <!-----------------------------------------------------------------------------------------
                                 | PERSONAL INFORMATION
                             ------------------------------------------------------------------------------------------>
                             <div class="p-fluid formgrid grid">
-                                <!-- FirstName -->
-                                <BaseTextInput
-                                    v-model="volunteerForm.firstname"
-                                    label="Όνομα" 
-                                    placeholder="Όνομα.."
-                                    :required="true"
-                                    :errors="errors['firstname']"
-                                    class="col-12 md:col-6"
-                                />
-
-                                <!-- LastName -->
-                                <BaseTextInput
-                                    v-model="volunteerForm.lastname"
-                                    label="Επώνυμο"
-                                    placeholder="Επώνυμο.."
-                                    :required="true"
-                                    :errors="errors['lastname']"
-                                    class="col-12 md:col-6"
-                                />
-                        
-                            
-                                <!-- Date of Birth -->
-                                <!-- <BaseCalendarInput
-                                    v-model="volunteerForm.date_of_birth"
-                                    label="Ημ/νία Γέννησης"
-                                    :errors="errors['date_of_birth']"
-                                /> -->
-
-                                <!-- Age -->
-                                <!-- <BaseNumberInput
-                                    v-model="volunteerForm.age"
-                                    label="Ηλικία"
-                                    placeholder="Ηλικία.."
-                                    :errors="errors['age']"
-                                    class="col-12 md:col-6"
-                                /> -->
-
-                                <!-- Gender -->
-                                <BaseDropdownInput
-                                    v-model="volunteerForm.gender"
-                                    :options="genderDropdownList"
-                                    label="Φύλο"
-                                    placeholder="Επιλέξτε Φύλο"
-                                    :required=true
-                                    :errors="errors.gender"
-                                    class="col-12 md:col-6"
-                                />
-
                                 <!-- City -->
                                 <BaseTextInput
                                     v-model="volunteerForm.city"
@@ -200,30 +268,22 @@
                                     :errors="errors['address']"
                                     class="col-12 md:col-6"
                                 />
-                            </div>
-                        </AccordionTab>
-                        <AccordionTab header="Στοιχεία Επικοινωνίας">
-                            <!-----------------------------------------------------------------------------------------
-                                | CONTACT INFORMATION
-                            ------------------------------------------------------------------------------------------>
-                            <div class="p-fluid formgrid grid">
-                                <!-- Phone -->
-                                <BaseTextInput
-                                    v-model="volunteerForm.phone"
-                                    label="Τηλέφωνο"
-                                    placeholder="Τηλέφωνο.."
-                                    :required="true"
-                                    :errors="errors['phone']"
+
+                                 <!-- Gender -->
+                                 <BaseDropdownInput
+                                    v-model="volunteerForm.gender"
+                                    :options="genderDropdownList"
+                                    label="Φύλο"
+                                    placeholder="Επιλέξτε Φύλο"
+                                    :errors="errors.gender"
                                     class="col-12 md:col-6"
                                 />
 
-                                <!-- Email -->
-                                <BaseEmailInput
-                                    v-model="volunteerForm.email"
-                                    label="Email"
-                                    placeholder="Email.."
-                                    :required="true"
-                                    :errors="errors['email']"
+                                <!-- Date of Birth -->
+                                <BaseCalendarInput
+                                    v-model="volunteerForm.date_of_birth"
+                                    label="Ημ/νία Γέννησης"
+                                    :errors="errors['date_of_birth']"
                                     class="col-12 md:col-6"
                                 />
                             </div>
@@ -327,6 +387,14 @@
                                     :required=false
                                     :errors="errors['instagram']"
                                 />
+
+                                 <!-- Tiktok -->
+                                 <BaseTextInput
+                                    v-model="volunteerForm.tiktok"
+                                    label="Tiktok Profile URL"
+                                    :required=false
+                                    :errors="errors['tiktok']"
+                                />
                             </div>
                         </AccordionTab>
                         <AccordionTab header="Επαγγελματική Εργασία">
@@ -372,9 +440,7 @@
                                 <!------------------------------------------------------------------------------------------>
                                 <!-- CV -->
                                 <!------------------------------------------------------------------------------------------>
-                                <label class="block mb-2 text-sm font-medium text-sm text-gray-500 dark:text-slate-300" for="file_input">
-                                    Βιογραφικό
-                                </label>
+                               
 
                                 <!-- <FileUpload 
                                     mode="basic" 
@@ -402,73 +468,7 @@
                                 </div> -->
                             </div>
                         </AccordionTab>
-                        <AccordionTab header="Εθελοντισμός">
-                            <!------------------------------------------------------------------------------------------>
-                            <!-- Volunteering -->
-                            <!------------------------------------------------------------------------------------------>
-                            <div class="p-fluid formgrid grid">
-                                <!-- Onboarding Contributed -->
-                                <!-- <BaseToggleSwitch 
-                                    v-model="volunteerForm.onboarding_completed"
-                                    label="Ολοκλήρωση του Onboarding"
-                                    class="my-4"
-                                /> -->
-
-                                <BaseDropdownInput
-                                    v-model="volunteerForm.role"
-                                    :options="roleDropdownList"
-                                    label="Ρόλος"
-                                    :required=true
-                                    :errors="errors.role"
-                                />
-
-                                <!-- Start Date -->
-                                <BaseCalendarInput
-                                    v-model="volunteerForm.start_date"
-                                    label="Ημ/νία Έναρξης"
-                                    :errors="errors['date_of_birth']"
-                                />
-
-                                <!-- End Date -->
-                                <BaseCalendarInput
-                                    v-model="volunteerForm.end_date"
-                                    label="Ημ/νία Ολοκλήρωσης"
-                                    :errors="errors['date_of_birth']"
-                                />
-
-                                <!-- Hours Contributed -->
-                                <BaseNumberInput
-                                    v-model="volunteerForm.hours_contributed"
-                                    label="Ώρες Συνεισφοράς"
-                                    placeholder="Ώρες Συνεισφοράς.."
-                                    :errors="''"
-                                />
-
-                                <!-- Previous Volunteer Experience -->
-                                <BaseNumberInput
-                                    v-model="volunteerForm.previous_volunteer_experience"
-                                    label="Προυπηρεσία σε Εθελοντισμό"
-                                    placeholder="Προυπηρεσία σε Εθελοντισμό.."
-                                    :errors="''"
-                                />
-
-                                <!-- Reject Reason -->
-                                <BaseTextInput
-                                    v-model="volunteerForm.disapproved_reason"
-                                    label="Λόγος Απόρριψης"
-                                    placeholder="Λόγος Απόρριψης.."
-                                    :errors="''"
-                                />
-                            </div>
-                        </AccordionTab>
                     </Accordion>
-                    
-                    <BaseTextareaInput
-                        v-model="volunteerForm.notes"
-                        label="Σχόλια"
-                        placeholder="Αφήστε ένα σχόλιο για τον εθελοντή"
-                        :errors="errors.notes"
-                    />
                 </AppFormLayout>
 
                 <Button 

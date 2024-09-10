@@ -337,7 +337,7 @@
         <div class="flex align-items-center justify-content-center">
             <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
             <span v-if="selectVolunteer">
-                Είστε σίγουροι οτι θέλετε να διαγράψετε τον εθελοντή`` <b>{{ selectVolunteer.firstname }} {{ selectVolunteer.lastname }}</b>?
+                Είστε σίγουροι οτι θέλετε να διαγράψετε τον εθελοντή: <b>{{ selectVolunteer.firstname }} {{ selectVolunteer.lastname }}</b>?
             </span
             >
         </div>

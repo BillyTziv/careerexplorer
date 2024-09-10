@@ -153,7 +153,7 @@
 			replace: true,
 			onSuccess: () => {
 				// Popup a notification
-				let assignedRecruiterMsg = 'Ο εθελοντής ανατέθηκε επιτυχώς στον Recruiter ' + selectedAssignedRecruiter.value;
+				let assignedRecruiterMsg = 'Ο εθελοντής σας ανατέθηκε επιτυχώς!';
 				notify('success', 'Ολοκληρώθηκε', assignedRecruiterMsg);
 			}
 		});
@@ -165,6 +165,15 @@
 					style="background-color: ${adjustOpacity(volunteerStatus.value.id, 0.2)}; color: ${determineTextColor(volunteerStatus.value.id)};">
 					${volunteerStatus.value.name}
 				</span>`;
+    });
+
+	const vInfo = computed(() => {
+		try {
+			return JSON.parse( props.volunteer.additional_info );
+		} catch (e) {
+			console.error('Error parsing additional_info:', e);
+			return {};
+		}
     });
 </script>
 
@@ -320,9 +329,9 @@
 						<template #header>
 							<VSectionHeading>Εθελοντική Συμμετοχή</VSectionHeading>
 						</template>
-
 							<VSectionInfoGridItem v-if="volunteer.start_date" label="Ημ/νία Αίτησης" :value="volunteer.start_date" />
 							<VSectionInfoGridItem v-if="volunteer.end_date" label="Ημ/νία Αποχώρησης" :value="volunteer.end_date" />
+							<VSectionInfoGridItem v-if="vInfo?.volunteering?.marketing_channel" label="Κανάλι Marketing" :value="vInfo.volunteering.marketing_channel" />
 
 							<VSectionInfoGridItem v-if="volunteer.hour_per_week" label="Διαθεσιμότητα (h/w)" :value="volunteer.hour_per_week" />
 							<VSectionInfoGridItem v-if="volunteer.previous_volunteering" label="Προηγούμενη εθ. εμπειρία" :value="volunteer.previous_volunteering" />
@@ -412,7 +421,7 @@
 						</p>
 
 						<VolunteerNotesModal
-							:notes="volunteer.notes"
+							:notes="volunteer.notes ?? ''"
 							@change="updateNotes"
 						/>
 
@@ -429,38 +438,38 @@
 						</template>
 						
 						<template v-if="volunteer.volunteering_details">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+							<h5 class="mt-2 text-md ">
 								Περιέγραψε τον εθελοντικό ρόλο και τις αρμοδιότητες που είχες
 							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.volunteering_details }}</div>
+							<div>{{ volunteer.volunteering_details }}</div>
 						</template>
 
 						<template v-if="volunteer.expectations">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+							<h5 class="mt-2 text-md ">
 								Τι προσδοκίες έχεις από τον οργανισμό και τη συνεργασία μας;
 							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.expectations }}</div>
+							<div>{{ volunteer.expectations }}</div>
 						</template>
 						
 						<template v-if="volunteer.interests">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+							<h5 class="mt-2 text-md ">
 								Τι εμπειρίες ή δεξιότητες έχεις που σε καθιστούν κατάλληλο για αυτόν τον ρόλο;
 							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.interests }}</div>
+							<div>{{ volunteer.interests }}</div>
 						</template>
 						
 						<template v-if="volunteer.description">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+							<h5 class="mt-2 text-md ">
 								Πως θα περιέγραφες τον εαυτό σου σε μια παράγραφο;
 							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.description }}</div>
+							<div>{{ volunteer.description }}</div>
 						</template>
 
 						<template v-if="volunteer.reason">
-							<h5 class="mt-2 text-md font-bold text-slate-800 dark:text-slate-300">
+							<h5 class="mt-2 text-md">
 								Με τι θα σε ενδιέφερε να ασχοληθείς στην ομάδα του FutureGeneration και γιατί;
 							</h5>
-							<div class="pl-3 text-slate-800 dark:text-slate-300">{{ volunteer.reason }}</div>
+							<div>{{ volunteer.reason }}</div>
 						</template>
 					</VolunteerSection>
 
