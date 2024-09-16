@@ -58,6 +58,23 @@
             ]
         },
         {
+            label: 'TESTS',
+            items: [
+                {
+                    label: 'Πρότυπα Tests',
+                    icon: 'pi pi-fw pi-list',
+                    permission: "view-all-test-templates",
+                    to: '/test-templates'
+                },
+                {
+                    label: 'Καταχωρήσεις',
+                    icon: 'pi pi-fw pi-envelope',
+                    permission: "view-all-test-submissions",
+                    to: '/test-submissions'
+                }
+            ]
+        },
+        {
             label: 'ΠΡΟΤΥΠΑ EMAIL',
             items: [
                 {

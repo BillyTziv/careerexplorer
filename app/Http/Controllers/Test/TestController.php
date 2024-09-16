@@ -1,20 +1,30 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Test;
 
-use Illuminate\Http\Request;
-
-/* MODELS */
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Test;
-use App\Models\Question;
-use App\Models\Answer;
-
-/* OTHER */
 use Inertia\Inertia;
+use Inertia\Response;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
+
+/* MODELS */
+use App\Models\UserManagement\User;
+use App\Models\UserManagement\Role;
+
+use App\Models\Test\Test;
+use App\Models\Test\Answer;
+use App\Models\Test\Question;
+use App\Models\Test\Submission;
+
+use App\Models\Career\Skill;
+use App\Models\Career\Interest;
+use App\Models\Career\CareerValue;
+use App\Models\Career\Career;
 
 class TestController extends Controller {
     private function getAllTestTemplates() {
@@ -40,9 +50,8 @@ class TestController extends Controller {
     public function create() {
         $hollandQuestions = Question::all();
         $testTemplates = Test::get();
-
+        
         return Inertia::render('Tests/Templates/Create', [
-            'response' => [],
             'hollandQuestions' => $hollandQuestions,
             'testTemplate' => [],
             'templateDropdownList' => $testTemplates

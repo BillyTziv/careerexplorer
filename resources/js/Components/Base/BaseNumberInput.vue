@@ -27,6 +27,7 @@
     <div class="field col-12">
         <label for="nickname" class="font-medium text-900"> 
             {{ label }}
+            <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
 
         <InputText

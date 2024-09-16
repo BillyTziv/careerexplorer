@@ -1,10 +1,10 @@
 <?php
 use App\Http\Controllers\SessionRequest\SessionRequestController;
 use App\Http\Controllers\Volunteer\VolunteerController;
-use App\Http\Controllers\TestSubmissionController;
-use App\Http\Controllers\CareerController;
-use App\Http\Controllers\CareerRequestController;
-use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Test\TestSubmissionController;
+use App\Http\Controllers\Career\CareerController;
+use App\Http\Controllers\Career\CareerRequestController;
+// use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
@@ -22,12 +22,15 @@ use Inertia\Inertia;
 
 // Get Create Holland Test screen.
 Route::get('/tests/holland', [TestSubmissionController::class, 'getHollandTest'])->name('tests.holland');
+Route::get('/tests/holland/start', [TestSubmissionController::class, 'startHollandTest'])->name('start.holland.test');
 
 // Store a Holland Test.
 Route::post('/tests/holland/submit', [TestSubmissionController::class, 'store']);
 Route::post('/tests/holland/submitMetaData', [TestSubmissionController::class, 'storeMetaData']);
 
 Route::get('/tests/holland/{submissionId}/results', [TestSubmissionController::class, 'getHollandTestResults'])->name('tests.holland.results');
+Route::get('/explore', [CareerController::class, 'exploreCareers']);
+Route::get('/career-preview/{id}', [CareerController::class, 'singleCareer'])->name('singleCareer');
 
 // ------------------------------------------------------------------------------
 // PUBLIC APPLICATIONS

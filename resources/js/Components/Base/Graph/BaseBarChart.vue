@@ -1,75 +1,98 @@
-<script setup>
-    import { ref, watch } from 'vue';
-    
+<script setup>    
     const props = defineProps({
         title: {
             type: String,
             required: true
+        },
+        label: {
+            type: String,
+            required: true,
+            default: 'Undefined Dataset Label'
+        },
+        data: {
+            type: Array,
+            required: true,
+            default: () => []
+        },
+        labels: {
+            type: Array,
+            required: true,
+            default: () => [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ]
+        },
+        color: {
+            type: String,
+            default: '#323232',
         }
     });
     
-    // Refs for bar chart data and options
-    const barData = ref({});
-    const barOptions = ref({});
-    const documentStyle = getComputedStyle(document.documentElement);
-    
-    // Dynamic theme colors
-    const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-    
-    
-    
-    // Bar chart options
-    barOptions.value = {
+    function transparentize(color, opacity) {
+        const alpha = 1 - opacity;
+        return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+    }
+
+    const chartData = {
+        labels: props.labels,
+        datasets: [
+            {
+                label: props.label,
+                data: props.data,
+                borderColor: props.color,
+                backgroundColor: transparentize(props.color, 0.5),
+            }
+        ]
+    };
+
+    const chartOptions = {
         animation: {
-            duration: 0
+            duration: 1500
         },
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 labels: {
-                    color: textColor,
+                    color: '#323232',
                     usePointStyle: true,
                     font: {
                         weight: 700
                     },
-                    padding: 28
+                    padding: 25
                 },
-                position: 'bottom'
+                position: 'top'
             }
         },
         scales: {
             x: {
                 ticks: {
-                color: textColorSecondary,
-                font: {
-                    weight: 500
-                }
+                    color: '#323232',   // labels on X axis
+                    font: {
+                        weight: 500
+                    }
                 },
                 grid: {
-                display: false,
-                drawBorder: false
+                    display: false,
+                    drawBorder: false
                 }
             },
             y: {
                 ticks: {
-                color: textColorSecondary
+                    color: '#323232'    // labels on Y axis
                 },
                 grid: {
-                color: surfaceBorder,
-                drawBorder: false
+                    color: '#dbdbdb',   // grid color
+                    drawBorder: true
                 }
             }
         }
     };
-
 </script>
 
 
 <template>
-    <div class="card ">
+    <div class="card">
         <div class="flex align-items-start justify-content-between mb-6">
             <span class="text-900 text-xl font-semibold">
                 {{ title }}
@@ -79,8 +102,8 @@
         <Chart
             type="bar"
             :height="300"
-            :data="barData"
-            :options="barOptions"
+            :data="chartData"
+            :options="chartOptions"
         />
     </div>
 </template>

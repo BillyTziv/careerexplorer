@@ -1,23 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Test;
 
+use Inertia\Inertia;
+use Inertia\Response;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Test;
-use App\Models\Answer;
-use App\Models\Question;
-use App\Models\Submission;
+use App\Models\UserManagement\User;
+use App\Models\UserManagement\Role;
+
+use App\Models\Test\Test;
+use App\Models\Test\Answer;
+use App\Models\Test\Question;
+use App\Models\Test\Submission;
+
 use App\Models\Career\Skill;
-use App\Models\Interest;
-use App\Models\CareerValue;
-use App\Models\Career;
-use App\Models\SessionRequest;
+use App\Models\Career\Interest;
+use App\Models\Career\CareerValue;
+use App\Models\Career\Career;
+
+use App\Models\SessionRequest\SessionRequest;
 
 class TestSubmissionController extends Controller
 {
@@ -104,16 +112,12 @@ class TestSubmissionController extends Controller
             });
         }
 
-        return $query->paginate(10);
+        return $query->get();
     }
 
     public function index() {
         return Inertia::render('Tests/Submissions/Index', [
-            'response' => [],
-            'submissions' => self::getAllTestResults(),
-            'filters' => [
-                'search' => request('search') ? request('search') : '',
-            ]
+            'test_submissions' => self::getAllTestResults()
         ]);
     }
 
@@ -128,7 +132,6 @@ class TestSubmissionController extends Controller
     }
     public function storeMetaData( Request $request ) {
     
-        //$userExist = self::userAlreadyExist( $request );
     
         // if( $userExist === true ) {
         //     // Get the user who has previously submitted a career test.
@@ -184,61 +187,101 @@ class TestSubmissionController extends Controller
         return redirect()->route('careers.list', ['code' => implode('',  $letters)]);
     }
 
-    public function store( Request $request ) {
-        $userExist = self::userAlreadyExist( $request );
+    public function store( Request $request )
+    {
+        $rules = [
+            'test.user.firstname' => 'required|string|max:255',
+            'test.user.lastname' => 'required|string|max:255',
+            'test.user.phone' => 'required',
+            'test.user.email' => 'required|email|max:255'
+        ];
         
-        if( $userExist === true ) {
-            // Get the user who has previously submitted a career test.
-            $user = User::where('email', '=', $request->user['email'] )->first();
-            $userId = $user->id;
+        $messages = [
+            'required' => 'Το πεδίο είναι υποχρεωτικό.',
+        ];
+        
+        $request->validate($rules, $messages);
+
+        /**************************************************************************
+         * DATA ARE CLEAN
+         *************************************************************************/
+
+        $email = $request->test['user']['email'];
+        $fName = $request->test['user']['firstname'];
+        $lName = $request->test['user']['lastname'];
+        $phone = $request->test['user']['phone'];
+
+        /**************************************************************************
+         * USER
+         *************************************************************************/
+
+        // Does this user exist in our database?
+        $user = User::where('email', $email)->first();
+
+        if( $user ) {
+            // EXISTING USER
+            $userId = $user ? $user->id : null;
         }else {
-            // Store the user who submitted the career test.
+            // NEW USER
             $user = new User();
 
-            $user->username = explode("@", $request->user['email'])[0] . "_" . random_int(100000, 999999);
-            $user->firstname = $request->user['firstname'];
-            $user->lastname = $request->user['lastname'];
-            $user->phone = $request->user['phone'];
-            $user->email = $request->user['email'];
+            $user->username = explode("@", $email)[0] . "_" . random_int(100000, 999999);
+            $user->firstname = $fName;
+            $user->lastname = $lName;
+            $user->phone = $phone;
+            $user->email = $email;
+
             $user->password = Hash::make("B@_T#RD9vS8tuh#%!@#^^");
 
+            // Save the user
             $user->save();
-            $userId = $user->id;
-            DB::insert('insert into role_user (role_id, user_id) values (?, ?)', [Role::where('name', 'Student')->first()->id, $user->id]);
+            
+            // Assign the user role
+            $studentRole = Role::where('name', 'Student')->first();
+            $user->roles()->attach( $studentRole->id );
         }
 
-        // Create a new submission instance
-        $submission = new Submission();
-        $submission->user_id = $userId;
-        $submission->test_id = $request->test['id'];
-        $submission->save();
+        /**************************************************************************
+         * TEST SUBMISSION
+         *************************************************************************/
+        $submission = Submission::create([
+            'user_id' => $user->id,
+            'test_id' => $request->test['id']
+        ]);
+
         $submissionId = $submission->id;
 
-        foreach( $request->answers as $ans ) {
+        /**************************************************************************
+         * STORE ALL ANSWERS
+         *************************************************************************/
+
+        foreach( $request->test['answers'] as $ans ) {
            if( !empty($ans['answer']) ) {
 
             $answer = new Answer();
+
             $answer->user_id = $userId;
             $answer->question_id = $ans['id'];
-            $answer->submission_id = $submissionId;
+            $answer->submission_id = $submission->id;
             $answer->answer = $ans['answer'];
+
             $answer->save();
            }
         }
     
         $hollandCode = array_map(function($item) {
             return $item['id'];
-        }, self::calculateRIASECByUserId( $userId, $submissionId ));
+        }, self::calculateRIASECByUserId( $userId, $submission->id ));
 
         $filteredSkills = self::getSkillsByHollandCode( $hollandCode );
         $filteredInterests = self::getInterestsByHollandCode( $hollandCode );
         $filteredValues = self::getCareerValuesByHollandCode( $hollandCode );
         $filteredCareers = self::getCareersByHollandCode( $hollandCode );
-        $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submissionId );
+        $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submission->id );
 
-        return Inertia::render('Tests/Submissions/Demo', [
+        return Inertia::render('Tests/HollandTest/HollandTestResults', [
             'userId' => $userId,
-            'testSubmissionId' => $submissionId,
+            'testSubmissionId' => $submission->id,
             'hollandCodeId' => $hollandCode,
             'hollandCodes' => $filteredHollandCodes,
             'skills' => $filteredSkills,
@@ -250,13 +293,15 @@ class TestSubmissionController extends Controller
 
     public function show( $submissionId ) {
         $submission = Submission::where('id', $submissionId)->get()->first();
+
+
         $testAnswers = Answer::where('submission_id', $submissionId)
             ->join('questions', 'questions.id', '=', 'answers.question_id')
             ->select('answers.*', 'questions.title', 'questions.type')
             ->get();
 
         return Inertia::render('Tests/Submissions/Show', [
-            'answers' => $testAnswers,
+            'submission' => $testAnswers,
             'riasec' => self::calculateRIASECByUserId( $submission->user_id, $submissionId ),
         ]);
     }
@@ -338,7 +383,9 @@ class TestSubmissionController extends Controller
         $filteredCareers = self::getCareersByHollandCode( $hollandCode );
         $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submissionId );
 
-        return Inertia::render('Tests/Submissions/Demo', [
+        dd($filteredHollandCodes);
+        
+        return Inertia::render('Tests/Submissions/HollandTestResults', [
             'userId' => $userId,
             'testSubmissionId' => $submissionId,
             'hollandCodeId' => $hollandCode,
@@ -418,7 +465,7 @@ class TestSubmissionController extends Controller
     public function start( $id ) {
         $test = Test::where('id', $id )->with('questions')->get()->first();
 
-        return Inertia::render('Tests/Submissions/Create', [
+        return Inertia::render('Tests/HollandTest/Create', [
             'response' => [],
             'test' => $test
         ]);
@@ -477,14 +524,22 @@ class TestSubmissionController extends Controller
     //     ]);
     // }
     
+    
+    /* PUBLIC FOR EVERYONE */
+    public function startHollandTest() {
+        return self::start( 1 );
+    }
+
     /* PUBLIC FOR EVERYONE */
     public function getHollandTest() {
-        return self::start( 1 );
+        return Inertia::render('Static/PublicHollandTest');
     }
 
     public static function userAlreadyExist( Request $request ) {
         $user = User::where('email', '=', $request->user['email'] )->first();
+
         if( $user !== null  ) return true;
+
         return false;
     }
 

@@ -1,11 +1,22 @@
-$primaryColor: #818cf8 !default;
-$primaryLightColor: #a5b4fc !default;
-$primaryLighterColor: #c7d2fe !default;
-$primaryLightestColor: rgba(129, 140, 248, .2) !default;
-$primaryTextColor: #030712 !default;
-$primary500: #6366f1 !default;
+// $primaryColor: #818cf8 !default;
+// $primaryLightColor: #a5b4fc !default;
+// $primaryLighterColor: #c7d2fe !default;
+// $primaryLightestColor: rgba(129, 140, 248, .2) !default;
+// $primaryTextColor: #030712 !default;
+// $primary500: #6366f1 !default;
 
-$highlightBg:rgba(129, 140, 248, .16) !default;
+// $highlightBg:rgba(129, 140, 248, .16) !default;
+// $highlightTextColor: rgba(255, 255, 255, 0.87) !default;
+// $highlightFocusBg: rgba($primaryColor, 0.24) !default;
+
+$primaryColor: #011b3d !default;
+$primaryLightColor: #ff007e !default;
+$primaryLighterColor: #ff4da6 !default;
+$primaryLightestColor: rgba(1, 27, 61, .2) !default;
+$primaryTextColor: #030712 !default;
+$primary500: #ff007e !default;
+
+$highlightBg: rgba(1, 27, 61, .16) !default;
 $highlightTextColor: rgba(255, 255, 255, 0.87) !default;
 $highlightFocusBg: rgba($primaryColor, 0.24) !default;
 

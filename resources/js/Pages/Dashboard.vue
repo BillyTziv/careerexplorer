@@ -60,7 +60,7 @@
 
                     <br /> <br />
 
-                    <a href="/explore-careers" class="text-primary hover:underline cursor-pointer font-medium">
+                    <a href="/explore" class="text-primary hover:underline cursor-pointer font-medium">
                         Εύρεση Επαγγέλματος
                     </a>
 

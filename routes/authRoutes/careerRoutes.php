@@ -14,8 +14,6 @@ use App\Http\Controllers\Career\CareerStudyController;
 **************************************************************************/
 Route::resource('/careers', CareerController::class);
 
-Route::get('/explore-careers', [CareerController::class, 'exploreCareers']);
-Route::get('/career-preview/{id}', [CareerController::class, 'singleCareer'])->name('singleCareer');
 
 Route::get('/career-settings', [CareerController::class, 'showCareerSettings']);
 

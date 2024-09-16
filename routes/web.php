@@ -20,7 +20,7 @@ Route::get('/', function () {
     if (Auth::check()) {
         return Inertia::render('Dashboard');
     } else {
-        return Inertia::render('Welcome');
+        return Inertia::render('Static/Welcome');
     }
 });
 

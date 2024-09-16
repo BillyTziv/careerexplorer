@@ -1,0 +1,169 @@
+<script setup>
+    import { ref, computed } from 'vue';
+
+    let props = defineProps({
+        hollandCodes: Array,
+        response: Object,
+        userId: Number,
+        testSubmissionId: Number,
+    });
+
+    const requestSessionFromCoach = ref( false );
+
+    function requestCareerSession( withSessionRequest ) {
+        requestSessionFromCoach.value = withSessionRequest;
+    }
+
+    const adjustOpacity = (colorHex, opacity) => {
+        // Extract the base color without the hash
+        const baseColor = colorHex.substring(1);
+
+        // Convert hex to RGB
+        const r = parseInt(baseColor.slice(0, 2), 16);
+        const g = parseInt(baseColor.slice(2, 4), 16);
+        const b = parseInt(baseColor.slice(4, 6), 16);
+        
+        // Increase RGB values towards 255 (white)
+        const lightR = Math.min(255, r + (255 - r) * opacity);
+        const lightG = Math.min(255, g + (255 - g) * opacity);
+        const lightB = Math.min(255, b + (255 - b) * opacity);
+
+        // Return the RGBA color
+        return  `rgba(${lightR}, ${lightG}, ${lightB}, ${opacity})`;
+    };
+</script>
+
+<template>
+    <div class="relative overflow-hidden flex flex-column justify-content-center">
+
+        <div class="bg-circle opacity-50" :style="{ top: '-200px', left: '-700px' }"></div>
+        <div class="bg-circle hidden lg:flex" :style="{ top: '50px', right: '-800px', transform: 'rotate(60deg)' }"></div>
+
+        <div class="landing-wrapper">
+            <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
+                <div id="personality-summary" class="my-6 py-6 md:my-8 md:py-8">
+                    <div class="text-center">
+                        <i class="pi pi-check-circle text-primary" style="font-size: 5rem;"></i>
+                    </div>
+
+                    <span class="text-900 block font-bold text-5xl mb-4 text-center">
+                        Μπράβο, ολοκλήρωσες το test με επιτυχία!
+                    </span>
+                    <span class="text-700 block text-2xl mb-5 text-center line-height-3">
+                        Σύμφωνα με τις απαντήσεις που έδωσες και την θεωρία του ψυχολόγου J. Holland, η προσωπικότητά σου αναλύεται στις παρακάτω τρείς επικρατέστερες κατηγορίες.
+                    </span>
+
+                    <div class="grid mb-5">
+                        <div
+                            v-for="code in hollandCodes"
+                            :key=code.id
+                            class="col-12 md:col-6 xl:col-4 flex justify-content-center p-3"
+                        >
+                            <div
+                                class="box p-4 w-full border rounded-xl border-blue-500"
+                                :style="`background-color: ${adjustOpacity(code.color, 0.1)} !important;`"
+                            >
+                                <!-- <img :src="`/demo/images/landing/icon-components.svg`" alt="components icon" class="block mb-3" /> -->
+                             
+                                <ProgressBar
+                                    :value="code.value"
+                                    :color="code.color"
+                                    class="mb-4"
+                                />
+                                
+                                <span class="text-900 block font-semibold mb-3 text-3xl" :style="`color: ${code.color}`">
+                                    {{ code.name }}
+                                </span>
+
+                                <p class="m-0 text-secondary text-700 text-xl">
+                                    {{ code.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="text-700 block text-2xl mb-5 text-center line-height-3">
+                        Τα παραπάνω αποτελέσματα, δείχνουν μια ενδεχομένως κλίση, ένα ενδιαφέρον ή ίσως κάτι που καλλιεργείς χρόνια και δεν ετυχε να το αντιληφθείς.
+                    </span>
+                    
+                    <div class="mt-2 text-center">
+                        <Button
+                            @click="requestCareerSession( true )" 
+                            type="submit" 
+                            label="Θέλω να μάθω περισσότερα"
+                            icon="pi pi-arrow-right"
+                            raised 
+                            iconPos="right"
+                            class="w-30rem text-2xl"
+                        />
+                    </div>
+                </div>
+
+                <div id="sessionRequest" class="my-6 py-6 md:my-8 md:py-8">
+                    <span class="text-900 block font-bold text-5xl mb-4 text-center">
+                        Είσαι έτοιμος να κάνεις το επόμενο βήμα;
+                    </span>
+                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
+                        Φυσικά, μπορείς να συνεχίσεις αυτόν τον μαραθώνιο ανακάλυψης των θέλω σου και να αποκτήσεις ένα <strong>προσωπικό πλάνο καριέρας</strong>, που θα σε βοηθήσει να κάνεις το επόμενο βήμα, όποιο και αν είναι αυτό. Εύκολο, δύσκολο, μικρό, μεγάλο ή αυτό που λένε κάποιοι εκεί έξω ως `αδύνατο`..
+                    </span>
+
+                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
+                        Λόγω της ιδιαιτερότητας που έχει ο κάθε άνθρωπος, εγώ ως σύστημα σε αποχαιρετώ εδώ και ήρθε ή ώρα να γνωρίσεις και να μιλήσεις με τον Μιχάλη, την Αναστασία ή την Μαρία, 3 από τους εθελοντές συμβούλους επαγγελματικού προσανατολισμού του FutureGeneration. Άνθρωποι σαν εσένα, που έχουν μια μεγαλύτερη εμπειρία σε κάποιον τομέα και θέλουν να την μοιραστούν μαζί σου.
+                    </span>
+                    
+                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
+                        Γιατί είναι όμορφο να προσφέρεις, ειδικά σε όσους το έχουν ανάγκη. Ας το αποκαλέσουμε ενσυναίσθηση. Μόνο έτσι πάμε μπροστά.
+                    </span>
+
+                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
+                        Λοιπόν, θα ήθελες να κλείσεις ένα δωρεάν ραντεβού 30 λεπτών με έναν από τους συμβούλους μας;
+                    </span>
+
+                 
+                    <div class="mt-2 text-center">
+                        <Button
+                            @click="requestCareerSession( true )" 
+                            type="submit" 
+                            label="Όχι, δεν το χρειάζομαι"
+                            class="w-20rem my-1"
+                        />
+                        
+                        <br/>
+
+                        <Button
+                            @click="requestCareerSession( true )" 
+                            type="submit" 
+                            label="Ναι, θα το ήθελα"
+                            class="w-20rem my-1 *:"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</template>
+
+<style scoped>
+    .bg-circle {
+        width: 1000px;
+        height: 1000px;
+        border-radius: 50%;
+        background-image: linear-gradient(140deg, var(--primary-color), var(--surface-ground) 80%);
+        position: absolute;
+        opacity: 0.25;
+        z-index: -1;
+    }
+
+    .p-progressbar {
+        background: #d9d9d9;
+    }
+    
+    .p-progressbar >>> .p-progressbar-label	 {
+        color: white;
+    }
+
+   .p-progressbar >>> .p-progressbar-value {
+        background: linear-gradient(to bottom right, #f97316, #ec4899, #a855f7) !important;
+    }
+</style>

@@ -1,12 +1,23 @@
-$primaryColor: #6366f1 !default;
-$primaryLightColor: #c7d2fe !default;
-$primaryDarkColor: #4f46e5 !default;
-$primaryDarkerColor: #4338ca !default;
-$primaryTextColor: #ffffff !default;
-$primary500: #6366f1 !default;
+// $primaryColor: #6366f1 !default;
+// $primaryLightColor: #c7d2fe !default;
+// $primaryDarkColor: #4f46e5 !default;
+// $primaryDarkerColor: #4338ca !default;
+// $primaryTextColor: #ffffff !default;
+// $primary500: #6366f1 !default;
 
-$highlightBg: #eef2ff !default;
-$highlightTextColor: $primaryDarkerColor !default;
+// $highlightBg: #eef2ff !default;
+// $highlightTextColor: $primaryDarkerColor !default;
+// $highlightFocusBg: rgba($primaryColor, 0.24) !default;
+
+$primaryColor: #011b3d !default;
+$primaryLightColor: #ff007e !default;
+$primaryDarkColor: #011b3d !default;
+$primaryDarkerColor: #011b3d !default;
+$primaryTextColor: #ffffff !default;
+$primary500: #ff007e !default;
+
+$highlightBg: rgba(1, 27, 61, .16) !default;
+$highlightTextColor: #011b3d !default;
 $highlightFocusBg: rgba($primaryColor, 0.24) !default;
 
 @import '../_variables';

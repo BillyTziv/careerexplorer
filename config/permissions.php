@@ -22,8 +22,6 @@ return [
 
     /* STATISTICS */
     ['name' => 'View Statistics', 'code' => 'view-statistics', 'entity' => 'other' ],
-    ['name' => 'View Test Templates', 'code' => 'view-all-test-templates', 'entity' => 'other' ],
-    ['name' => 'View Test Submissions', 'code' => 'view-all-test-submissions', 'entity' => 'other' ],
 
     /* VOLUNTEERS */
     ['name' => 'View All Volunteers', 'code' => 'view-all-volunteers', 'entity' => 'volunteer' ],
@@ -116,4 +114,8 @@ return [
     ['name' => 'Create Course Company', 'code' => 'create-course-company', 'entity' => 'course_company' ],
     ['name' => 'Edit Course Company', 'code' => 'edit-course-company', 'entity' => 'course_company' ],
     ['name' => 'Delete Course Company', 'code' => 'delete-course-company', 'entity' => 'course_company' ],
+
+    /* TESTS */
+    ['name' => 'View Test Templates', 'code' => 'view-all-test-templates', 'entity' => 'test' ],
+    ['name' => 'View Test Submissions', 'code' => 'view-all-test-submissions', 'entity' => 'tes' ],
 ];

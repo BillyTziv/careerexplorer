@@ -4,6 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <meta name="author" content="CareerExplorer">
+        <meta name="keyword" content="career, explorer, test, job, profession, orientation, careerexplorer, career explorer, career test, job test, profession test, orientation test">
+        <meta name="description" content="Δοκίμασε το αξιόπιστο τεστ επαγγελματικού προσανατολισμού μας και ανακάλυψε την ιδανική καριέρα σου σε μόλις λίγα λεπτά.">
+
+        <!-- CSRF Token -->
         <title inertia>{{ config('app.name', 'CareerExplorer') }}</title>
 
         <!-- Fonts -->

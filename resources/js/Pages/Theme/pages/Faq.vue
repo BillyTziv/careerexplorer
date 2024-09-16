@@ -7,7 +7,7 @@ defineExpose({
     $primevue
 });
 
-const activeIndex = ref(0);
+
 const items = ref([
     {
         label: 'General',
@@ -31,9 +31,6 @@ const items = ref([
     }
 ]);
 
-const changeItem = (index) => {
-    activeIndex.value = index;
-};
 </script>
 
 <template>

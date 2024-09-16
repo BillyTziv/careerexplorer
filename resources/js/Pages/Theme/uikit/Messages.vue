@@ -59,6 +59,9 @@ const showError = () => {
 
                 <transition-group name="p-message" tag="div">
                     <Message v-for="msg of message" :severity="msg.severity" :key="msg.content">{{ msg.content }}</Message>
+
+                    <Message :severity="info" :key="'faf'">{{ 'asdfasdf' }}</Message>
+
                 </transition-group>
             </div>
         </div>
