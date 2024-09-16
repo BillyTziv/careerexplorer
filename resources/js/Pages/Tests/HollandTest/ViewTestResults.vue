@@ -76,14 +76,9 @@
 </template>
 
 <script setup>
-    import { Head, Link } from '@inertiajs/vue3';
-    import { Inertia } from '@inertiajs/inertia';
-    import { ref, watch, reactive } from 'vue';
+    import {  Link } from '@inertiajs/vue3';
     window.moment = require('moment');
-    import NavbarPublic from '../../Common/NavbarPublic.vue';
 
-    import Pagination from '../../Common/Pagination.vue';
-    import Notification from '../../Common/Notification.vue';
 
     let props = defineProps({
         riasec: Object,
