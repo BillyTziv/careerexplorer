@@ -36,7 +36,7 @@
                 <!-- Ανακάλυψε όλες τις δυνατότητές σου -->
                 <!-- Explore more career paths than you think. -->
                 <!-- Explore unique career paths. -->
-                Explore your future.
+                <span class="highlight-word">Explore</span> your future.
             </span>
 
             <!-- Extra content -->
@@ -101,8 +101,9 @@
 </template>
 
 <style scoped>
-
+    .highlight-word {
+        background-color: var(--primary-color); /* Change this to your desired highlight color */
+        font-weight: bold;
+        padding: 0px 10px;
+    }
 </style>
-
-
-

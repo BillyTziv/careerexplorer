@@ -16,7 +16,7 @@
 
         <div class="flex lg:justify-content-center mb-5">
             <div class="py-3 pr-8 pl-3 w-30rem hidden lg:block">
-                <img src="/images/career-test-feature.png" alt="Τεστ Επαγγελματικού Προσανατολισμού" class="w-full mr-8">
+                <img src="/images/clean/career-test.png" alt="Τεστ Επαγγελματικού Προσανατολισμού" class="w-full mr-8">
             </div>
 
             <div class="flex flex-column align-items-center w-2rem">
@@ -43,7 +43,7 @@
                         tempus urna et. Cursus turpis massa. </div>
                 </div> -->
 
-               <img src="/images/career-test-feature.png" alt="Τεστ Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden">
+               <img src="/images/clean/career-test.png" alt="Τεστ Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden">
             </div>
         </div>
         <div class="flex justify-content-center mb-5">
@@ -63,7 +63,7 @@
                         convallis tellus id interdum velit laoreet. </div>
                 </div> -->
                 
-                <img src="/images/career-search-feature.png" alt="Λίστα με Μονοπάτια Καριέρας" class="w-full mt-3 block lg:hidden">
+                <img src="/images/clean/career-search.png" alt="Λίστα με Μονοπάτια Καριέρας" class="w-full mt-3 block lg:hidden">
             </div>
             <div class="flex flex-column align-items-center w-2rem flex-order-0 lg:flex-order-1"><span
                     class="bg-orange-500 text-0 flex align-items-center justify-content-center border-circle  text-2xl"
@@ -71,11 +71,11 @@
                 <div class="h-full bg-orange-500" style="width: 2px; min-height: 4rem;"></div>
             </div>
             <div class="py-3 pl-8 pr-3 w-30rem hidden lg:block flex-order-2"><img
-                    src="/images/career-search-feature.png" alt="Λίστα με Μονοπάτια Καριέρας" class="w-full mr-8"></div>
+                    src="/images/clean/career-search.png" alt="Λίστα με Μονοπάτια Καριέρας" class="w-full mr-8"></div>
         </div>
         <div class="flex justify-content-center">
             <div class="py-3 pr-8 pl-3 w-30rem hidden lg:block">
-                <img src="/images/session-request-feature.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mr-8"></div>
+                <img src="/images/clean/career-session.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mr-8"></div>
             <div class="flex flex-column align-items-center w-2rem"><span
                     class="bg-green-500 text-0 flex align-items-center justify-content-center border-circle  text-2xl"
                     style="min-width: 2.5rem; min-height: 2.5rem;">3</span>
@@ -97,7 +97,7 @@
                         eu. Massa placerat duis ultricies lacus. </div>
                 </div> -->
 
-                <img src="/images/session-request-feature.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden"> -->
+                <img src="/images/clean/career-session.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden"> -->
             </div>
         </div>
     </SectionLayout>

@@ -26,7 +26,7 @@
 </script>
 
 <template>
-    <div :class="['field', { 'col-12': fullRow }]">
+    <div :class="['pl-2 field', { 'col-12': fullRow }]">
 
         <div class="flex flex-col justify-between">
             <InputSwitch

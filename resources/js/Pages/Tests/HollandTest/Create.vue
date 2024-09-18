@@ -42,8 +42,6 @@
     function submitTest() {
         hollandTestStore.setSessionRequest( sessionRequest.value );
 
-        console.log(hollandTestStore.getSubmitPayload);
-
         router.post('/tests/holland/submit', {
             test: hollandTestStore.getSubmitPayload
         }, { 

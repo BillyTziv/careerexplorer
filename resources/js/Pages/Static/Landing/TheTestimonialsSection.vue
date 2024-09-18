@@ -25,37 +25,34 @@
                 <div class="surface-card shadow-2 p-4 flex flex-column align-items-center md:flex-row md:align-items-start mb-5"
                     style="border-radius: 10px;">
                     
-                    <img src="/demo/images/avatar/profile.jpg" class="w-4rem rounded-full">
+                    <img src="/images/clean/maria.webp" class="w-4rem rounded-full">
 
                     <div class="ml-4 mt-4 md:mt-0">
-                        <p class="mt-0 mb-3 line-height-3 text-lg sm:text-xl">No matter where you go, Blocks is the coolest, most happening
-                            thing around! We can't understand how we've been living without Blocks.</p>
-                        <div class="text-900 font-medium mb-1 text-right">Jane Cooper</div>
-                        <div class="text-600 text-sm text-right">Belton, Inc</div>
+                        <p class="mt-0 mb-3 line-height-3 text-lg sm:text-xl">Το τεστ καριέρας με βοήθησε να ανακαλύψω τις πραγματικές μου δεξιότητες και ενδιαφέροντα. Μέσα σε λίγα λεπτά, είχα μια ξεκάθαρη εικόνα των επαγγελματικών μου δυνατοτήτων. Συνιστώ την πλατφόρμα ανεπιφύλακτα.</p>
+                        <div class="text-900 font-medium mb-1 text-right">Μαρία Π.</div>
+                        <!-- <div class="text-600 text-sm text-right">Belton, Inc</div> -->
                     </div>
                 </div>
                 <div class="surface-card shadow-2 p-4 flex flex-column align-items-center md:flex-row md:align-items-start mb-5"
                     style="border-radius: 10px;">
 
-                    <img src="/demo/images/avatar/profile.jpg" class="w-4rem rounded-full">
+                    <img src="/images/clean/giannis.webp" class="w-4rem rounded-full">
 
                     <div class="ml-4 mt-4 md:mt-0">
-                        <p class="mt-0 mb-3 line-height-3 text-lg sm:text-xl">We can't understand how we've been living without Blocks.
-                            Blocks impressed me on multiple levels. It's really wonderful.</p>
-                        <div class="text-900 font-medium mb-1 text-right">Floyd Miles</div>
-                        <div class="text-600 text-sm text-right">Belton, Inc</div>
+                        <p class="mt-0 mb-3 line-height-3 text-lg sm:text-xl">Η καθοδήγηση που έλαβα ήταν εξαιρετική! Η ομάδα με βοήθησε να βελτιώσω το βιογραφικό μου και να προετοιμαστώ για συνεντεύξεις με αυτοπεποίθηση. Ένιωσα πραγματικά ότι έχω υποστήριξη σε κάθε βήμα..</p>
+                        <div class="text-900 font-medium mb-1 text-right">Γιάννης Κ.</div>
+                        <!-- <div class="text-600 text-sm text-right">Belton, Inc</div> -->
                     </div>
                 </div>
                 <div class="surface-card shadow-2 p-4 flex flex-column align-items-center md:flex-row md:align-items-start"
                     style="border-radius: 10px;">
 
-                    <img src="/demo/images/avatar/profile.jpg" class="w-4rem rounded-full">
+                    <img src="/images/clean/eleni.webp" class="w-4rem rounded-full">
 
                     <div class="ml-4 mt-4 md:mt-0">
-                        <p class="mt-0 mb-3 line-height-3 text-lg sm:text-xl">Just what I was looking for. I would like to personally thank
-                            you for your outstanding product.</p>
-                        <div class="text-900 font-medium mb-1 text-right">Leslie Alexander</div>
-                        <div class="text-600 text-sm text-right">Alfred, Inc</div>
+                        <p class="mt-0 mb-3 line-height-3 text-lg sm:text-xl">Δεν ήξερα ποια επαγγελματική κατεύθυνση να ακολουθήσω, αλλά με το τεστ και τις συνεδρίες καθοδήγησης βρήκα επιτέλους το μονοπάτι που μου ταιριάζει. Είναι ανεκτίμητη η βοήθεια που παρέχουν</p>
+                        <div class="text-900 font-medium mb-1 text-right">Ελένη Μ.</div>
+                        <!-- <div class="text-600 text-sm text-right">Alfred, Inc</div> -->
                     </div>
                 </div>
             </div>
