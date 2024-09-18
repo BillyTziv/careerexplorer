@@ -86,7 +86,7 @@
         id: props.career.id ?? null,
         title: props.career.title ?? "",
         keywords: props.career.keywords ?? "",
-        isPopular: props.career.isPopular ?? false,
+        isPopular: props.career.is_popular ? true : false,
         description: props.career.description ?? "",
         status: props.career.status ?? 1,
         responsibilities: props.career.responsibilities ?? [],
