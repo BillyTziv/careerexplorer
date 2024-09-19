@@ -29,7 +29,7 @@ Route::post('/tests/holland/submit', [TestSubmissionController::class, 'store'])
 Route::post('/tests/holland/submitMetaData', [TestSubmissionController::class, 'storeMetaData']);
 
 Route::get('/tests/holland/{submissionId}/results', [TestSubmissionController::class, 'getHollandTestResults'])->name('tests.holland.results');
-Route::get('/explore', [CareerController::class, 'exploreCareers']);
+Route::get('/explore', [CareerController::class, 'exploreCareers'])->name('exploreCareers');
 Route::get('/career-preview/{id}', [CareerController::class, 'singleCareer'])->name('singleCareer');
 
 // ------------------------------------------------------------------------------

@@ -373,7 +373,10 @@ class CareerController extends Controller
         // Prepare query that will fetch all filtered available careers. 
         $careers = Career::query()
             ->when($searchKeyword, function ($query, $search) {
-                $query->where('title', 'LIKE', "%{$search}%");
+                $query->where(function ($query) use ($search) {
+                    $query->where('title', 'LIKE', "%{$search}%")
+                        ->orWhere('keywords', 'LIKE', "%{$search}%");
+                });
             })
             ->where('deleted', false)
             ->orderBy('created_at', $order)

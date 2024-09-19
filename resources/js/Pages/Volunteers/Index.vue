@@ -61,8 +61,10 @@
     /* Component Reactive Variables */
     const selectVolunteer           = ref( null );              // Used for delete confirmation
     const deleteVolunteerDialog     = ref( false );             // Used for delete confirmation
+    const previewEmailDialog = ref( false );             // Used for preview email dialog
     const volunteersTableRef        = ref( null );              // Used for exportCSV
     const filterVolunteersTable     = ref( props.filters );     // Used for filtering the table
+    const volunteerEmailList        = ref( '' );                // Used for preview email dialog
     
     /* Component Methods */
 
@@ -146,6 +148,22 @@
     const redirectToCreate = () => {    
         router.visit(`/volunteers/create`);
     };
+
+    const viewSelectedVolunteerEmail = () => {
+        if( selectedVolunteers.value.length <= 0 ) {
+            notify('error', 'Σφάλμα', 'Δεν έχετε επιλέξει κανέναν εθελοντή.');
+            return;
+        }
+
+        let emails = selectedVolunteers.value.map( volunteer => volunteer.email ).join(', ');
+        volunteerEmailList.value = emails;
+        previewEmailDialog.value = true;
+    };
+
+    const copyVolunteerEmailListToClipboard = () => {
+        navigator.clipboard.writeText( volunteerEmailList.value );
+        notify('success', 'Επιτυχία', 'Η λίστα με τα email αντιγράφτηκε στο πρόχειρο.');
+    };
 </script>
 
 <template>
@@ -226,8 +244,9 @@
                     <InputIcon class="pi pi-search" />
                     <InputText type="text" v-model="filters.search" placeholder="Αναζήτηση με όνομα, email, τηλ.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
-                
+
                 <div class="flex">
+                    <Button type="button" icon="pi pi-envelope" rounded v-tooltip="'Preview Emails'" text @click="viewSelectedVolunteerEmail"></Button>
                     <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportVolunteersAsCSV"></Button>
                     <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
                 </div>
@@ -249,7 +268,7 @@
             >
                 <template #empty>Δεν βρέθηκαν εθελοντές.</template>
                 
-                <!-- <Column selectionMode="multiple" headerStyle="width: 3rem"></Column> -->
+                <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
 
                 <Column field="firstname" header="Όνομα" sortable >
                     <template #body="{ data }">
@@ -332,6 +351,15 @@
             </DataTable>
         </template>
     </AppPageWrapper>
+
+    <Dialog v-model:visible="previewEmailDialog" :style="{ width: '450px' }" header="Λίστα με Email" :modal="true">
+        <div class="flex align-items-center justify-content-center">
+            {{ volunteerEmailList }}
+        </div>
+        <template #footer>
+            <Button class="flex align-items-center justify-content-center" label="Αντιγραφή" icon="pi pi-copy" @click="copyVolunteerEmailListToClipboard" />
+        </template>
+    </Dialog>
 
     <Dialog v-model:visible="deleteVolunteerDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής" :modal="true">
         <div class="flex align-items-center justify-content-center">

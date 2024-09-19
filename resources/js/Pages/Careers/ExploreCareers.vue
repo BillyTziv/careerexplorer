@@ -21,23 +21,30 @@
     const sortOrder = ref(null);
     const sortField = ref(null);
 
+    let filters = ref({
+        search: props.filters?.search ?? "",
+        sort: props.filters?.sort ?? 'desc',
+        code: props.filters?.hollandCode ?? 'riasec',
+        page: props.filters?.page ?? 1,
+    });
+
+
     onMounted(() => {
         dataviewValue.value = props.careers;
     });
 
     const onFilter = (e) => {
-        const value = e.target.value;
-        globalFilterValue.value = value;
+        filters.value.search = e.target.value;
 
-        if (value.length === 0) {
-            filteredValue.value = null;
-        } else {
-            const filtered = dataviewValue.value.filter((product) => {
-                return product.name.toLowerCase().includes(value.toLowerCase());
-            });
-            filteredValue.value = filtered;
-        }
-    };
+        router.get(route('exploreCareers'), filters.value,
+        {
+            preserveState: true,
+            replace: true,
+            onSuccess: (response) => {
+                dataviewValue.value = response.props.careers;
+            }
+        });
+    }
 
     const getHollandCodeColor = ( hollandCode ) => {
         switch ( hollandCode ) {
