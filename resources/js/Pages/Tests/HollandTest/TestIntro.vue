@@ -37,7 +37,7 @@
                 @click="startTest"
                 label="Ξεκίνα το test"  
                 type="button" 
-                class="mr-2 mb-2 highlight-btn w-12rem" 
+                class="mr-2 mb-2 highlight-btn w-16rem" 
                 icon="pi pi-arrow-right" 
                 iconPos="right"
                 :loading="isPreparingTest"

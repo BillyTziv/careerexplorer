@@ -239,7 +239,6 @@ class SessionRequestController extends Controller
 
         $validatedData = $request->validate($rules, $messages);
 
-
         try {
             DB::beginTransaction();
             
@@ -256,9 +255,10 @@ class SessionRequestController extends Controller
 
             // DISCORD
             $client = new Client();
+
             $response = $client->request('POST', 'https://discord.com/api/webhooks/1279501507259273306/2-WdWBvvhws6PKxQMbg2y0CHpHJqtbtaiG3BzqZ3v8Ddzo4D3CR13v2qzYHMDHxYlWbq', [
                 'json' => [
-                    'content' => 'Ο ' . $volunteer->firstname . ' ' . $volunteer->lastname . ' έκανε αίτηση για συνεδρία επαγγελματικού προσανατολισμού και χρειάζεται την βοήθεια μας! '
+                    'content' => 'Ο ' . $validatedData['firstname'] . ' ' . $validatedData['lastname'] . ' έκανε αίτηση για συνεδρία επαγγελματικού προσανατολισμού και χρειάζεται την βοήθεια μας! '
                 ]
             ]);
 

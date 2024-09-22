@@ -1,8 +1,6 @@
 <script setup>
-    import { ref, computed } from 'vue';
+    import { ref } from 'vue';
     import { router } from '@inertiajs/vue3';
-    import axios from 'axios';
-	import { useToastNotification } from '@/Composables/useToastNotification';
 
     let props = defineProps({
         hollandCodes: Array,
@@ -15,37 +13,17 @@
     });
 
     const requestSessionFromCoach = ref( false );
-	const { notify } = useToastNotification();
 
-    function requestCareerSession( withSessionRequest ) {
-        requestSessionFromCoach.value = withSessionRequest;
-
+    function requestCareerSession() {        
         console.log( props.user );
 
-        axios.post('/session-requests', {
+        // Send the request to the backend
+        router.post('/session-requests', {
             firstname: props.user.firstname,
             lastname: props.user.lastname,
             email:  props.user.email,
-            phone:  props.user.phone
-        })
-        .then((response) => {
-            alert("Επιτυχής Καταχώρηση!");
-            //notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας καταχωρήθηκε με επιτυχία!`);
-        })
-        
-        // Send the request to the backend
-        // router.post('session-requests', {
-        //     firstname: props.user.firstname,
-        //     lastname: props.user.lastname,
-        //     email:  props.user.email,
-        //     phone:  props.user.phone,
-        // }, { 
-        //     preserveState: true, 
-        //     replace: true, 
-        //     onSuccess: () => {
-        //         notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας καταχωρήθηκε με επιτυχία!`);
-        //     }
-        // });
+            phone:  props.user.phone,
+        });
     }
 
     const adjustOpacity = (colorHex, opacity) => {
@@ -95,7 +73,7 @@
                         >
                             <div
                                 class="box p-4 w-full border rounded-xl border-blue-500"
-                                :style="`background-color: ${adjustOpacity(code.color, 0.1)} !important;`"
+                                :style="`background-color: ${adjustOpacity(code.color, 0.2)} !important;`"
                             >
                                 <!-- <img :src="`/demo/images/landing/icon-components.svg`" alt="components icon" class="block mb-3" /> -->
                              
@@ -143,7 +121,7 @@
 
                     <div class="mt-2 text-center">
                         <Button
-                            @click="requestCareerSession( true )" 
+                            @click="requestCareerSession" 
                             type="submit" 
                             label="Θέλω την δωρεάν συνεδρία"
                             class="w-20rem my-1 *: text-xl"

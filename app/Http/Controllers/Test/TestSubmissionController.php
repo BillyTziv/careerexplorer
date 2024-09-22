@@ -396,71 +396,6 @@ class TestSubmissionController extends Controller
         ]);
     }
     
-
-    // public function showTestResults( $submissionId ) {
-    //     $submission = Submission::find($submissionId);
-    //     if ($submission) {
-    //         $userId = $submission->user_id;
-    //         $userId = User::select('id')->where('id', $userId)->first();
-
-    //         $answers = DB::table('answers')
-    //             ->join('questions', 'question_id', '=', 'questions.id')
-    //             ->select('questions.title', 'answers.answer', 'questions.type' )
-    //             ->where('user_id', $userId->id)
-    //             ->get()
-    //             ->toArray();
-
-    //         return Inertia::render('Tests/Submissions/Show', [
-    //             'answers' => $answers,
-    //             'riasec' => self::calculateRIASECByUserId( $userId ),
-    //         ]);
-    //     } else {
-    //         // Submission not found
-    //     }
-    //     // $answers = DB::table('answers')
-    //     //     ->join('questions', 'question_id', '=', 'questions.id')
-    //     //     ->select('questions.type', 'answers.question_id' )
-    //     //     ->where('user_id', $userId->id)
-    //     //     ->where('answer', 'yes')
-    //     //     ->get()->toArray();
-
-    //     // $counterList = [
-    //     //     "Realistic" => 0,
-    //     //     "Investigative" => 0,
-    //     //     "Artistic" => 0,
-    //     //     "Social" => 0,
-    //     //     "Enterprising" => 0,
-    //     //     "Conventional" => 0,
-    //     // ];
-
-    //     // foreach ($answers as $key => $value) {
-    //     //     switch( $value->type ){
-    //     //         case 1:
-    //     //             $counterList['Realistic']++;
-    //     //             break;
-    //     //         case 2:
-    //     //             $counterList['Investigative']++;
-    //     //             break;
-    //     //         case 3:
-    //     //             $counterList['Artistic']++;
-    //     //             break;
-    //     //         case 4:
-    //     //             $counterList['Social']++;
-    //     //             break;
-    //     //         case 5:
-    //     //             $counterList['Enterprising']++;
-    //     //             break;
-    //     //         case 6:
-    //     //             $counterList['Conventional']++;
-    //     //             break;
-    //     //         default:
-    //     //             break;
-    //     //     }
-    //     // }
-
-       
-    // }
-
     public function start( $id ) {
         $test = Test::where('id', $id )->with('questions')->get()->first();
 
@@ -469,60 +404,6 @@ class TestSubmissionController extends Controller
             'test' => $test
         ]);
     }
-
-    // public function  () {
-    //     // =================================== CALCULATE ANSWERS =========
-    //     $userId = User::select('id')->where('email', 'vtzivaras@gmail.com')->first();
-
-    //     $answers = DB::table('answers')
-    //         ->join('questions', 'question_id', '=', 'questions.id')
-    //         ->select('questions.type', 'answers.question_id' )
-    //         ->where('user_id', $userId->id)
-    //         ->where('answer', 'yes')
-    //         ->get()->toArray();
-
-    //     $counterList = [
-    //         "Πρακτικός" => 0,
-    //         "Ερευνητικός" => 0,
-    //         "Καλλιτεχνικός" => 0,
-    //         "Κοινωνικός" => 0,
-    //         "Επιχειρηματικός" => 0,
-    //         "Οργανωτικός" => 0,
-    //     ];
-
-    //     foreach ($answers as $key => $value) {
-    //         switch( $value->type ){
-    //             case 1:
-    //                 $counterList['Πρακτικός']++;
-    //                 break;
-    //             case 2:
-    //                 $counterList['Ερευνητικός']++;
-    //                 break;
-    //             case 3:
-    //                 $counterList['Καλλιτεχνικός']++;
-    //                 break;
-    //             case 4:
-    //                 $counterList['Κοινωνικός']++;
-    //                 break;
-    //             case 5:
-    //                 $counterList['Επιχειρηματικός']++;
-    //                 break;
-    //             case 6:
-    //                 $counterList['Οργανωτικός']++;
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     }
-
-    //     return Inertia::render('Tests/Submissions/ViewTestResults', [
-    //         'response' => [
-    //             'status' => 'success'
-    //         ],
-    //         'riasec' => $counterList,
-    //     ]);
-    // }
-    
     
     /* PUBLIC FOR EVERYONE */
     public function startHollandTest() {
@@ -724,4 +605,32 @@ class TestSubmissionController extends Controller
     //     //     echo 'Caught exception: '. $e->getMessage() ."\n";
     //     // }
     // }
+    public function demoHollandTestResults() {
+        $submissionId = 21092;
+        $submission = Submission::findOrFail( $submissionId );
+
+        $userId = $submission->user_id;
+        $testId = $submission->test_id;
+
+        $hollandCode = array_map(function($item) {
+            return $item['id'];
+        }, self::calculateRIASECByUserId( $userId, $submissionId ));
+
+        $filteredSkills = self::getSkillsByHollandCode( $hollandCode );
+        $filteredInterests = self::getInterestsByHollandCode( $hollandCode );
+        $filteredValues = self::getCareerValuesByHollandCode( $hollandCode );
+        $filteredCareers = self::getCareersByHollandCode( $hollandCode );
+        $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submissionId );
+        
+        return Inertia::render('Tests/HollandTest/HollandTestResults', [
+            'user' => User::find($userId),
+            'testSubmissionId' => $submissionId,
+            'hollandCodeId' => $hollandCode,
+            'hollandCodes' => $filteredHollandCodes,
+            'skills' => $filteredSkills,
+            'interests' => $filteredInterests,
+            'values' => $filteredValues,
+            'careers' => $filteredCareers,
+        ]);
+    }
 }

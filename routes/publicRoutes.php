@@ -28,6 +28,9 @@ Route::get('/tests/holland/start', [TestSubmissionController::class, 'startHolla
 Route::post('/tests/holland/submit', [TestSubmissionController::class, 'store']);
 Route::post('/tests/holland/submitMetaData', [TestSubmissionController::class, 'storeMetaData']);
 
+Route::get('/demo/tests/holland/results', [TestSubmissionController::class, 'demoHollandTestResults']);
+
+
 Route::get('/tests/holland/{submissionId}/results', [TestSubmissionController::class, 'getHollandTestResults'])->name('tests.holland.results');
 Route::get('/explore', [CareerController::class, 'exploreCareers'])->name('exploreCareers');
 Route::get('/career-preview/{id}', [CareerController::class, 'singleCareer'])->name('singleCareer');
@@ -54,6 +57,9 @@ Route::prefix('/applications/fg')->group(function () {
 Route::get('/session-requests', [SessionRequestController::class, 'create'])->name('session-requests.create');
 Route::post('/session-requests', [SessionRequestController::class, 'store'])->name('session-requests.store');
 Route::get('/session-requests/review', [SessionRequestController::class, 'review'])->name('session-requests.review');
+
+
+
 
 // View a list fo all the job descriptions.
 Route::get('/careers/list', [CareerController::class, 'list'])->name('careers.list');
