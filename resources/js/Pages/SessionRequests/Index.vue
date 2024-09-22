@@ -14,24 +14,25 @@
 
     const sessionRequestStore = useSessionRequestStore();
     import { useFormatDate } from '@/Composables/useFormatDate';
+	import { useToastNotification } from '@/Composables/useToastNotification';
 
     let props = defineProps({
         user: Object,
         sessions: Object, 
         roleDropdownOptions: Array,
-        filters: Object,
         response: Object,
     });
 
     const { getStatusName } = useSessionRequestStatusMapper();
     const { formatDate } = useFormatDate( );
+	const { notify } = useToastNotification();
 
     // const deleteUserDialog = ref(false);
     // const selectedSessionRequest = ref(null);
     const sessionRequestsTableRef = ref(null);
-    const filterUsersTable = ref(props.filters);
 
-    const filters = reactive( sessionRequestStore.getTableFilters );
+    const sessionRequestFilters = reactive( sessionRequestStore.getTableFilters );
+    const filterVolunteersTable     = ref( null );     // Used for filtering the table
 
     /* Watch for changes in the filters */
     watch(() => sessionRequestStore.getTableFilters, () => {
@@ -47,17 +48,20 @@
     };
 
     const acceptSessionRequest = (sessionRequest) => {
-        router.put(`/session-requests/${sessionRequest.id}/accept`, {
+        router.put(`/session-requests/${sessionRequest.id}/accept`, {},
+        {
             preserveState: true, 
             replace: true, 
             onSuccess: () => {
+                console.log("edw")
                 notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας έχει ανατεθεί σε σύμβουλο Ε.Π. επιτυχώς.`);
             }
-        })
+        });
     };
 
     const completeSessionRequest = (sessionRequest) => {
-        router.put(`/session-requests/${sessionRequest.id}/complete`, { 
+        router.put(`/session-requests/${sessionRequest.id}/complete`, {},
+        { 
             preserveState: true, 
             replace: true, 
             onSuccess: () => {
@@ -93,9 +97,9 @@
         </template>
 
         <template #page-content>
-            <div class="flex flex-column md:flex-row align-items-start md:align-items-start mb-3 w-full">
+            <!-- <div class="flex flex-column md:flex-row align-items-start md:align-items-start mb-3 w-full">
                 <BaseDropdownInput
-                    v-model="filters.status"
+                    v-model="sessionRequestFilters.status"
                     placeholder="Όλες οι Καταστάσεις"
                     :options="sessionRequestStore.getStatusDropdownOptions"
                     class="mx-1"
@@ -110,12 +114,12 @@
                     @click="clearFilters()"
                     class="mx-1"
                 />
-            </div>
+            </div> -->
 
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="filters.search" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <InputText type="text" v-model="sessionRequestFilters.search" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
                 </IconField>
                 
                 <div class="flex">
@@ -126,11 +130,14 @@
 
             <DataTable
                 ref="sessionRequestsTableRef" 
-                :value="sessions" dataKey="id" 
+                :value="sessions"
+                dataKey="id" 
                 paginator 
                 :rows="15" 
                 responsiveLayout="scroll" 
-                v-model:filters="filterUsersTable"
+                v-model="sessionRequestFilters"
+                v-model:filters="filterVolunteersTable"
+
             >
                 <template #empty>Δεν βρέθηκαν συνεδρίες.</template>
                 
@@ -151,16 +158,16 @@
                 <Column field="lastname" header="Επίθετο Υποψηφίου" sortable>
                     <template #body="{ data }">
                         <span class="p-column-title">Επίθετο Υποψηφίου</span>
-                        {{ data.lastname }}
+                        {{ data.lastname.toUpperCase() }}
                     </template>
                 </Column>
-
-                <Column field="assignee" header="Σύμβουλος" sortable :headerStyle="{ minWidth: '12rem' }">
+<!-- 
+                <Column field="assignee" header="Σύμβουλος Ε.Π." sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
-                        <span class="p-column-title">Υπεύθυνος</span>
+                        <span class="p-column-title">Σύμβουλος Ε.Π.</span>
                         {{ data.assignee_firstname }} {{ data.assignee_lastname }}
                     </template>
-                </Column>
+                </Column> -->
 
                 <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
                     <template #body="{ data }">

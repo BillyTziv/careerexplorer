@@ -6,8 +6,8 @@
             default: 0
         },
         color: {
-            type: Number,
-            required: true,
+            type: String,
+            required: false,
             default: 'blue'
         },
         total: {

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { router } from '@inertiajs/vue3';
 
 export const useHollandTestStore = defineStore({
 	id: 'hollandTest',
@@ -51,7 +52,7 @@ export const useHollandTestStore = defineStore({
             return {
                 user: this.user,
                 answers: this.questions,
-                sessionRequest: this.sessionRequest,
+                sessionRequest: false,
                 id: this.id
             }
         }
@@ -95,7 +96,15 @@ export const useHollandTestStore = defineStore({
         },
         setUserData( formData ) {
             this.user = formData;
-            this.status = 'ready-to-submit';
+            //this.status = 'ready-to-submit';
+
+      
+            // hollandTestStore.setSessionRequest( sessionRequest.value );
+    
+            router.post('/tests/holland/submit', {
+                test: this.getSubmitPayload
+            });
+          
         },
         setSessionRequest( value ) {
             this.sessionRequest = value;

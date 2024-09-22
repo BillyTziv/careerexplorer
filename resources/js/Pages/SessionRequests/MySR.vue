@@ -4,6 +4,7 @@
 
     /* Components */
     import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
+    import BaseInfoText from '@/Components/Base/BaseInfoText.vue';
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
@@ -11,6 +12,7 @@
     import { useSessionRequestStatusMapper } from '@/Composables/useSessionRequestStatusMapper';
 
     import { useSessionRequestStore } from '@/Stores/useSessionRequest.store';
+	import { useToastNotification } from '@/Composables/useToastNotification';
 
     const sessionRequestStore = useSessionRequestStore();
 
@@ -23,8 +25,9 @@
     });
 
     const { getStatusName } = useSessionRequestStatusMapper();
+	const { notify } = useToastNotification();
 
-    const selectedSessionRequest = ref(null);
+    const selectedSR = ref(null);
     const sessionRequestsTableRef = ref(null);
     const filterUsersTable = ref(props.filters);
     const completeSRDialog = ref( false );
@@ -35,76 +38,44 @@
         sessionRequestsTableRef.value.exportCSV();
     };
 
-    const editSessionRequest = ( user ) => {
-        router.visit(`/session-requests/${user.id}/edit`);
-    };
-
-    const assignSessionRequest = ( sessionRequest ) => {
-        router.visit(`/session-requests/${sessionRequest.id}/assign`);
-    };
-
-    const confirmDeleteSessionRequest = ( editUser ) => {
-        selectedSessionRequest.value = editUser;
-        deleteUserDialog.value = true;
-    };
-
-    const deleteSessionRequest = () => {
-        router.delete(`/session-requests/${selectedSessionRequest.value.id}`)
-        deleteUserDialog.value = false;
-        selectedSessionRequest.value = {};
-        // users.value = users.value.filter((val) => val.id !== user.value.id);
-    
-        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
-    };
-
     /* Watch for changes in the filters */
     watch(() => sessionRequestStore.getTableFilters, () => {
         router.get('/session-requests/', sessionRequestStore.getTableFilters, { preserveState: true, replace: true });
     }, { deep: true });
 
-    function clearFilters() {
-        sessionRequestStore.resetTableFilters();
-    }
-
-    const redirectToCreate = () => {    
-        router.visit(`/session-requests/create`);
-    };
-
-    const acceptSessionRequest = (sessionRequest) => {
-        router.put(`/session-requests/${sessionRequest.id}/accept`)
-        // users.value = users.value.filter((val) => val.id !== user.value.id);
-    
-        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
-    };
-
 
     // Popup a dialog to confirm the deletion of a volunteer
     const confirmCompleteSR = ( sessionRequest ) => {
-        selectedSessionRequest.value = sessionRequest;
+        selectedSR.value = sessionRequest;
         completeSRDialog.value = true;
     };
 
     const completeSR = () => {
-        
-        router.put(`/session-requests/${selectedSessionRequest.value.id}/complete`)
-        // users.value = users.value.filter((val) => val.id !== user.value.id);
-        completeSRDialog.value = false;
+        router.put(`/session-requests/${selectedSR.value.id}/complete`, {},
+            { 
+                preserveState: true, 
+                replace: true, 
+                onSuccess: () => {
+                    completeSRDialog.value = false;
 
-        // toast.add({ severity: 'success', summary: 'Successful', detail: 'Ο χ Deleted', life: 3000 });
+                    notify('success', 'Ολοκληρώθηκε', `Η συνεδρία επαγγελματικού προσανατολισμού ολοκληρώθηκε επιτυχώς.`);
+                }
+            }
+        );
     };
 </script>
 
 <template>
     <AppPageWrapper>
         <template #page-title>
-            Οι Συνεδρίες μου
-        </template>
-
-        <template #page-subtitle>
-            
+            Οι Ενεργές Συνεδρίες μου
         </template>
 
         <template #page-content>
+            <BaseInfoText>
+                Μπορείτε να έχετε ταυτόχρονα μέχρι και 10 συνεδρίες σε εξέλιξη. Μετά την ολοκλήρωση μιας συνεδρίας, μπορείτε να αποδεχτείτε νέα.
+            </BaseInfoText>
+
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
                     <InputIcon class="pi pi-search" />
@@ -112,8 +83,15 @@
                 </IconField>
             </div>
 
-            <DataTable ref="sessionRequestsTableRef" :value="sessions" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterUsersTable">
-                <template #empty>Δεν βρέθηκαν συνεδρίες.</template>
+            <DataTable
+                ref="sessionRequestsTableRef" 
+                :value="sessions" dataKey="id" 
+                paginator 
+                :rows="10" 
+                responsiveLayout="scroll" 
+                v-model:filters="filterUsersTable"
+            >
+                <template #empty>Δεν βρέθηκαν ενεργές συνεδρίες. Επιλέξτε από το μενού αιτήσεις συνεδριών και κάνε αποδοχή.</template>
                 <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα</span>

@@ -29,7 +29,7 @@
 
 	const { notify } = useToastNotification();
     const hollandTestStore = useHollandTestStore();
-    const sessionRequest = ref(true);
+    // const sessionRequest = ref(true);
 
     onMounted(() => {
         hollandTestStore.setQuestions(props.test);
@@ -39,19 +39,6 @@
     // [ not-started > in-progress > submit-form ]
     const status = computed(() => hollandTestStore.getTestStatus);
 
-    function submitTest() {
-        hollandTestStore.setSessionRequest( sessionRequest.value );
-
-        router.post('/tests/holland/submit', {
-            test: hollandTestStore.getSubmitPayload
-        }, { 
-            preserveState: true, 
-            replace: true, 
-            onSuccess: () => {
-                notify('success', 'Ολοκληρώθηκε', `Μπράβο! Το test επαγγελματικού προσανατολισμού ολοκληρώθηκε με επιτυχία!`);
-            }
-        });
-    }
 
 
     function submitDemoTest () {
@@ -72,10 +59,12 @@
         <TestIntro 
             v-if="status === 'not-started'"
         /> 
-        <Button @click="submitDemoTest">Submit Demo Test</Button>
+        <!-- <Button @click="submitDemoTest">Submit Demo Test</Button> -->
 
 
-        <template v-if="status === 'in-progress'">
+        <template
+            v-if="status === 'in-progress'"
+        >
             <TestQuestion
                 :question="hollandTestStore.getNextQuestion"
             />

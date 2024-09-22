@@ -1,17 +1,51 @@
 <script setup>
     import { ref, computed } from 'vue';
+    import { router } from '@inertiajs/vue3';
+    import axios from 'axios';
+	import { useToastNotification } from '@/Composables/useToastNotification';
 
     let props = defineProps({
         hollandCodes: Array,
         response: Object,
-        userId: Number,
+        user: {
+            type: Object,
+            required: true
+        },
         testSubmissionId: Number,
     });
 
     const requestSessionFromCoach = ref( false );
+	const { notify } = useToastNotification();
 
     function requestCareerSession( withSessionRequest ) {
         requestSessionFromCoach.value = withSessionRequest;
+
+        console.log( props.user );
+
+        axios.post('/session-requests', {
+            firstname: props.user.firstname,
+            lastname: props.user.lastname,
+            email:  props.user.email,
+            phone:  props.user.phone
+        })
+        .then((response) => {
+            alert("Επιτυχής Καταχώρηση!");
+            //notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας καταχωρήθηκε με επιτυχία!`);
+        })
+        
+        // Send the request to the backend
+        // router.post('session-requests', {
+        //     firstname: props.user.firstname,
+        //     lastname: props.user.lastname,
+        //     email:  props.user.email,
+        //     phone:  props.user.phone,
+        // }, { 
+        //     preserveState: true, 
+        //     replace: true, 
+        //     onSuccess: () => {
+        //         notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας καταχωρήθηκε με επιτυχία!`);
+        //     }
+        // });
     }
 
     const adjustOpacity = (colorHex, opacity) => {
@@ -41,16 +75,16 @@
 
         <div class="landing-wrapper">
             <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
-                <div id="personality-summary" class="my-6 py-6 md:my-8 md:py-8">
+                <div id="personality-summary" class="my-2 py-2 md:my-5 md:py-5">
                     <div class="text-center">
-                        <i class="pi pi-check-circle text-primary" style="font-size: 5rem;"></i>
+                        <i class="pi pi-check-circle text-primary" style="color: green !important; font-size: 5rem;"></i>
                     </div>
 
-                    <span class="text-900 block font-bold text-5xl mb-4 text-center">
-                        Μπράβο, ολοκλήρωσες το test με επιτυχία!
+                    <span class="text-900 block font-bold text-4xl mb-4 text-center">
+                        Μπράβο, ολοκλήρωσες το τεστ με επιτυχία!
                     </span>
                     <span class="text-700 block text-2xl mb-5 text-center line-height-3">
-                        Σύμφωνα με τις απαντήσεις που έδωσες και την θεωρία του ψυχολόγου J. Holland, η προσωπικότητά σου αναλύεται στις παρακάτω τρείς επικρατέστερες κατηγορίες.
+                        Σύμφωνα με τις απαντήσεις που έδωσες και την θεωρία του ψυχολόγου J. Holland, η προσωπικότητά σου αναλύεται στις παρακάτω τρείς επικρατέστερες κατηγορίες. Αυτές δείχνουν μια ενδεχομένως κλίση, ένα ενδιαφέρον ή ίσως κάτι που καλλιεργείς χρόνια και δεν ετυχε να το αντιληφθείς.
                     </span>
 
                     <div class="grid mb-5">
@@ -82,60 +116,48 @@
                         </div>
                     </div>
 
-                    <span class="text-700 block text-2xl mb-5 text-center line-height-3">
-                        Τα παραπάνω αποτελέσματα, δείχνουν μια ενδεχομένως κλίση, ένα ενδιαφέρον ή ίσως κάτι που καλλιεργείς χρόνια και δεν ετυχε να το αντιληφθείς.
-                    </span>
+                    <!-- <span class="text-700 block text-2xl mb-5 text-center line-height-3">
+                        Εάν βρήκες τα αποτελέσματα ενδιαφέρον, συνέχισε ανακαλύπτοντας περισσότερα για τους σχετικούς κλάδους-τομείς εργασίας.
+                    </span> -->
                     
-                    <div class="mt-2 text-center">
+                    <!-- <div class="mt-2 text-center">
                         <Button
-                            @click="requestCareerSession( true )" 
+                            @click="nextStep" 
                             type="submit" 
-                            label="Θέλω να μάθω περισσότερα"
+                            label="Θέλω να συνεχίσω"
                             icon="pi pi-arrow-right"
                             raised 
                             iconPos="right"
-                            class="w-30rem text-2xl"
+                            class="w-20rem text-xl"
                         />
-                    </div>
+                    </div> -->
                 </div>
 
-                <div id="sessionRequest" class="my-6 py-6 md:my-8 md:py-8">
-                    <span class="text-900 block font-bold text-5xl mb-4 text-center">
+                <div id="sessionRequest" class="my-0 py-0 md:my-5 md:py-5">
+                    <span class="text-900 block font-bold text-3xl mb-4 text-center">
                         Είσαι έτοιμος να κάνεις το επόμενο βήμα;
                     </span>
-                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
-                        Φυσικά, μπορείς να συνεχίσεις αυτόν τον μαραθώνιο ανακάλυψης των θέλω σου και να αποκτήσεις ένα <strong>προσωπικό πλάνο καριέρας</strong>, που θα σε βοηθήσει να κάνεις το επόμενο βήμα, όποιο και αν είναι αυτό. Εύκολο, δύσκολο, μικρό, μεγάλο ή αυτό που λένε κάποιοι εκεί έξω ως `αδύνατο`..
+                    <span class="text-700 block text-2xl mb-4 text-center line-height-3">
+                        Το επόμενο βήμα, είναι να κλείσεις ένα δωρεάν ραντεβού 30-45 λεπτών με έναν από τους συμβούλους μας. Αυτό θα σε βοηθήσει να καταλάβεις καλύτερα τις επιλογές σου και να προσανατολιστείς σωστά. Αν πιστεύεις οτι το έχεις ανάγκη, κάνε το κλίκ και τα υπόλοιπα άσε τα πάνω μας.
                     </span>
 
-                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
-                        Λόγω της ιδιαιτερότητας που έχει ο κάθε άνθρωπος, εγώ ως σύστημα σε αποχαιρετώ εδώ και ήρθε ή ώρα να γνωρίσεις και να μιλήσεις με τον Μιχάλη, την Αναστασία ή την Μαρία, 3 από τους εθελοντές συμβούλους επαγγελματικού προσανατολισμού του FutureGeneration. Άνθρωποι σαν εσένα, που έχουν μια μεγαλύτερη εμπειρία σε κάποιον τομέα και θέλουν να την μοιραστούν μαζί σου.
-                    </span>
-                    
-                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
-                        Γιατί είναι όμορφο να προσφέρεις, ειδικά σε όσους το έχουν ανάγκη. Ας το αποκαλέσουμε ενσυναίσθηση. Μόνο έτσι πάμε μπροστά.
-                    </span>
-
-                    <span class="text-700 block text-xl mb-4 text-center line-height-3">
-                        Λοιπόν, θα ήθελες να κλείσεις ένα δωρεάν ραντεβού 30 λεπτών με έναν από τους συμβούλους μας;
-                    </span>
-
-                 
                     <div class="mt-2 text-center">
                         <Button
                             @click="requestCareerSession( true )" 
                             type="submit" 
-                            label="Όχι, δεν το χρειάζομαι"
-                            class="w-20rem my-1"
+                            label="Θέλω την δωρεάν συνεδρία"
+                            class="w-20rem my-1 *: text-xl"
                         />
-                        
-                        <br/>
+
+                        <!-- <br />
 
                         <Button
-                            @click="requestCareerSession( true )" 
+                            @click="requestCareerSession( false )" 
                             type="submit" 
-                            label="Ναι, θα το ήθελα"
-                            class="w-20rem my-1 *:"
-                        />
+                            label="Όχι, δεν το χρειάζομαι"
+                            outlined
+                            class="w-20rem my-1 text-lg"
+                        /> -->
                     </div>
                 </div>
             </div>

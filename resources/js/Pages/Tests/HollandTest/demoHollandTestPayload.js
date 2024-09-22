@@ -12,7 +12,7 @@ const demoHollandTestPayload = {
             "id": 41,
             "title": "Θα σου άρεσε να συντονίζεις και να οργανώνεις ένα συνέδριο;",
             "description": "Description for question",
-            "selectedAnswer": null,
+            "selectedAnswer": 3,
             "answers": [
                 {
                     "label": "Πάρα πολύ",

@@ -236,6 +236,8 @@ class TestSubmissionController extends Controller
             // Save the user
             $user->save();
             
+            $userId = $user->id;
+
             // Assign the user role
             $studentRole = Role::where('name', 'Student')->first();
             $user->roles()->attach( $studentRole->id );
@@ -256,37 +258,36 @@ class TestSubmissionController extends Controller
          *************************************************************************/
 
         foreach( $request->test['answers'] as $ans ) {
-           if( !empty($ans['answer']) ) {
+           if( !empty($ans['selectedAnswer']) ) {
+                $answer = new Answer();
 
-            $answer = new Answer();
+                $answer->user_id = $userId;
+                $answer->question_id = $ans['id'];
+                $answer->submission_id = $submissionId;
+                $answer->answer = $ans['selectedAnswer'];
 
-            $answer->user_id = $userId;
-            $answer->question_id = $ans['id'];
-            $answer->submission_id = $submission->id;
-            $answer->answer = $ans['answer'];
-
-            $answer->save();
+                $answer->save();
            }
         }
     
         $hollandCode = array_map(function($item) {
             return $item['id'];
-        }, self::calculateRIASECByUserId( $userId, $submission->id ));
+        }, self::calculateRIASECByUserId( $userId, $submissionId ));
 
-        $filteredSkills = self::getSkillsByHollandCode( $hollandCode );
-        $filteredInterests = self::getInterestsByHollandCode( $hollandCode );
-        $filteredValues = self::getCareerValuesByHollandCode( $hollandCode );
+        // $filteredSkills = self::getSkillsByHollandCode( $hollandCode );
+        // $filteredInterests = self::getInterestsByHollandCode( $hollandCode );
+        // $filteredValues = self::getCareerValuesByHollandCode( $hollandCode );
         $filteredCareers = self::getCareersByHollandCode( $hollandCode );
-        $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submission->id );
+        $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submissionId );
 
         return Inertia::render('Tests/HollandTest/HollandTestResults', [
-            'userId' => $userId,
+            'user' => User::find($userId),
             'testSubmissionId' => $submission->id,
             'hollandCodeId' => $hollandCode,
             'hollandCodes' => $filteredHollandCodes,
-            'skills' => $filteredSkills,
-            'interests' => $filteredInterests,
-            'values' => $filteredValues,
+            // 'skills' => $filteredSkills,
+            // 'interests' => $filteredInterests,
+            // 'values' => $filteredValues,
             'careers' => $filteredCareers,
         ]);
     }
@@ -382,8 +383,6 @@ class TestSubmissionController extends Controller
         $filteredValues = self::getCareerValuesByHollandCode( $hollandCode );
         $filteredCareers = self::getCareersByHollandCode( $hollandCode );
         $filteredHollandCodes = self::calculateRIASECByUserId( $userId, $submissionId );
-
-        dd($filteredHollandCodes);
         
         return Inertia::render('Tests/Submissions/HollandTestResults', [
             'userId' => $userId,

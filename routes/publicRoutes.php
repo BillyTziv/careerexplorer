@@ -21,7 +21,7 @@ use Inertia\Inertia;
 // ------------------------------------------------------------------------------
 
 // Get Create Holland Test screen.
-Route::get('/tests/holland', [TestSubmissionController::class, 'getHollandTest'])->name('tests.holland');
+// Route::get('/tests/holland', [TestSubmissionController::class, 'getHollandTest'])->name('tests.holland');
 Route::get('/tests/holland/start', [TestSubmissionController::class, 'startHollandTest'])->name('start.holland.test');
 
 // Store a Holland Test.

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div class="p-3 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="p-5 bg-white shadow">
 
@@ -215,4 +215,4 @@
       }
     }
 </style>
-
+ -->

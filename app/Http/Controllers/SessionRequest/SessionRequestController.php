@@ -51,7 +51,8 @@ class SessionRequestController extends Controller
                 'users.firstname as assignee_firstname', 
                 'users.lastname as assignee_lastname'
             )
-            ->orderBy('session_requests.status');
+            ->where('session_requests.status', '=', 1)
+            ->orderBy('session_requests.id');
 
         return $query->get();
     }
@@ -104,8 +105,8 @@ class SessionRequestController extends Controller
                 'users.lastname as assignee_lastname',
             )    
             ->where('session_requests.status', 2)       // Active
-            ->orWhere('session_requests.status', 3)     // Rejected
-            ->orWhere('session_requests.status', 4)     // Completed
+            // ->orWhere('session_requests.status', 3)     // Rejected
+            // ->orWhere('session_requests.status', 4)     // Completed
             ->where('session_requests.assignee', auth()->id())
             ->orderBy('session_requests.status');
 
@@ -125,13 +126,10 @@ class SessionRequestController extends Controller
      */
     public function index(Request $request)
     {
+
         return Inertia::render('SessionRequests/Index', [
             'response' => [],
-            'filters' => [
-                'search' => request('search') ? request('search') : '',
-            ],
             'sessions' => self::getAvailableSessionRequests( $request ),
-            // 'activeSR' => self::getActiveSessionRequests( $request ),
         ]);
     }
 
@@ -342,28 +340,28 @@ class SessionRequestController extends Controller
             ]);
     }
 
-    public function transferOwnership( Request $request ) {        
-        if( is_null($request) ) {
-            return redirect()
-                ->route('session-requests.show', ['session_request' => $request->id])
-                ->with([
-                    'message'=> 'Oups, something went wrong. Please try again.',
-                    'status' => 'error'
-                ]);
-        }
+    // public function transferOwnership( Request $request ) {        
+    //     if( is_null($request) ) {
+    //         return redirect()
+    //             ->route('session-requests.show', ['session_request' => $request->id])
+    //             ->with([
+    //                 'message'=> 'Oups, something went wrong. Please try again.',
+    //                 'status' => 'error'
+    //             ]);
+    //     }
 
-        $sessionRequest = SessionRequest::find( $request->id );
-        $sessionRequest->assignee = $request->ownerid;
-        $sessionRequest->status = 2;
-        $sessionRequest->save();
+    //     $sessionRequest = SessionRequest::find( $request->id );
+    //     $sessionRequest->assignee = $request->ownerid;
+    //     $sessionRequest->status = 2;
+    //     $sessionRequest->save();
 
-        return redirect()
-            ->route('session-requests.show', ['session_request' => $request->id])
-            ->with([
-                'message'=> 'Session request successfully updated!',
-                'status' => 'success'
-            ]);
-    }
+    //     return redirect()
+    //         ->route('session-requests.show', ['session_request' => $request->id])
+    //         ->with([
+    //             'message'=> 'Session request successfully updated!',
+    //             'status' => 'success'
+    //         ]);
+    // }
 
     public function destroy( $sessionRequestId ) {
         if( !auth()->user()->secured ) {
@@ -395,8 +393,8 @@ class SessionRequestController extends Controller
             ->where('status', 2)
             ->count();
         
-        // If accepted request is more than 5, return error
-        if( $acceptedRequests >= 5 ) {
+        // If accepted request is more than 10, return error
+        if( $acceptedRequests >= 10 ) {
             return redirect()
                 ->route('session-requests.index', ['session_request' => $id])
                 ->with([
@@ -416,19 +414,19 @@ class SessionRequestController extends Controller
         ]);
     }
 
-    public function decline( $id ) {
-        $sessionRequest = SessionRequest::find( $id );
-        $sessionRequest->status = 3;
-        $sessionRequest->assignee = auth()->user()->id;
-        $sessionRequest->save();
+    // public function decline( $id ) {
+    //     $sessionRequest = SessionRequest::find( $id );
+    //     $sessionRequest->status = 3;
+    //     $sessionRequest->assignee = auth()->user()->id;
+    //     $sessionRequest->save();
 
-        return redirect()
-            ->route('session-requests.show', ['session_request' => $id])
-            ->with([
-                'message' => 'Η συνεδρία ακυρώθηκε με επιτυχία!',
-                'status' => 'success',
-            ]);
-    }
+    //     return redirect()
+    //         ->route('session-requests.show', ['session_request' => $id])
+    //         ->with([
+    //             'message' => 'Η συνεδρία ακυρώθηκε με επιτυχία!',
+    //             'status' => 'success',
+    //         ]);
+    // }
 
     public function complete( $id ) {
         try {
@@ -445,7 +443,7 @@ class SessionRequestController extends Controller
             $hookService->trigger('request_career_session_feedback', $sessionRequest->email, $vdata );
 
             return redirect()
-                ->route('session-requests.show', ['session_request' => $id])   
+                ->route('my-session-requests.index',)   
                 ->with([
                     'message' => 'Η συνεδρία ολοκληρώθηκε με επιτυχία!',
                     'status' => 'success',

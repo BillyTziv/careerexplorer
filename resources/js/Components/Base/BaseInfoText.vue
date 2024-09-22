@@ -18,7 +18,7 @@
         type: {
             type: String,
             default: 'info',
-            required: true
+            required: false
         }
     });
 </script>

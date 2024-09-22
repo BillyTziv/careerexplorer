@@ -33,13 +33,33 @@
 
     function submitForm() {
         hollandTestStore.setUserData( form );
+
+        hollandTestStore.setSessionRequest( sessionRequest.value );
+
+        router.post('/tests/holland/submit', {
+            test: hollandTestStore.getSubmitPayload
+        }, { 
+            preserveState: true, 
+            replace: true, 
+            onSuccess: () => {
+                notify('success', 'Ολοκληρώθηκε', `Μπράβο! Το test επαγγελματικού προσανατολισμού ολοκληρώθηκε με επιτυχία!`);
+            }
+        });
     }
 </script>
 
 <template>
-    <div >
-        <div class="card">
+    <div class="card" style="max-width: 1000px; margin: auto; padding-top: 15px;">
+        <div class="card-title">
+            <!-- <span class="text-700 text-xl">Μπράβο!</span> -->
+            <div class="text-900 font-bold text-4xl my-2"> Hey explorer,</div>
+            <p class="text-700 text-2xl mt-0 mb-4 p-0">είσαι <strong>ένα βήμα μακριά</strong>, απο την <strong>ολοκλήρωση του τεστ</strong>!</p>
 
+            <div :style="{ height: '3px', background: 'linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%)' }"></div>
+
+            <p class="text-700 text-xl mt-3 mb-4 p-0">Συμπλήρωσε τα στοιχεία σου παρακάτω και θα μεταφερθείς αυτόματα στα αποτελέσματα.</p>
+        </div>
+        <div class="card-body">
             <form @submit.prevent="submitForm" autocomplete="off">
                 <AppFormLayout>
                     <div class="p-fluid formgrid grid">
@@ -47,7 +67,7 @@
                             v-model="form.firstname"
                             label="Όνομα"
                             :required="true"
-                            placeholder="Όνομα.."
+                            placeholder="Γράψε το όνομά σου.."
                             :errors="errors.firstname"
                             class="col-12 md:col-6"
                         />
@@ -56,7 +76,7 @@
                             v-model="form.lastname" 
                             label="Επίθετο"
                             :required="true"
-                            placeholder="Επίθετο.."
+                            placeholder="Γράψε το επίθετό σου.."
                             :errors="errors.lastname"
                             class="col-12 md:col-6"
                         />
@@ -67,7 +87,7 @@
                             v-model="form.phone" 
                             label="Τηλέφωνο"
                             :required="true"
-                            placeholder="Τηλέφωνο.."
+                            placeholder="Γράψε το κινητό σου.."
                             :errors="errors.phone"
                             class="col-12 md:col-6"
                         />

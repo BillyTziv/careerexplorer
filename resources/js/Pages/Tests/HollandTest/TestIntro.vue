@@ -15,7 +15,7 @@
     <div class="flex justify-content-center align-items-center h-screen flex-column p-5">
         <div class="flex flex-column gap-2">
  
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white">
+            <h1 class="text-4xl sm:text-4xl md:text-5xl lg:text-7xl font-extrabold text-white">
                 Test Επαγγελματικού Προσανατολισμού
             </h1>
 
@@ -30,7 +30,7 @@
                         FutureGeneration
                     </a>
                 </strong><br/>
-                powered by <strong class="highlight-text">AI</strong>
+                powered by <strong class="highlight-text">AI</strong>.
             </span>
 
             <Button 
