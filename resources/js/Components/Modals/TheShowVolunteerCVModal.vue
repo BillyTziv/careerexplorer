@@ -24,9 +24,9 @@
     });
 
     // Function to download images
-    function downloadImage(dataURI) {
+    function downloadImage() {
         const link = document.createElement("a");
-        link.href = dataURI;
+        link.href = props.cv;
         link.download = "downloaded-image.jpeg"; // Set the desired image file name
         document.body.appendChild(link);
         link.click();
@@ -34,9 +34,9 @@
     }
 
     // Function to download PDFs
-    function downloadPDF(dataURI) {
+    function downloadPDF() {
         const link = document.createElement("a");
-        link.href = dataURI;
+        link.href = props.cv;
         link.download = "downloaded-file.pdf"; // Set the desired PDF file name
         document.body.appendChild(link);
         link.click();
@@ -55,8 +55,8 @@
         </template>
     </Dialog>
 
-    <button @click="downloadImage(imageData)">Download Image</button>
-    <button @click="downloadPDF(pdfData)">Download PDF</button>
+    <button @click="downloadImage()">Download Image</button>
+    <button @click="downloadPDF()">Download PDF</button>
     <Button v-if="hasCV" label="Προβολή Βιογραφικού" icon="pi pi-external-link" style="width: auto" @click="open" />
 </template>
   
