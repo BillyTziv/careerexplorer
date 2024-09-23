@@ -18,7 +18,7 @@ const faqList = [
         answer: "Το Τεστ Επαγγελματικού Προσανατολισμού, είναι γρήγορο και αποτελεσματικό, συνήθως διαρκεί περίπου 10-15 λεπτά. Παρέχει άμεση πρόσβαση στα αποτελέσματα μόλις ολοκληρωθεί.",
     },
     {
-        question: "Πως θα λάβω πρακτικές συμβουλές για την καριέρα μου;",
+        question: "Πώς θα λάβω πρακτικές συμβουλές για την καριέρα μου;",
         answer: "Μπορείς να κάνεις εντελώς δωρεάν εγγραφή με το email σου. Έτσι θα λαμβάνεις tips και συμβουλές στο email σου. Θέλεις περισσότερα; Κάνε join στον εθελοντικό οργανισμό του FutureGeneration που συντονίζει και οργανώνει την όλη δράση. Εκεί το mindset σου θα πάει σε άλλο επίπεδο.",
     },
     {
@@ -52,7 +52,7 @@ const faqList = [
                     :key="i"
                     :header="item.question"
                 >
-                    <p class="line-height-3 m-0 p-0 text-lg sm:text-2xl">
+                    <p class="line-height-3 m-0 p-0 text-md sm:text-xl">
                         {{ item.answer }}
                     </p>
                 </AccordionTab>
@@ -63,6 +63,6 @@ const faqList = [
 
 <style scoped>
     .p-accordion >>> .p-accordion-header {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
     }
 </style>

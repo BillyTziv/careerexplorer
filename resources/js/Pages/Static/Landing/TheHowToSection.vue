@@ -97,7 +97,7 @@
                         eu. Massa placerat duis ultricies lacus. </div>
                 </div> -->
 
-                <img src="/images/clean/career-session.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden"> -->
+                <img src="/images/clean/career-session.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden">
             </div>
         </div>
     </SectionLayout>

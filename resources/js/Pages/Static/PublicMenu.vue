@@ -39,9 +39,9 @@
                         <span>Τεστ Επαγγελματικού Προσανατολισμού</span>
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <Button @click="redirect('/subscribe')" type="button" label="Εγγραφή" class="m-0 mt-3 md:mt-0 md:ml-5 text-xl"></Button>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

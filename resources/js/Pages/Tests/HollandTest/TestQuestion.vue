@@ -27,7 +27,7 @@
             </h3>
         </div>
 
-        <div class="fixed bottom-0 left-0 w-full mb-8 flex justify-content-center">
+        <div class="absolute bottom-0 left-0 w-full mb-8 flex justify-content-center">
             <div class="flex flex-column gap-3">
                 <template
                     v-for="answer in question.answers"
