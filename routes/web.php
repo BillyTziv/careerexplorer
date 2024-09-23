@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     require __DIR__.'/authRoutes/careerRoutes.php';
     require __DIR__.'/authRoutes/careerInterestRoutes.php';
     require __DIR__.'/authRoutes/careerRequestRoutes.php';
+    require __DIR__.'/authRoutes/jobSectorRoutes.php';
 
     /* Course Routes */
     require __DIR__.'/authRoutes/courseRoutes.php';

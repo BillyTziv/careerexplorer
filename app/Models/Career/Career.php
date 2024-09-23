@@ -59,4 +59,9 @@ class Career extends Authenticatable
     {
         return $this->hasMany(CareerResponsibility::class);
     }
+
+    public function jobSectors()
+    {
+        return $this->belongsToMany(JobSector::class, 'career_job_sector');
+    }
 }

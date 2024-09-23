@@ -66,6 +66,12 @@ return [
     ['name' => 'Delete Career', 'code' => 'delete-career', 'entity' => 'career' ],
     ['name' => 'Career Settings', 'code' => 'view-career-settings', 'entity' => 'career' ],
 
+    /* JOB SECTORS */
+    ['name' => 'View All Job Sectors', 'code' => 'view-all-job-sectors', 'entity' => 'career' ],
+    ['name' => 'Create Job Sector', 'code' => 'create-job-sector', 'entity' => 'career' ],
+    ['name' => 'Edit Job Sector', 'code' => 'edit-job-sector', 'entity' => 'career' ],
+    ['name' => 'Delete Job Sector', 'code' => 'delete-job-sector', 'entity' => 'career' ],
+
     /* CAREER INTERESTS */
     ['name' => 'View All Career Interests', 'code' => 'view-all-career-interests', 'entity' => 'career_interest' ],
     ['name' => 'Create Career Interest', 'code' => 'create-career-interest', 'entity' => 'career_interest' ],

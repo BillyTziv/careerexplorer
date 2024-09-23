@@ -114,6 +114,12 @@
                     to: '/careers'
                 },
                 {
+                    label: 'Κλάδοι Επαγγελμάτων',
+                    icon: 'pi pi-fw pi-list',
+                    permission: "view-all-job-sectors",
+                    to: '/job-sectors'
+                },
+                {
                     label: 'Εργασιακές Αξίες',
                     icon: 'pi pi-fw pi-bolt',
                     permission: "view-all-career-values",

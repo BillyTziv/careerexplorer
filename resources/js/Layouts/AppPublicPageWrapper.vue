@@ -29,7 +29,7 @@
 			</div>
 		</div>
 
-		<!-- <Toast></Toast> -->
+		 <Toast></Toast> 
 
 		<div class="layout-mask"></div>
 </template>

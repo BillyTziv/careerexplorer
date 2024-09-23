@@ -5,8 +5,8 @@ import AppTopbar from './AppTopbar.vue';
 import AppSidebar from './AppSidebar.vue';
 import AppConfig from './AppConfig.vue';
 import AppProfileSidebar from './AppProfileSidebar.vue';
-// import AppBreadCrumb from './AppBreadcrumb.vue';
 import { useLayout } from '@/Layouts/composables/layout';
+import { useToastNotification } from '@/Composables/useToastNotification';
 
 const props = defineProps({
     applyCardLayout: {
@@ -15,6 +15,7 @@ const props = defineProps({
     }
 });
 
+const { notify } = useToastNotification();
 const $primevue = usePrimeVue();
 const { layoutConfig, layoutState, isSidebarActive } = useLayout();
 const outsideClickListener = ref(null);
@@ -70,12 +71,14 @@ const bindOutsideClickListener = () => {
         document.addEventListener('click', outsideClickListener.value);
     }
 };
+
 const unbindOutsideClickListener = () => {
     if (outsideClickListener.value) {
         document.removeEventListener('click', outsideClickListener);
         outsideClickListener.value = null;
     }
 };
+
 const isOutsideClicked = (event) => {    
     const sidebarEl = sidebarRef?.value.$el;
     const topbarEl = topbarRef?.value.$el.querySelector('.topbar-menubutton');
@@ -96,11 +99,13 @@ onMounted(() => {
 
 <template>
     <div :class="['layout-container', { ...containerClass }]">
-        <AppSidebar id="xexe" ref="sidebarRef" />
+        <AppSidebar ref="sidebarRef" />
 
         <div class="layout-content-wrapper">
             <AppTopbar ref="topbarRef" />
+            
             <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
+
             <div class="layout-content">
                 <div :class="{ card: applyCardLayout }"> 
 					<div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
@@ -122,7 +127,6 @@ onMounted(() => {
 
         <AppProfileSidebar />
         <AppConfig />
-
         <Toast></Toast>
         <div class="layout-mask"></div>
     </div>

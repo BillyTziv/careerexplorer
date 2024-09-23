@@ -17,7 +17,7 @@
 
     import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
 	import { useToastNotification } from '@/Composables/useToastNotification';
-
+	import { useToast } from 'primevue/usetoast';
 	let props = defineProps({
 		user: Object,
 		volunteer: Object,
@@ -40,6 +40,7 @@
 
     const { adjustOpacity, determineTextColor } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
 	const { notify } = useToastNotification();
+    const toast = useToast();
 
 	const selectedVolunteerStatus = ref(props.volunteer.status);
 	const selectedAssignedRecruiter = ref(props.volunteer.assigned_to);
@@ -58,6 +59,8 @@
 	}
 	
 	function changeVolunteerStatus( form ) {
+		toast.add({ severity: 'info', summary: 'Product Selected', detail: 'sdasda', life: 3000 });
+		
 		router.put('/volunteers/' + props.volunteer.id + '/status', {
 			newStatusValue: selectedVolunteerStatus.value,
 			statusChangeReason: form.reason,
