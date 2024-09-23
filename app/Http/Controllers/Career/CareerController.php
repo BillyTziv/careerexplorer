@@ -116,7 +116,7 @@ class CareerController extends Controller
             $careers = $query->where('deleted', false)->orderby('status');
         }
 
-        $careerResult = $query->get();
+        $careerResult = $query->orderBy('updated_at', 'desc')->get();
 
         // Transform the result to include only the symbol
         $careerResult->each(function($careerValue) {

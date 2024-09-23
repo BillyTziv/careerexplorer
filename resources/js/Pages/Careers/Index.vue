@@ -7,6 +7,7 @@
 
     /* Stores */
     import { useCareersStore } from '@/Stores/useCareers.store';
+    import { useFormatDate } from '@/Composables/useFormatDate';
 
     const careersStore = useCareersStore();
 
@@ -23,7 +24,7 @@
     const careersTableRef = ref(null);          // Reference to the careers datatable
     const filters = reactive( careersStore.getTableFilters );
     const filterCareerTable = ref(props.filters);
-
+    const { formatDate } = useFormatDate( );
     const redirectToCreate = () => {    
         router.visit(`/careers/create`);
     };
@@ -143,6 +144,13 @@
                     <template #body="{ data }">
                         <span class="p-column-title">Holland Code</span>
                         {{ data.riasecCodes }}
+                    </template>
+                </Column>
+
+                <Column field="updated_at" header="Τελευταία Ενημέρωση" sortable :frozen="true">
+                    <template #body="{ data }">
+                        <span class="p-column-title">Τελευταία Ενημέρωση</span>
+                        {{ formatDate(data.updated_at) }}
                     </template>
                 </Column>
 
