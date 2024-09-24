@@ -287,11 +287,11 @@ const searchCountry = (event) => {
 </template>
 
 <style scoped lang="scss">
-:deep(.p-chips .p-chips-token) {
-    background-color: var(--primary-color);
-    color: var(--primary-color-text);
-}
-:deep(.p-chips .p-chips-multiple-container) {
-    gap: 0.5rem;
-}
+    :deep(.p-chips .p-chips-token) {
+        background-color: var(--primary-color);
+        color: var(--primary-color-text);
+    }
+    :deep(.p-chips .p-chips-multiple-container) {
+        gap: 0.5rem;
+    }
 </style>

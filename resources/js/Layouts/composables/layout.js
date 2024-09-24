@@ -4,7 +4,7 @@ const layoutConfig = reactive({
     menuMode: 'static',
     menuTheme: 'colorScheme',
     colorScheme: 'light',
-    theme: 'indigo',
+    theme: 'pink',
     scale: 14
 });
 

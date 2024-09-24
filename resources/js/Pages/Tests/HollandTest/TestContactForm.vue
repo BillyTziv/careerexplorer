@@ -34,8 +34,6 @@
     function submitForm() {
         hollandTestStore.setUserData( form );
 
-        hollandTestStore.setSessionRequest( sessionRequest.value );
-
         router.post('/tests/holland/submit', {
             test: hollandTestStore.getSubmitPayload
         }, { 

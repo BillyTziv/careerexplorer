@@ -136,9 +136,9 @@ class SessionRequestController extends Controller
     public function getSessionRequestApplicationFields() {
         return Inertia::render('Applications/Create', [
             'metaData' => [
-                'title' => 'Αίτηση Δωρεάν Συνεδρίας Επαγγελματικού Προσανατολισμού',
+                'title' => 'Αίτηση Δωρεάν Ραντεβού Επαγγελματικού Προσανατολισμού',
                 'subtitle' => 'Συμπληρώστε όλα τα στοιχεία σας για να ολοκληρώσετε την αίτηση.',
-                'disclaimer' => 'Ο οργανισμός FutureGeneration, στην προσπάθειά του να ενισχύει συνεχώς τις νέες γενιές με τα εργαλεία και τη γνώση που χρειάζονται για να εξελιχθούν στην καριέρα τους, προσφέρει μια δωρεάν συνεδρία επαγγελματικού προσανατολισμού. Η διάρκεια της συνεδρίας είναι περίπου 30 λεπτά, δεν υπάρχει περιορισμός στην ηλικία και γίνεται ψηφιακά με βάση τη δική σου διαθεσιμότητα. Λόγω μεγάλου όγκου αιτήσεων, θα τηρηθεί σειρά προτεραιότητας. Για να την αποκτήσεις, απλά συμπληρώνεις τα στοιχεία σου και στο email που θα λάβεις, επιλέγεις την ημέρα και την ώρα που θέλεις να γίνει η ψηφιακή συνεδρία επαγγελματικού προσανατολισμού.',
+                'disclaimer' => 'Ο οργανισμός FutureGeneration, στην προσπάθειά του να ενισχύει συνεχώς τις νέες γενιές με τα εργαλεία και τη γνώση που χρειάζονται για να εξελιχθούν στην καριέρα τους, προσφέρει ένα δωρεάν ραντεβού επαγγελματικού προσανατολισμού. Η διάρκεια του ραντεβού είναι περίπου 30 λεπτά, δεν υπάρχει περιορισμός στην ηλικία και γίνεται ψηφιακά με βάση τη δική σου διαθεσιμότητα. Λόγω μεγάλου όγκου αιτήσεων, θα τηρηθεί σειρά προτεραιότητας. Για να την αποκτήσεις, απλά συμπληρώνεις τα στοιχεία σου και στο email που θα λάβεις, επιλέγεις την ημέρα και την ώρα που θέλεις να γίνει το ψηφιακό ραντεβού επαγγελματικού προσανατολισμού.',
                 'consentMessage' => 'Δηλώνω ότι συναινώ στη συλλογή και επεξεργασία των προσωπικών μου δεδομένων για σκοπούς μελλοντικής επικοινωνίας από την FutureGeneration και τους εξουσιοδοτημένους συνεργάτες της, σύμφωνα με τις διατάξεις του Γενικού Κανονισμού Προστασίας Δεδομένων (GDPR).',
                 'formType' => 'session-request',
             ],
@@ -222,6 +222,56 @@ class SessionRequestController extends Controller
         //         ]
         //     ],
         // ]);
+    }
+
+    public function requestCareerSession( Request $request ): RedirectResponse {
+        $rules = [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'email' => 'required|email|max:255'
+        ];
+        
+        $messages = [
+            'required' => 'Το πεδίο είναι υποχρεωτικό',
+            'unique' => 'Το πεδίο πρέπει να είναι μοναδικό.'
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
+
+        try {
+            DB::beginTransaction();
+            
+            $sessionRequest = new SessionRequest();
+            $sessionRequest->firstname = $validatedData['firstname'];
+            $sessionRequest->lastname = $validatedData['lastname'];
+            $sessionRequest->phone = $validatedData['phone'];
+            $sessionRequest->email = $validatedData['email'];
+            $sessionRequest->status = 1;
+           
+            $sessionRequest->save();
+        
+            DB::commit();
+
+            // DISCORD
+            $client = new Client();
+
+            $response = $client->request('POST', 'https://discord.com/api/webhooks/1279501507259273306/2-WdWBvvhws6PKxQMbg2y0CHpHJqtbtaiG3BzqZ3v8Ddzo4D3CR13v2qzYHMDHxYlWbq', [
+                'json' => [
+                    'content' => 'Ο ' . $validatedData['firstname'] . ' ' . $validatedData['lastname'] . ' έκανε αίτηση για συνεδρία επαγγελματικού προσανατολισμού και χρειάζεται την βοήθεια μας! '
+                ]
+            ]);
+
+            return redirect()->route( 'session-requests.submit-success' )->with([
+                'status' => 'success',
+                'message'=> 'Η αίτησή σας ολοκληρώθηκε.'
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->route( 'session-requests.create' )->with([
+                'status' => 'error',
+                'message'=> 'Ουπς, κάτι πήγε στραβά. Παρακαλούμε ξαναπροσπαθήστε.'
+            ]);
+        }
     }
 
     public function store(Request $request): RedirectResponse {
@@ -398,7 +448,7 @@ class SessionRequestController extends Controller
             return redirect()
                 ->route('session-requests.index', ['session_request' => $id])
                 ->with([
-                    'message' => 'Ο αριθμός των συνεδριών που έχετε αποδεχτεί έχει φτάσει το όριο των 5. Παρακαλούμε απορρίψτε κάποια από τις υπάρχουσες συνεδρίες σας.',
+                    'message' => 'Ο αριθμός των ραντεβού που έχετε αποδεχτεί έχει φτάσει το όριο των 5. Παρακαλούμε απορρίψτε κάποια από τις υπάρχουσες συνεδρίες σας.',
                     'status' => 'error',
                 ]);
         }

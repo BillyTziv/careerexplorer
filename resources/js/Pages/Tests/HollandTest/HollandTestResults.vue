@@ -14,16 +14,18 @@
 
     const requestSessionFromCoach = ref( false );
 
-    function requestCareerSession() {        
-        console.log( props.user );
-
-        // Send the request to the backend
-        router.post('/session-requests', {
-            firstname: props.user.firstname,
-            lastname: props.user.lastname,
-            email:  props.user.email,
-            phone:  props.user.phone,
-        });
+    function requestCareerSession( requestCareerSession ) {       
+        if( requestCareerSession ) {
+            // Send the request to the backend
+            router.post('/request-career-session', {
+                firstname: props.user.firstname,
+                lastname: props.user.lastname,
+                email:  props.user.email,
+                phone:  props.user.phone,
+            });
+        } else {
+            router.visit('/explore');
+        }
     }
 
     const adjustOpacity = (colorHex, opacity) => {
@@ -121,13 +123,13 @@
 
                     <div class="mt-2 text-center">
                         <Button
-                            @click="requestCareerSession" 
+                            @click="requestCareerSession( true )" 
                             type="submit" 
-                            label="Θέλω την δωρεάν συνεδρία"
+                            label="Θέλω το δωρεάν ραντεβού"
                             class="w-20rem my-1 *: text-xl"
                         />
 
-                        <!-- <br />
+                        <br />
 
                         <Button
                             @click="requestCareerSession( false )" 
@@ -135,7 +137,7 @@
                             label="Όχι, δεν το χρειάζομαι"
                             outlined
                             class="w-20rem my-1 text-lg"
-                        /> -->
+                        />
                     </div>
                 </div>
             </div>

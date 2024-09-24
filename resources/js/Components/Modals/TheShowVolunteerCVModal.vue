@@ -55,8 +55,8 @@
         </template>
     </Dialog>
 
-    <button @click="downloadImage()">Download Image</button>
-    <button @click="downloadPDF()">Download PDF</button>
+    <Button icon="pi pi-download" outlined @click="downloadImage()">Download Image</Button>
+    <Button icon="pi pi-download" outlined @click="downloadPDF()">Download PDF</Button>
     <Button v-if="hasCV" label="Προβολή Βιογραφικού" icon="pi pi-external-link" style="width: auto" @click="open" />
 </template>
   

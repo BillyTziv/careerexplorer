@@ -66,92 +66,10 @@
         });
     });
 
-    // const sortOrder = ref(-1);
 
-    // const sortOptions = [
-    //     { label: 'Most Shared', value: 'share' },
-    //     { label: 'Most Commented', value: 'comment' }
-    // ];
-    // const totalBlogs = ref([
-    //     {
-    //         coverImage: '/demo/images/blog/blog-1.png',
-    //         profile: '/demo/images/avatar/circle/avatar-f-1.png',
-    //         title: 'Java Web Developing',
-    //         description: 'Ornare egestas pellentesque facilisis in a ultrices erat diam metus integer sed',
-    //         comment: 2,
-    //         share: 7,
-    //         day: '15',
-    //         month: 'October'
-    //     },
-    //     {
-    //         coverImage: '/demo/images/blog/blog-2.png',
-    //         profile: '/demo/images/avatar/circle/avatar-f-2.png',
-    //         title: 'Magazine',
-    //         description: 'Magna iaculis sagittis, amet faucibus scelerisque non ornare non in penatibus ',
-    //         comment: 5,
-    //         share: 1,
-    //         day: '20',
-    //         month: 'Nov'
-    //     },
-    //     {
-    //         coverImage: '/demo/images/blog/blog-3.png',
-    //         profile: '/demo/images/avatar/circle/avatar-m-1.png',
-    //         title: 'Science',
-    //         description: 'Purus mattis mi, libero maecenas volutpat quis a morbi arcu pharetra, mollis',
-    //         comment: 2,
-    //         share: 6,
-    //         day: '23',
-    //         month: 'Oct'
-    //     },
-    //     {
-    //         coverImage: '/demo/images/blog/blog-4.png',
-    //         profile: '/demo/images/avatar/circle/avatar-m-1.png',
-    //         title: 'Blog',
-    //         description: 'Curabitur vitae sit justo facilisi nec, sodales proin aliquet libero volutpat nunc',
-    //         comment: 5,
-    //         share: 5,
-    //         day: '14',
-    //         month: 'Dec'
-    //     },
-    //     {
-    //         coverImage: '/demo/images/blog/blog-5.png',
-    //         profile: '/demo/images/avatar/circle/avatar-f-3.png',
-    //         title: 'Magazine',
-    //         description: 'Id eget arcu suspendisse ullamcorper dolor lobortis dui et morbi penatibus quam',
-    //         comment: 4,
-    //         share: 1,
-    //         day: '05',
-    //         month: 'Apr'
-    //     },
-    //     {
-    //         coverImage: '/demo/images/blog/blog-6.png',
-    //         profile: '/demo/images/avatar/circle/avatar-m-3.png',
-    //         title: 'Science',
-    //         description: 'Sagittis hendrerit laoreet dignissim sed auctor sit pellentesque vel diam iaculis et',
-    //         comment: 1,
-    //         share: 3,
-    //         day: '12',
-    //         month: 'Nov'
-    //     }
-    // ]);
-
-    // const sortField = ref(null);
-    // const sortKey = ref(null);
-
-    // const onSortChange = (event) => {
-    //     const value = event.value.value;
-    //     const sortValue = event.value;
-
-    //     if (value.indexOf('!') === 0) {
-    //         sortOrder.value = 1;
-    //         sortField.value = value.substring(1, value.length);
-    //         sortKey.value = sortValue;
-    //     } else {
-    //         sortOrder.value = -1;
-    //         sortField.value = value;
-    //         sortKey.value = sortValue;
-    //     }
-    // };
+    function goBack() {
+        window.history.back();
+    }
 </script>
 
 <template>
@@ -165,7 +83,7 @@
                 </span> -->
 
                 <Button
-                    @click="router.visit(route('explore'))"
+                    @click="goBack()"
                     label="Πίσω" 
                     icon="pi pi-arrow-left"
                     type="button"

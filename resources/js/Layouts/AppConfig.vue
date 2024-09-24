@@ -49,6 +49,7 @@ const changeColorScheme = (colorScheme) => {
     });
 };
 const changeTheme = (theme) => {
+    console.log( theme )
     const themeLink = document.getElementById('theme-link');
     const themeHref = themeLink.getAttribute('href');
     const newHref = themeHref.replace(layoutConfig.theme.value, theme);
@@ -100,9 +101,9 @@ const onRippleChange = (value) => {
 </script>
 
 <template>
-    <button class="layout-config-button config-link" type="button" @click="onConfigButtonClick()">
+    <!-- <button class="layout-config-button config-link" type="button" @click="onConfigButtonClick()">
         <i class="pi pi-cog"></i>
-    </button>
+    </button> -->
 
     <Sidebar v-model:visible="layoutState.configSidebarVisible.value" position="right" class="layout-config-sidebar w-20rem" :pt="{
         closeButton: 'ml-auto'

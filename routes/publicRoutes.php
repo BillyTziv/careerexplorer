@@ -51,6 +51,8 @@ Route::prefix('/applications/fg')->group(function () {
     Route::post('/submit', [ApplicationController::class, 'store']);
 });
 
+Route::post('/request-career-session', [SessionRequestController::class, 'requestCareerSession'])->name('requestCareerSession');
+
 // ------------------------------------------------------------------------------
 // CAREERS
 // ------------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 
                     <div class="relative mt-5">
                         <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            Ποιοι ήταν οι κύριοι λόγοι που θέλησες να κάνεις συνεδρία;
+                            Ποιοι ήταν οι κύριοι λόγοι που θέλησες να κάνεις ραντεβού;
                         </label>
                         <input v-model="reviewform.reason" type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-lime-500 focus:border-lime-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-lime-500 dark:focus:border-lime-500" placeholder="Γράψε το όνομά σου.." required>
                     </div>

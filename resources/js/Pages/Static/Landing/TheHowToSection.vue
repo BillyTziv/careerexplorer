@@ -75,7 +75,7 @@
         </div>
         <div class="flex justify-content-center">
             <div class="py-3 pr-8 pl-3 w-30rem hidden lg:block">
-                <img src="/images/clean/career-session.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mr-8"></div>
+                <img src="/images/clean/career-session.png" alt="Ραντεβού Επαγγελματικού Προσανατολισμού" class="w-full mr-8"></div>
             <div class="flex flex-column align-items-center w-2rem"><span
                     class="bg-green-500 text-0 flex align-items-center justify-content-center border-circle  text-2xl"
                     style="min-width: 2.5rem; min-height: 2.5rem;">3</span>
@@ -83,11 +83,11 @@
             </div>
             <div class="py-3 lg:pl-8 pl-3 lg:w-30rem">
                 <div class="text-900 mb-2 font-semibold text-xl sm:text-3xl">
-                    Δωρεάν Συνεδρία Επαγγελματικού Προσανατολισμού
+                    Δωρεάν Ραντεβού Επαγγελματικού Προσανατολισμού
                 </div>
 
                 <span class="block text-700 line-height-3 mb-3 text-lg sm:text-xl">
-                    Επειδή οι λίγες επιλογές, δεν είναι αρκετές και οι πολλές μπορεί να σε οδηγήσουν σε χάος, η συνεδρία επαγγελματικού προσανατολισμού είναι η καλύτερη λύση για να καταλάβεις τι είναι αυτό που σε κάνει να νιώθεις ευτυχισμένος στην καριέρα σου.
+                    Επειδή οι λίγες επιλογές, δεν είναι αρκετές και οι πολλές μπορεί να σε οδηγήσουν σε χάος, το ραντεβού επαγγελματικού προσανατολισμού είναι η καλύτερη λύση για να καταλάβεις τι είναι αυτό που σε κάνει να νιώθεις ευτυχισμένος στην καριέρα σου.
                 </span>
   
                 <!-- <div class="pt-3 border-top-1 border-300">
@@ -97,7 +97,7 @@
                         eu. Massa placerat duis ultricies lacus. </div>
                 </div> -->
 
-                <img src="/images/clean/career-session.png" alt="Συνεδρία Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden">
+                <img src="/images/clean/career-session.png" alt="Ραντεβού Επαγγελματικού Προσανατολισμού" class="w-full mt-3 block lg:hidden">
             </div>
         </div>
     </SectionLayout>
