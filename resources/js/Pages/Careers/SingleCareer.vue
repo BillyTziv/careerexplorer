@@ -142,7 +142,7 @@
                         
                         <div class="line-height-3 text-xl text-900 mb-5">
                             <div>
-                                <p class="text-lg">
+                                <p class="text-lg" style="white-space: pre-wrap;">
                                     {{ career.description }}
                                 </p>
 
