@@ -241,7 +241,7 @@
                                 <BaseTextInput
                                     v-model="volunteerForm.disapproved_reason"
                                     label="Λόγος Απόρριψης"
-                                    placeholder="Λόγος Απόρριψης.."
+                                    placeholder="Αλλάζω την κατάσταση γιατί..."
                                     :errors="''"
                                 />
                             </div>

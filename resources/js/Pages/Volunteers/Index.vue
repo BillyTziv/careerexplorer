@@ -126,10 +126,12 @@
         volunteerStore.setRoleDropdownOptions( props.volunteerRoleDropdownOptions);
         volunteerStore.setStatusDropdownOptions( props.volunteerStatusDropdownOptions );
         volunteerStore.setRecruiterDropdownOptions( props.volunteerAssignedRecruiterDropdownOptions );
+
+        router.reload({ only: ['volunteers'] });
     });
 
     const currentPageReportTemplate = computed(() => {
-        return `Προβολή ${props.volunteers.from} μέχρι ${props.volunteers.to} απο ${props.volunteers.total} εγγραφές`;
+        return `Προβολή ${volunteerStore.from} μέχρι ${volunteerStore.to} απο ${volunteerStore.total} εγγραφές`;
     });
 
     /* Datatable Size Change */
@@ -268,6 +270,15 @@
                 
                 <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
 
+                <Column headerStyle="width: 5rem">
+                    <template #header>
+                        
+                    </template>
+                    <template #body="slotProps">
+                        <Button icon="pi pi-search" rounded text @click="viewDetails(slotProps.data)" />
+                    </template>
+                </Column>
+
                 <Column field="firstname" header="Όνομα" sortable >
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα</span>
@@ -279,6 +290,23 @@
                     <template #body="{ data }">
                         <span class="p-column-title">Επώνυμο</span>
                         {{ data.lastname }}
+                    </template>
+                </Column>
+
+                <Column field="status" header="Κατάσταση" sortable>
+                    <template #body="{ data }">
+                        <span
+                            class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
+                            :style="{
+                                'background-color': adjustOpacity(data.status, 0.2),
+                                'color': determineTextColor(data.status),
+                                'white-space': 'nowrap',
+                                'overflow': 'hidden',
+                                'text-overflow': 'ellipsis',
+                            }"
+                        >
+                        {{ getStatusName(data.status) }}
+                        </span>
                     </template>
                 </Column>
 
@@ -296,19 +324,6 @@
                     </template>
                 </Column>
 
-                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
-                    <template #body="{ data }">
-                        <span
-                            class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
-                            :style="{
-                                'background-color': adjustOpacity(data.status, 0.2),
-                                'color': determineTextColor(data.status),
-                            }"
-                        >
-                           {{ getStatusName( data.status ) }}
-                        </span>
-                    </template>
-                </Column>
 
                 <!-- <Column field="email" header="Email" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
@@ -331,9 +346,8 @@
                     </template>
                 </Column>
  
-                <Column headerStyle="min-width: 12rem;" frozen alignFrozen="right">
+                <Column header="Ενέργειες">
                     <template #body="slotProps">
-                        <Button icon="pi pi-eye" class="mr-2" rounded outlined @click="viewDetails(slotProps.data)" />
                         <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editEntity(slotProps.data)" />
                         <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteVolunteer(slotProps.data)" />
                     </template>
@@ -344,6 +358,8 @@
                 </template>
 
                 <template #paginatorend>
+                    {{ currentPageReportTemplate }}
+
                     Εμφάνιση υπάρχουν {{ props.volunteers ? props.volunteers.length : 0 }} εθελοντές.
                 </template>
             </DataTable>

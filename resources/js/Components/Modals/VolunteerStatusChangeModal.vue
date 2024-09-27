@@ -61,10 +61,9 @@
         <form @submit.prevent="submit">
             <BaseTextInput
                 v-model="form.reason"
-                accessKey="name"
-                label="Σχόλια"
-                type="text"
-                :errors="''"
+                label="Γιατί αλλάζει η κατάσταση;"
+                placeholder="Γράψε τον λόγο αλλαγής της κατάστασης του εθελοντή"
+                :errors="form.errors"
             />
 
             <BaseInfoText

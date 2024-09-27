@@ -560,19 +560,20 @@ class VolunteerController extends Controller {
         // Change the status of the volunteer.
         $volunteer = Volunteer::findOrFail($volunteer);
         $oldStatus = $volunteer->status;
-
         $volunteer->status = $request->newStatusValue;
         $volunteer->disapproved_reason = $request->statusChangeReason ?? null;
-        $volunteer->disapproved_reason = $request->statusChangeReason ?? null;
-
         $volunteer->save();
+
+        $oldStatusName = VolunteerStatus::find($oldStatus)->name;
+        $newStatusName = VolunteerStatus::find($volunteer->status)->name;
+        $statusChangeReason = $request->statusChangeReason ?? 'Δεν υπάρχει λόγος.';
 
         // Log the status change
         VolunteerHistory::create([
             'volunteer_id' => $volunteer->id,
             'user_id' => Auth::id(),
             'action' => 'status changed',
-            'description' => 'Η κατάσταση άλλαξε από ' . $oldStatus . ' σε ' . $volunteer->status,
+            'description' => 'Η κατάσταση άλλαξε από ' . $oldStatusName . ' σε ' . $newStatusName . ' γιατί ' . $statusChangeReason,
         ]);
 
         // Assuming the user is authenticated
@@ -687,7 +688,7 @@ class VolunteerController extends Controller {
         VolunteerHistory::create([
             'volunteer_id' => $volunteer->id,
             'user_id' => Auth::id(),
-            'action' => 'status changed',
+            'action' => 'assigned to recruiter',
             'description' => 'Ο εθελοντής ανατέθηκε στον recruiter ' . User::find($request->recruiterId)->firstname . ' ' . User::find($request->recruiterId)->lastname,
         ]);
 
@@ -720,6 +721,14 @@ class VolunteerController extends Controller {
 
             
         if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
+
+        // Log the status change
+        VolunteerHistory::create([
+            'volunteer_id' => $volunteer->id,
+            'user_id' => Auth::id(),
+            'action' => 'notes changed',
+            'description' => 'Έχουν τροποποιηθεί οι σημειώσεις του εθελοντή.',
+        ]);
 
         return redirect()->back();
     }

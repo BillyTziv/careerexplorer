@@ -379,7 +379,7 @@ class CareerController extends Controller
                 });
             })
             ->where('deleted', false)
-            ->orderBy('created_at', $order)
+            ->orderBy('is_popular', 'desc')
             ->with('riasecCodes');
 
         // Apply Holland code filter, if provided.

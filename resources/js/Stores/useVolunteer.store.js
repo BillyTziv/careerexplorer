@@ -14,6 +14,12 @@ export const useVolunteersStore = defineStore({
 			{ id: 6, label: 'EMAIL', data: 'email', type: 'string', excerptLength: 30 },
 			{ id: 7, label: 'Ημ/ΝΙΑ ΑΙΤΗΣΗΣ', data: 'created_at', type: 'date' },
 		],
+		tableMetaData: {
+			total: 0,
+			per_page: 10,
+			current_page: 1,
+			last_page: 1,
+		},
 		filters: {
 			search: '',
 			status: null,

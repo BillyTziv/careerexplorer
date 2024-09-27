@@ -269,30 +269,23 @@
 
 							<BaseDropdownInput
 								v-model="selectedVolunteerStatus"
-								placeholder="Άγνωστη Κατάσταση"
+								label="Κατάσταση Εθελοντή"
 								:options="volStatusDropdownOptions"
 								@change="handleStatusChange(event)"
 							/>
 						
 							<BaseDropdownInput
 								v-model="selectedAssignedRecruiter"
-								placeholder="Ανάθεση σε Recruiter"
+								label="Υπεύθυνος Recruiter"
 								:options="volAssignedRecruiterDropdownOptions"
 								@change="handleAssignedRecruiterChange(event)"
 							/>
 
 							<VSectionInfoGridItem
 								v-if="volunteer.disapproved_reason" 
-								label="Σχόλια Αλλαγής Κατάστασης" 
+								label="Τελευταίο Σχόλιο" 
 								:value="volunteer.disapproved_reason"
 							/>
-							
-							<!-- <VolunteerStatus
-								:status="parseInt(volunteer.status)"
-							/>  -->
-
-							
-						
 						</div>
 					</div>
 						
