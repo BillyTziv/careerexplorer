@@ -358,9 +358,9 @@
                 </template>
 
                 <template #paginatorend>
-                    {{ currentPageReportTemplate }}
+                    <!-- {{ currentPageReportTemplate }} -->
 
-                    Εμφάνιση υπάρχουν {{ props.volunteers ? props.volunteers.length : 0 }} εθελοντές.
+                    <!-- Εμφάνιση υπάρχουν {{ props.volunteers ? props.volunteers.length : 0 }} εθελοντές. -->
                 </template>
             </DataTable>
         </template>

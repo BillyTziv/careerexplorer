@@ -43,7 +43,7 @@ class TestController extends Controller {
             'filters' => [
                 'search' => request('search') ? request('search') : '',
             ],
-            'tests' => self::getAllTestTemplates(),
+            'testTemplates' => self::getAllTestTemplates(),
         ]);
     }
 
