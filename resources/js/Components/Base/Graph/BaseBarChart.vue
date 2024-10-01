@@ -88,6 +88,14 @@
             }
         }
     };
+
+    function previousPage() {
+        console.log('Previous Page');   
+    };
+
+    function nextPage() {
+        console.log('Next Page');
+    };
 </script>
 
 
@@ -105,5 +113,23 @@
             :data="chartData"
             :options="chartOptions"
         />
+
+        <div class="flex justify-content-between">
+            <Button
+                @click="previousPage()"
+                label="Προηγούμενο"
+                icon="pi pi-arrow-left"
+                iconPos="left"
+                outlined
+            />
+
+            <Button
+                @click="nextPage()"
+                label="Επόμενο"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                outlined
+            />
+        </div>
     </div>
 </template>

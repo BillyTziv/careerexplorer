@@ -35,6 +35,11 @@ Route::get('/tests/holland/{submissionId}/results', [TestSubmissionController::c
 Route::get('/explore', [CareerController::class, 'exploreCareers'])->name('exploreCareers');
 Route::get('/career-preview/{id}', [CareerController::class, 'singleCareer'])->name('singleCareer');
 
+Route::post('/request-career-session', [SessionRequestController::class, 'requestCareerSession'])->name('requestCareerSession');
+Route::get('/session-requests/submit-success', function () {
+    return Inertia::render('SessionRequests/SubmitSuccess');
+})->name('session-requests.submit-success');
+
 // ------------------------------------------------------------------------------
 // PUBLIC APPLICATIONS
 // ------------------------------------------------------------------------------
@@ -51,7 +56,6 @@ Route::prefix('/applications/fg')->group(function () {
     Route::post('/submit', [ApplicationController::class, 'store']);
 });
 
-Route::post('/request-career-session', [SessionRequestController::class, 'requestCareerSession'])->name('requestCareerSession');
 
 // ------------------------------------------------------------------------------
 // CAREERS

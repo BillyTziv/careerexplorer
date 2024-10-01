@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, watch } from 'vue';
+    import { onMounted } from 'vue';
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
@@ -35,6 +35,13 @@
             }),
         },
         volunteerRoles: {
+            type: Object,
+            default: () => ({
+                labels: [],
+                data: [],
+            }),
+        },
+        careerSearches: {
             type: Object,
             default: () => ({
                 labels: [],
@@ -197,6 +204,17 @@
                         :data="volunteerRoles.data"
                         :labels="volunteerRoles.labels"
                         color="#6366F1"
+                    />
+                </div>
+
+                <div class="col-12">
+                    <BaseBarChart 
+                        title="Συχνότητα Αναζητήσεων Επαγγελμάτων" 
+                        label="Συχνότητα Αναζητήσεων"
+                        :data="careerSearches.data"
+                        :labels="careerSearches.labels"
+                        color="#6366F1"
+                        :pagination="true"
                     />
                 </div>
             </div>

@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted, watch } from 'vue';
+    import { ref, onMounted, watch, reactive } from 'vue';
     import { router } from '@inertiajs/vue3';
     import { Link } from '@inertiajs/vue3';
 
@@ -18,6 +18,13 @@
 
     const exploreCareerStore = useExploreCareerStore();
 
+    const careerMetadata = reactive(
+        {
+            total: 0,
+            page: 1,
+            perPage: 8,
+        }
+    );
 
     const dataviewValue = ref(null);
     const layout = ref('list');
@@ -51,6 +58,7 @@
             replace: true,
             onSuccess: (response) => {
                 dataviewValue.value = response.props.careers;
+                careerMetadata.total = response.props.careers.length;
             }
         });
     }
@@ -180,8 +188,14 @@
                         }" :rounded="true"
                     ></Tag>Συμβατικός
                 </span>
+
+                <div v-if="careerMetadata.total > 0" class="text-sm text-gray-600 py-3 px-2">
+                    Βρέθηκαν <strong>{{ careerMetadata.total }}</strong> πιθανές καριέρες
+                </div>
+
                 <!-- Search Results -->
                 <DataView
+                    v-if="careerMetadata.total > 0"
                     :value="filteredValue || dataviewValue" 
                     :layout="layout" 
                     :paginator="true" 
@@ -244,6 +258,19 @@
                         </ul>
                     </template>
                 </DataView>
+
+                <div v-else class="my-5 text-md text-gray-600 p-5 bg-slate-50 dark:bg-slate-50 border border-gray-200 rounded-lg shadow-md">
+                    <div class="flex flex-col">
+                        <div class="flex justify-center items-center">
+                            <svg class="w-16 h-16 stroke-1 stroke-blue-700" xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                            </svg>
+                        </div>
+                        <p class="text-center text-md">
+                            Ουπς, φαίνεται πως ψάχνεις κάτι που ακόμη δεν υπάρχει στην λίστα! Μπορείς να δοκιμάσεις να ψάξεις πάλι χρησιμοποιώντας λιγότερους χαρακτήρες.
+                    </p>
+                    </div>
+                </div>
             </div>
         </div>
     </PublicPageLayout>

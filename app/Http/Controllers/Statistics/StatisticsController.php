@@ -21,6 +21,7 @@ use App\Models\UserManagement\User;
 use App\Models\Volunteer\Volunteer;
 use App\Models\Career\Career;
 use App\Models\Test\Test;
+use App\Models\Career\CareerRequest;
 
 /* Services */
 use App\Services\HookService;
@@ -60,14 +61,71 @@ class StatisticsController extends Controller
         // Prepare summary data
         $summaryData = $this->prepareSummaryData();
     
-        return Inertia::render('Statistics', [
+        return Inertia::render('Analytics/Analytics', [
             'summary' => $summaryData,
             'volunteers' => $volunteerData,
             'sessionRequests' => $sessionRequestData,
-            'volunteerRoles' => $volunteerRoleData
+            'volunteerRoles' => $volunteerRoleData,
+            'careerSearches' => $this->getCareerRequests(),
+            'topKeywords' => $this->getTopSearchedKeywords(),
         ]);
     }
     
+    private function getCareerRequests() {
+        $query = CareerRequest::query();
+
+        if (request('search')) {
+            $query->where('email', 'LIKE', '%' . request('search') . '%')
+                  ->orWhere('keyword', 'LIKE', '%' . request('search') . '%');
+        }
+    
+        // Add keyword frequency
+        $query->select('career_requests.keyword as date', DB::raw('count(career_requests.keyword) as total_number'))
+              ->groupBy('career_requests.keyword')
+              ->orderBy('total_number', 'desc');
+    
+        // Paginate the results, 10 items per page
+        $paginatedResults = $query->paginate(10);
+    
+        // Prepare labels and data arrays
+        $labels = $paginatedResults->pluck('date');
+        $data = $paginatedResults->pluck('total_number');
+    
+        return [
+            'labels' => $labels,
+            'data' => $data,
+            'pagination' => [
+                'current_page' => $paginatedResults->currentPage(),
+                'last_page' => $paginatedResults->lastPage(),
+                'total' => $paginatedResults->total(),
+                'per_page' => $paginatedResults->perPage(),
+            ]
+        ];
+    }
+
+    private function getTopSearchedKeywords() {
+        $query = CareerRequest::query();
+    
+        // Select only the 'keyword' column
+        $keywords = $query->pluck('keyword');
+    
+        // Normalize keywords (convert to lowercase)
+        $normalizedKeywords = $keywords->map(function ($item) {
+            return strtolower($item);
+        });
+           
+        // Count word frequencies
+        $wordFrequencies = array_count_values($normalizedKeywords->toArray());
+    
+        // Sort by frequency
+        arsort($wordFrequencies);
+    
+        // Get top keywords (you can adjust the number as needed)
+        $topKeywords = array_slice($wordFrequencies, 0, 100);
+    
+        return $topKeywords;
+    }
+
     private function generateMonthsList($startDate, $endDate)
     {
         $months = [];

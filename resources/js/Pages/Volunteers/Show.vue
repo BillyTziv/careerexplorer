@@ -58,9 +58,7 @@
 	 	});
 	}
 	
-	function changeVolunteerStatus( form ) {
-		toast.add({ severity: 'info', summary: 'Product Selected', detail: 'sdasda', life: 3000 });
-		
+	function changeVolunteerStatus( form ) {		
 		router.put('/volunteers/' + props.volunteer.id + '/status', {
 			newStatusValue: selectedVolunteerStatus.value,
 			statusChangeReason: form.reason,
