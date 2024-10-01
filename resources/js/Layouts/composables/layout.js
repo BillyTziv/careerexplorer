@@ -3,8 +3,8 @@ import { toRefs, reactive, computed } from 'vue';
 const layoutConfig = reactive({
     menuMode: 'static',
     menuTheme: 'colorScheme',
-    colorScheme: 'light',
-    theme: 'pink',
+    colorScheme: 'dark',
+    theme: 'red',
     scale: 14
 });
 

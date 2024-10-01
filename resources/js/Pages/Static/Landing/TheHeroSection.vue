@@ -103,6 +103,7 @@
 <style scoped>
     .highlight-word {
         background-color: var(--primary-color); /* Change this to your desired highlight color */
+        color: var(--primary-color-text);
         font-weight: bold;
         padding: 0px 10px;
     }

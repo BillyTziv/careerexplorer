@@ -189,13 +189,12 @@
                     ></Tag>Συμβατικός
                 </span>
 
-                <div v-if="careerMetadata.total > 0" class="text-sm text-gray-600 py-3 px-2">
+                <!-- <div v-if="careerMetadata.total > 0" class="text-sm text-gray-600 py-3 px-2">
                     Βρέθηκαν <strong>{{ careerMetadata.total }}</strong> πιθανές καριέρες
-                </div>
+                </div> -->
 
                 <!-- Search Results -->
                 <DataView
-                    v-if="careerMetadata.total > 0"
                     :value="filteredValue || dataviewValue" 
                     :layout="layout" 
                     :paginator="true" 
@@ -259,7 +258,7 @@
                     </template>
                 </DataView>
 
-                <div v-else class="my-5 text-md text-gray-600 p-5 bg-slate-50 dark:bg-slate-50 border border-gray-200 rounded-lg shadow-md">
+                <!-- <div v-else class="my-5 text-md text-gray-600 p-5 bg-slate-50 dark:bg-slate-50 border border-gray-200 rounded-lg shadow-md">
                     <div class="flex flex-col">
                         <div class="flex justify-center items-center">
                             <svg class="w-16 h-16 stroke-1 stroke-blue-700" xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -270,7 +269,7 @@
                             Ουπς, φαίνεται πως ψάχνεις κάτι που ακόμη δεν υπάρχει στην λίστα! Μπορείς να δοκιμάσεις να ψάξεις πάλι χρησιμοποιώντας λιγότερους χαρακτήρες.
                     </p>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </PublicPageLayout>
