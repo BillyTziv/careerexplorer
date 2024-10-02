@@ -32,10 +32,6 @@
     const open = () => {
         display.value = true;
     };
-
-    const close = () => {
-        display.value = false;
-    };
 </script>
 
 <template>

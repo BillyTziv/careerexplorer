@@ -15,6 +15,7 @@ use App\Models\UserManagement\Permission;
 use App\Models\Volunteer\Volunteer;
 use App\Models\Volunteer\VolunteerRole;
 use App\Models\Volunteer\VolunteerStatus;
+use App\Models\Volunteer\Comment;
 
 use App\Models\EmailTemplate\EmailTemplate;
 use App\Models\VolunteerHistory;
@@ -510,9 +511,12 @@ class VolunteerController extends Controller {
             ->select('volunteer_histories.*', DB::raw("CONCAT(users.firstname, ' ', users.lastname) as fullname"))
             ->get();
 
+        $comments = Comment::where('volunteer_id', $id)->get();
+
         return Inertia::render('Volunteers/Show', [
             'response' => [],
             'volunteer' => $volunteer,
+            'comments'  => $comments,
             'roles' => self::getUserRoles(),
             'assignees' => self::getAssignees(),
             'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses(),
@@ -532,6 +536,22 @@ class VolunteerController extends Controller {
         ]);
     }
 
+    public function submitComment(Request $request, $volunteerId ) {
+
+        $volunteer = Volunteer::find( $volunteerId );
+
+        $comment = new Comment();
+
+        $comment->volunteer_id = $volunteerId;
+        $comment->comment = $request->comment;
+
+        $comment->save();
+
+        return back()->with([
+            'message' => 'Τα στοιχεία ενημερώθηκαν με επιτυχία!',
+            'status' => 'success',
+        ]);
+    }
 
     public function updateStatus(Request $request, $volunteer) {
         // Validate that the new status value is a valid status ID.

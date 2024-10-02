@@ -32,6 +32,9 @@ Route::post('/volunteers/{volunteer}/notes', [VolunteerController::class, 'updat
 
 Route::put('/volunteers/{volunteer}/assign-recruiter', [VolunteerController::class, 'assignRecruiter']);
 
+Route::post('/volunteers/{volunteer}/comment', [VolunteerController::class, 'submitComment']);
+
+
 // Route::get('/volunteers/join', [VolunteerController::class, 'createPublicApplication'])
 // ->middleware('can:create, App\Models\Volunteer')
 // ->name('volunteers.join');

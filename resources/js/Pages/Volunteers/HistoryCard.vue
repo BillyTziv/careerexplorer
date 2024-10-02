@@ -1,22 +1,20 @@
 <script setup>
-    import { useFormatDate } from '@/Composables/useFormatDate';
+import { useFormatDate } from '@/Composables/useFormatDate';
 
 
-    const props = defineProps({
-        user: {
-            type: Object,
-            required: true
-        }
-    });
+const props = defineProps({
+    user: {
+        type: Object,
+        required: true
+    }
+});
 
-    const { formatDate } = useFormatDate();
+const { formatDate } = useFormatDate();
 </script>
 
 <template>
-    <div
-        class="flex flex-nowrap justify-content-between align-items-center p-2 hover:surface-hover transition-colors transition-duration-150"
-        tabindex="0"
-    >
+    <div class="flex flex-nowrap justify-content-between align-items-center p-2 hover:surface-hover transition-colors transition-duration-150"
+        tabindex="0">
         <div class="flex align-items-center">
             <!-- <div class="relative md:mr-3">
                 <img :src="'/demo/images/avatar/' + user.image" alt="user" class="w-3rem h-3rem border-circle shadow-4" />
@@ -32,7 +30,7 @@
                 <span class="block text-600 white-space-nowrap w-10rem text-sm">{{ user.description }}</span>
             </div>
         </div>
-        
+
         <!-- Display the created_at directly from the user prop -->
         <span class="text-700 font-light ml-auto hidden md:inline">{{ formatDate(user.created_at, true) }}</span>
     </div>
