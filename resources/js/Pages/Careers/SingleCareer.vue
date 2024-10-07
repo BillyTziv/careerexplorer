@@ -1,29 +1,31 @@
 <script setup>
-    import { computed, ref } from 'vue';
-    import BaseCheckList from '@/Components/Base/BaseCheckList.vue';
-    import BaseDataView from '@/Components/Base/BaseDataView.vue';
+import { computed, ref } from 'vue';
+import BaseCheckList from '@/Components/Base/BaseCheckList.vue';
+import BaseDataView from '@/Components/Base/BaseDataView.vue';
+import BaseHeadingText from '@/Components/Base/BaseHeadingText.vue';
+import BaseDivider from '@/Components/Base/BaseDivider.vue';
 
-    import PublicPageLayout from '@/Pages/Static/PublicPageLayout.vue';
-    import PublicMenu from '@/Pages/Static/PublicMenu.vue';
+import PublicPageLayout from '@/Pages/Static/PublicPageLayout.vue';
+import PublicMenu from '@/Pages/Static/PublicMenu.vue';
 
-    import { router } from '@inertiajs/vue3'
-    
-    let props = defineProps({
-        career: {
-            type: Object,
-            required: true
-        }
-    });
+import { router } from '@inertiajs/vue3'
 
-    const hasCourses = computed(() => props.career.courses?.length > 0);
-    const hasResponsibilities = computed(() => props.career.responsibilities?.length > 0);
-    const hasInterests = computed(() => props.career.interests?.length > 0);
-    const hasSkills = computed(() => props.career.skills?.length > 0);
+let props = defineProps({
+    career: {
+        type: Object,
+        required: true
+    }
+});
 
-    const hollandCodes = computed(() => props.career.riasec_codes.map((code) => code.symbol));
+const hasCourses = computed(() => props.career.courses?.length > 0);
+const hasResponsibilities = computed(() => props.career.responsibilities?.length > 0);
+const hasInterests = computed(() => props.career.interests?.length > 0);
+const hasSkills = computed(() => props.career.skills?.length > 0);
 
-    const getHollandCodeColor = ( hollandCode ) => {
-    switch ( hollandCode ) {
+const hollandCodes = computed(() => props.career.riasec_codes.map((code) => code.symbol));
+
+const getHollandCodeColor = (hollandCode) => {
+    switch (hollandCode) {
         case 'R':
             return '#7F1D1D';
 
@@ -40,36 +42,53 @@
             return '#F97316';
 
         case 'C':
-            return '#6B7280'; 
+            return '#6B7280';
 
         default:
             return '#323232';
     }
-    };
+};
 
-
-    const careerSkills = computed(() => {
-        return props.career.skills.map(skill => {
-            return {
-                id: skill.id,
-                text: skill.name
-            };
-        });
-    });
-
-    const careerInterests = computed(() => {
-        return props.career.interests.map(interest => {
-            return {
-                id: interest.id,
-                text: interest.name
-            };
-        });
-    });
-
-
-    function goBack() {
-        window.history.back();
+const topCareers = [
+    {
+        title: 'Προγραμματιστής'
+    },
+    {
+        title: 'Δικηγόρος'
+    },
+    {
+        title: 'Γιατρός'
+    },
+    {
+        title: 'Μηχανικός'
+    },
+    {
+        title: 'Δάσκαλος'
     }
+];
+
+const careerSkills = computed(() => {
+    return props.career.skills.map(skill => {
+        return {
+            id: skill.id,
+            text: skill.name
+        };
+    });
+});
+
+const careerInterests = computed(() => {
+    return props.career.interests.map(interest => {
+        return {
+            id: interest.id,
+            text: interest.name
+        };
+    });
+});
+
+
+function goBack() {
+    window.history.back();
+}
 </script>
 
 <template>
@@ -82,15 +101,9 @@
                     Ανακάλυψε πως είναι να είσαι..
                 </span> -->
 
-                <Button
-                    @click="goBack()"
-                    label="Πίσω" 
-                    icon="pi pi-arrow-left"
-                    type="button"
-                    iconPos="left"
-                    class="m-0 my-3 p-2"
-                    text
-                />
+                <Button @click="goBack()" label="Πίσω" icon="pi pi-arrow-left" type="button" iconPos="left"
+                    class="m-0 my-3 p-2" outlined />
+
                 <div class="mb-0 flex flex-column md:flex-row md:align-items-center md:justify-content-between">
                     <div class="flex align-items-start">
                         <!-- <img src="/images/blocks/logos/hyper.svg" alt="Image" height="40" class="mr-3"> -->
@@ -98,12 +111,12 @@
                             <div class="mb-2">
                                 <div>
                                     <template v-for="(code, index) in hollandCodes" :key="index">
-                                        <Tag :value="''" :style="{ 
-                                                backgroundColor: getHollandCodeColor(code), 
-                                                width: '10px', 
-                                                height: '11px', 
-                                                margin: '1px' 
-                                            }" :rounded="true"></Tag>
+                                        <Tag :value="''" :style="{
+                                            backgroundColor: getHollandCodeColor(code),
+                                            width: '10px',
+                                            height: '11px',
+                                            margin: '1px'
+                                        }" :rounded="true"></Tag>
                                     </template>
                                 </div>
 
@@ -137,9 +150,9 @@
                 </div>
 
                 <div class="grid">
-                    
-                    <div class="col-12 lg:col">
-                        
+
+                    <div class="col-12 lg:col-9">
+
                         <div class="line-height-3 text-xl text-900 mb-5">
                             <div>
                                 <p class="text-lg" style="white-space: pre-wrap;">
@@ -150,125 +163,80 @@
                                 <!-- CAREER SKILLS -->
                                 <!---------------------------------------------------------------------------------->
                                 <template v-if="hasSkills">
-                                    <BaseCheckList
-                                        :items="careerSkills"
-                                        title="Δεξιότητες / Προσόντα"
-                                    />
+                                    <BaseHeadingText title="Δεξιότητες / Προσόντα" />
+                                    <BaseDivider />
+
+                                    <BaseCheckList :items="careerSkills" />
                                 </template>
 
                                 <!---------------------------------------------------------------------------------->
                                 <!-- CAREER RESPONSIBILITIES -->
                                 <!---------------------------------------------------------------------------------->
                                 <template v-if="hasResponsibilities">
-                                    <BaseCheckList
-                                        :items="career.responsibilities"
-                                        title="Αρμοδιότητες / Καθήκοντα"
-                                    />
+                                    <BaseHeadingText title="Αρμοδιότητες / Καθήκοντα" />
+                                    <BaseDivider />
+
+                                    <BaseCheckList :items="career.responsibilities" />
                                 </template>
 
                                 <!---------------------------------------------------------------------------------->
                                 <!-- CAREER INTERESTS -->
                                 <!---------------------------------------------------------------------------------->
                                 <template v-if="hasInterests">
-                                    <BaseCheckList
-                                        :items="careerInterests"
-                                        title="Ενδιαφέροντα"
-                                    />
+                                    <BaseHeadingText title="Ενδιαφέροντα" />
+                                    <BaseDivider />
+
+                                    <BaseCheckList :items="careerInterests" />
                                 </template>
 
                                 <!---------------------------------------------------------------------------------->
                                 <!-- CAREER COURSES -->
                                 <!---------------------------------------------------------------------------------->
                                 <template v-if="hasCourses">
-                                    <BaseDataView
-                                        title="Μαθήματα"
-                                        :items="career.courses" 
-                                        paginator 
-                                        :rows="3" 
-                                        layout="grid"
-                                    />
+                                    <BaseHeadingText title="Μαθήματα" />
+                                    <BaseDivider />
+
+                                    <BaseDataView :items="career.courses" paginator :rows="3" layout="grid" />
                                 </template>
 
                             </div>
 
-                            <!-- <div class="flex align-items-center cursor-pointer">
-                                <span class="font-bold mr-3"></span>
-                                <i class="pi pi-arrow-right"></i>
-                            </div> -->
                         </div>
                     </div>
-                    <!-- <div class="col-12 lg:col-3 lg:border-left-1 surface-border">
+                    <div class="col-12 lg:col-3 lg:border-left-1 surface-border">
                         <div class="p-2">
-                            <h2 class="text-sm font-bold">TOP 5 Careers</h2>
-
-
-                           <div class="flex border-bottom-1 surface-border pb-4 mb-5"><img
-                                    src="/images/blocks/avatars/circle/avatar-f-1.png" class="mr-3 h-5rem w-5rem">
-                                <div class="flex flex-column align-items-start"><span
-                                        class="text-lg text-900 font-medium mb-1">Jessica Doe</span><span
-                                        class="text-600 font-medium mb-2">1.7K Followers</span><button
-                                        class="p-button p-component p-button-rounded p-button-primary" type="button"
-                                        aria-label="Follow" data-pc-name="button" data-pc-section="root"
-                                        data-pd-ripple="true">-><span class="p-button-label"
-                                            data-pc-section="label">Follow</span><span role="presentation"
-                                            aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink"
-                                            data-pc-name="ripple" data-pc-section="root"></span></button></div>
-                            </div><span class="text-900 font-medium text-xl block mb-5">Other Posts</span>
-                            <div class="flex pb-4"><img src="/images/blocks/content/content-5.png" class="mr-3 h-5rem w-5rem">
-                                <div class="flex flex-column align-items-start"><span
-                                        class="text-lg text-900 font-medium mb-1">Post Title</span>
-
-                                </div>
-                            </div>
-
-                            <div class="flex pb-4"><img src="/images/blocks/content/content-6.png" class="mr-3 h-5rem w-5rem">
-                                <div class="flex flex-column align-items-start"><span
-                                        class="text-lg text-900 font-medium mb-1">Post Title</span><span
-                                        class="text-600 mb-2">Metus aliquam eleifend mi in nulla posuere.</span></div>
-                            </div>
-                            <div class="flex pb-4"><img src="/images/blocks/content/content-7.png" class="mr-3 h-5rem w-5rem">
-                                <div class="flex flex-column align-items-start"><span
-                                        class="text-lg text-900 font-medium mb-1">Post Title</span><span
-                                        class="text-600 mb-2">Metus aliquam eleifend mi in nulla posuere.</span></div>
-                            </div>
-                            <div class="flex flex-column gap-3">
-                                <div class="w-full h-full p-5 border-round"
-                                    style="background: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgb(0, 0, 0) 100%), url(&quot;/images/blocks/content/content-8.png&quot;);">
-                                    <span class="text-white font-medium mb-3">Post Title</span><span
-                                        class="text-white-alpha-70 block line-height-3">Metus aliquam eleifend mi innulla
-                                        posuere.</span></div>
-                                <div class="w-full h-full p-5 border-round"
-                                    style="background: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgb(0, 0, 0) 100%), url(&quot;/images/blocks/content/content-9.png&quot;);">
-                                    <span class="text-white font-medium mb-3">Post Title</span><span
-                                        class="text-white-alpha-70 block line-height-3">Metus aliquam eleifend mi innulla
-                                        posuere.</span></div>
-                                <div class="w-full h-full p-5 border-round"
-                                    style="background: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgb(0, 0, 0) 100%), url(&quot;/images/blocks/content/content-10.png&quot;);">
-                                    <span class="text-white font-medium mb-3">Post Title</span><span
-                                        class="text-white-alpha-70 block line-height-3">Metus aliquam eleifend mi in nulla
-                                        posuere.</span></div>
+                            <h3 class="text-2xl font-semibold">
+                                TOP 5 Καριέρες
+                            </h3>
+                            <div class="flex flex-column gap-5">
+                                <template v-for="career in topCareers" :key="career">
+                                    <div class="w-full h-full p-3 border-round"
+                                        style="background: #E5E8EB; color: #011b3d; border-bottom: solid 4px #011b3d;">
+                                        <span class="text-xl font-light">
+                                            {{ career.title }}
+                                        </span>
+                                    </div>
+                                </template>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
 
+                <Button @click="goBack()" label="Πίσω" icon="pi pi-arrow-left" type="button" iconPos="left"
+                    class="m-0 my-3 p-2" outlined />
             </div>
         </div>
     </PublicPageLayout>
 </template>
 
 <style scoped>
-    .bg-circle {
-        width: 1000px;
-        height: 1000px;
-        border-radius: 50%;
-        background-image: linear-gradient(140deg, var(--primary-color), var(--surface-ground) 80%);
-        position: absolute;
-        opacity: 0.25;
-        z-index: -1;
-    }
-
-    .p-dataview >>> .p-dataview-content {
-        background: transparent;
-    }
+.bg-circle {
+    width: 1000px;
+    height: 1000px;
+    border-radius: 50%;
+    background-image: linear-gradient(140deg, var(--primary-color), var(--surface-ground) 80%);
+    position: absolute;
+    opacity: 0.25;
+    z-index: -1;
+}
 </style>

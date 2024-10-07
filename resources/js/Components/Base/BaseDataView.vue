@@ -1,75 +1,62 @@
 <script setup>
-    const props = defineProps({
-        title: {
-            type: String,
-            required: true,
-            default: ''
-        },
-        items: {
-            type: Object,
-            required: true,
-            default: () => []
-        },
-        rows: {
-            type: Number,
-            required: true,
-            default: 10
-        },
-        layout: {
-            type: String,
-            required: true,
-            default: 'list'
-        },
-        sortOrder: {
-            type: Number,
-            required: false,
-            default: -1
-        },
-        sortField: {
-            type: String,
-            required: false,
-            default: ''
-        },
-        sortOptions: {
-            type: Array,
-            required: false,
-            default: () => []
-        },
-        sortKey: {
-            type: String,
-            required: false,
-            default: null
-        }
-    });
+const props = defineProps({
+    title: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    items: {
+        type: Object,
+        required: true,
+        default: () => []
+    },
+    rows: {
+        type: Number,
+        required: true,
+        default: 10
+    },
+    layout: {
+        type: String,
+        required: true,
+        default: 'list'
+    },
+    sortOrder: {
+        type: Number,
+        required: false,
+        default: -1
+    },
+    sortField: {
+        type: String,
+        required: false,
+        default: ''
+    },
+    sortOptions: {
+        type: Array,
+        required: false,
+        default: () => []
+    },
+    sortKey: {
+        type: String,
+        required: false,
+        default: null
+    }
+});
 </script>
 
 <template>
-    <DataView
-        :value="props.items" 
-        :rows="props.rows"
-        :layout="props.layout" 
-        :sortOrder="props.sortOrder" 
-        :sortField="props.sortField"
-        paginator
-    >
-        <template #header>
-            <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-                <h2 class="text-2xl font-semibold">
-                    {{ title }}
-                </h2>
-                <Dropdown v-model="props.sortKey" :options="props.sortOptions" optionLabel="label" placeholder="Ταξινόμηση" class="w-full md:w-15rem" @change="onSortChange($event)" />
-            </div>
-            <div style="height: 3px; width: 6rem; background: #6366f1;"></div>
-        </template>
-
+    <DataView :value="props.items" :rows="props.rows" :layout="props.layout" :sortOrder="props.sortOrder"
+        :sortField="props.sortField" paginator>
         <template #grid="slotProps">
-            <div  class="grid grid-nogutter">
+            <div class="grid grid-nogutter">
                 <div v-for="(item, index) in slotProps.items" :key="index" class="col-12 md:col-4">
                     <div class="p-3">
                         <div class="surface-100 cursor-pointer z-index border-round">
                             <div class="relative">
-                                <img v-if="item.coverImage" :src="item.coverImage" class="w-full" :alt="item.description.split(' ', 1)" />
-                                <img v-if="item.profile" :src="item.profile" class="flex absolute w-4rem h-4rem" :style="{ bottom: '-1.5rem', right: '1.5rem' }" :alt="item.description.split(' ', 1)" />
+                                <img v-if="item.coverImage" :src="item.coverImage" class="w-full"
+                                    :alt="item.description.split(' ', 1)" />
+                                <img v-if="item.profile" :src="item.profile" class="flex absolute w-4rem h-4rem"
+                                    :style="{ bottom: '-1.5rem', right: '1.5rem' }"
+                                    :alt="item.description.split(' ', 1)" />
                             </div>
                             <div class="p-3">
                                 <div class="text-900 font-semibold text-xl mb-3">{{ item.title }}</div>
@@ -99,5 +86,4 @@
     </DataView>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -9,6 +9,8 @@ class Skill extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name'];
+    
     public function riasecCodes()
     {
         return $this->belongsToMany(RiasecCode::class);

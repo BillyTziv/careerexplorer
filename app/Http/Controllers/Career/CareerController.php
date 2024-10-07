@@ -430,11 +430,105 @@ class CareerController extends Controller
 
     public function singleCareer( $id )
     {
-
         return Inertia::render('Careers/SingleCareer', [
             'career' =>  Career::with(['riasecCodes', 'interests', 'skills', 'responsibilities', 'courses'])->find($id)
 
         ]);
     }
 
+    public function importCareers( Request $request ) {        
+        // Έλεγχος αν το αρχείο υπάρχει στο αίτημα
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Άνοιγμα του αρχείου για ανάγνωση
+            $handle = fopen($file->getRealPath(), 'r');
+
+            // Ανάγνωση της κεφαλίδας
+            $headers = fgetcsv($handle);
+
+            while (($row = fgetcsv($handle)) !== false) {
+                // Skip empty rows
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                // Check for valid number of columns
+                if (count($headers) !== count($row)) {
+                    // Debugging output
+                    dd([
+                        'headers' => $headers,
+                        'row' => $row,
+                        'header_count' => count($headers),
+                        'row_count' => count($row)
+                    ]);
+                }
+            
+
+                $data = array_combine($headers, $row);
+
+                // Προετοιμασία των δεδομένων για το αίτημα
+                $requestData = [
+                    'title' => $data['Επάγγελμα'],
+                    'description' => $data['Περιγραφή'],
+                    'keywords' => $data['Λέξεις-Φράσεις Κλειδιά'],
+                    'isPopular' => false,
+                    'link' => null,
+                    'connections' => [
+                        'skills' => $this->getSkillIds(explode(';', $data['Top 10 Δεξιότητες'])),
+                        // Αν έχετε και άλλα connections, προσθέστε τα εδώ
+                    ],
+                    'responsibilities' => array_map(function($resp) {
+                        return ['text' => trim($resp)];
+                    }, explode(';', $data['Top 10 Αρμοδιότητες'])),
+                    'hollandCodes' => explode(',', $data['Holland Codes (RIASEC)']),
+                ];
+
+              
+                // Δημιουργία ενός νέου Request αντικειμένου
+                $newRequest = new Request($requestData);
+
+                // Κλήση της συνάρτησης store
+                $this->store($newRequest);
+            }
+
+            fclose($handle);
+
+            return redirect()
+                ->route('careers.index')
+                ->with([
+                    'message'=> 'Η εισαγωγή ολοκληρώθηκε με επιτυχία.',
+                    'status' => 'success'
+                ]);
+        } else {
+            return redirect()
+                ->back()
+                ->with([
+                    'message'=> 'Παρακαλώ ανεβάστε ένα αρχείο CSV.',
+                    'status' => 'error'
+                ]);
+        }
+    }
+
+    private function getSkillIds(array $skillNames) {
+        // Trim spaces and remove duplicates
+        $skillNames = array_map('trim', $skillNames);
+        $skillNames = array_unique($skillNames);
+    
+        // Fetch existing skills from the database
+        $skills = Skill::whereIn('name', $skillNames)->get(['id', 'name']);
+    
+        // Create an associative array of skill names to their IDs
+        $existingSkillIds = $skills->pluck('id')->toArray();
+    
+        // Create new skills for any that do not exist and collect their IDs
+        foreach ($skillNames as $skillName) {
+            if (!in_array($skillName, $skills->pluck('name')->toArray())) {
+                $newSkill = Skill::create(['name' => $skillName]);
+                $existingSkillIds[] = $newSkill->id;
+            }
+        }
+    
+        return $existingSkillIds;
+    }
 }

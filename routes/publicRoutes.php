@@ -30,6 +30,7 @@ Route::post('/tests/holland/submitMetaData', [TestSubmissionController::class, '
 
 Route::get('/demo/tests/holland/results', [TestSubmissionController::class, 'demoHollandTestResults']);
 
+Route::post('/careers/import', [CareerController::class, 'importCareers'])->name('careers.import');
 
 Route::get('/tests/holland/{submissionId}/results', [TestSubmissionController::class, 'getHollandTestResults'])->name('tests.holland.results');
 Route::get('/explore', [CareerController::class, 'exploreCareers'])->name('exploreCareers');

@@ -1,48 +1,42 @@
 <script setup>
-    import { computed } from 'vue';
-    import { router } from '@inertiajs/vue3'
+import { computed } from 'vue';
 
-    const props = defineProps({
-        title:          { type: String, default: '' },
-        items:         { type: Array, default: [] },
-    });
+const props = defineProps({
+    title: { type: String, default: '' },
+    items: { type: Array, default: [] },
+});
 
-    const MAX_VISIBLE_ITEMS = 5;
+const MAX_VISIBLE_ITEMS = 5;
 
-    const totalItemsMissing = computed(() => {
-        return props.items.length - MAX_VISIBLE_ITEMS;
-    });
+const totalItemsMissing = computed(() => {
+    return props.items.length - MAX_VISIBLE_ITEMS;
+});
 
-    const visibleIteme = computed(() => {
-        return props.items.slice(0, MAX_VISIBLE_ITEMS)
-    });
+const visibleIteme = computed(() => {
+    return props.items.slice(0, MAX_VISIBLE_ITEMS)
+});
 
-    const hasMore = computed(() => {
-        return props.items.length > MAX_VISIBLE_ITEMS;
-    });
-    // let emits = defineEmits([
-    //     'update:modelValue'
-    // ]);
+const hasMore = computed(() => {
+    return props.items.length > MAX_VISIBLE_ITEMS;
+});
+// let emits = defineEmits([
+//     'update:modelValue'
+// ]);
 
-    // let selectedOptions = reactive(props.modelValue);
+// let selectedOptions = reactive(props.modelValue);
 
-    // function updateSelectedOptions(event, id) {
-    //     if (event.target.checked) {
-    //         selectedOptions.push(id);
-    //     } else {
-    //         selectedOptions.splice(selectedOptions.indexOf(id), 1);
-    //     }
+// function updateSelectedOptions(event, id) {
+//     if (event.target.checked) {
+//         selectedOptions.push(id);
+//     } else {
+//         selectedOptions.splice(selectedOptions.indexOf(id), 1);
+//     }
 
-    //     emits('update:modelValue', selectedOptions);
-    // }
+//     emits('update:modelValue', selectedOptions);
+// }
 </script>
 
 <template>
-    <h2 class="text-2xl font-semibold">
-        {{ title }}
-    </h2>
-
-    <div style="height: 3px; width: 6rem; background: #6366f1;"></div>
     <ul class="text-lg list-none">
         <li v-for="(item, index) in visibleIteme" :key="index">
             <div class="flex mb-2">
@@ -98,8 +92,8 @@
 
 
 <style scoped>
-    .list-none {
-        list-style-type: none;
-        padding: 0 0;
-    }
+.list-none {
+    list-style-type: none;
+    padding: 0 0;
+}
 </style>
