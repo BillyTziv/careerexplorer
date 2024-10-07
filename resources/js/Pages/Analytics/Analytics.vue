@@ -1,132 +1,132 @@
 <script setup>
-    import { onMounted } from 'vue';
+import { onMounted } from 'vue';
 
-    /* Layouts */
-    import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
+/* Layouts */
+import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
 
-    /* Emits Actions */
-    import { useUserStore } from '@/Stores/useUser.store';
+/* Emits Actions */
+import { useUserStore } from '@/Stores/useUser.store';
 
-    import BaseOverviewCard from '@/Components/Base/Graph/BaseOverviewCard.vue';
-    import BaseBarChart from '@/Components/Base/Graph/BaseBarChart.vue';
-    import BasePieChart from '@/Components/Base/Graph/BasePieChart.vue';
-    import BaseLineChart from '@/Components/Base/Graph/BaseLineChart.vue';
+import BaseOverviewCard from '@/Components/Base/Graph/BaseOverviewCard.vue';
+import BaseBarChart from '@/Components/Base/Graph/BaseBarChart.vue';
+import BasePieChart from '@/Components/Base/Graph/BasePieChart.vue';
+import BaseLineChart from '@/Components/Base/Graph/BaseLineChart.vue';
 
-    const userStore = useUserStore();
+const userStore = useUserStore();
 
-    /* Component Properties */
-    let props = defineProps({
-        user: Object,
-        summary: {
-            type: Object,
-            default: () => ({
-                volunteers: 0,
-                sessionRequests: 0,
-                testSubmissions: 0,
-                careers: 0,
-            }),
-        },
-        testSubmissions: Array,
-        volunteers: {
-            type: Object,
-            default: () => ({
-                labels: [],
-                data: [],
-            }),
-        },
-        volunteerRoles: {
-            type: Object,
-            default: () => ({
-                labels: [],
-                data: [],
-            }),
-        },
-        careerSearches: {
-            type: Object,
-            default: () => ({
-                labels: [],
-                data: [],
-            }),
-        },
-        careerRequests: Array,
-        sessionRequests: {
-            type: Object,
-            default: () => ({
-                labels: [],
-                data: [],
-            }),
-        }
-    });
+/* Component Properties */
+let props = defineProps({
+    user: Object,
+    summary: {
+        type: Object,
+        default: () => ({
+            volunteers: 0,
+            sessionRequests: 0,
+            testSubmissions: 0,
+            careers: 0,
+        }),
+    },
+    testSubmissions: Array,
+    volunteers: {
+        type: Object,
+        default: () => ({
+            labels: [],
+            data: [],
+        }),
+    },
+    volunteerRoles: {
+        type: Object,
+        default: () => ({
+            labels: [],
+            data: [],
+        }),
+    },
+    careerSearches: {
+        type: Object,
+        default: () => ({
+            labels: [],
+            data: [],
+        }),
+    },
+    careerRequests: Array,
+    sessionRequests: {
+        type: Object,
+        default: () => ({
+            labels: [],
+            data: [],
+        }),
+    }
+});
 
 
-    // const barData = ref({});
-    // const documentStyle = getComputedStyle(document.documentElement);
-    // const textColor = documentStyle.getPropertyValue('--text-color');
-    
-    // barData.value = {
-    //     labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
-    //     datasets: [
-    //         {
-    //             label: 'Revenue',
-    //             backgroundColor: documentStyle.getPropertyValue('--primary-500'),
-    //             barThickness: 12,
-    //             borderRadius: 12,
-    //             data: selectedWeek.value.data[0]
-    //         },
-    //         {
-    //             label: 'Profit',
-    //             backgroundColor: documentStyle.getPropertyValue('--primary-200'),
-    //             barThickness: 12,
-    //             borderRadius: 12,
-    //             data: selectedWeek.value.data[1]
-    //         }
-    //     ]
-    // };
- 
-    // Function to update bar chart data based on the selected week
-    // const updateChartData = () => {
-    //         pieData.value = {
-    //         labels: ['Electronics', 'Fashion', 'Household'],
-    //         datasets: [
-    //             {
-    //                 data: [300, 50, 100],
-    //                 backgroundColor: [documentStyle.getPropertyValue('--primary-700'), documentStyle.getPropertyValue('--primary-400'), documentStyle.getPropertyValue('--primary-100')],
-    //                 hoverBackgroundColor: [documentStyle.getPropertyValue('--primary-600'), documentStyle.getPropertyValue('--primary-300'), documentStyle.getPropertyValue('--primary-200')]
-    //             }
-    //         ]
-    //     };
-    // };
+// const barData = ref({});
+// const documentStyle = getComputedStyle(document.documentElement);
+// const textColor = documentStyle.getPropertyValue('--text-color');
 
-    // Function to handle the week change
-    // const onWeekChange = () => {
-    //     updateChartData();
-    // };
+// barData.value = {
+//     labels: ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'],
+//     datasets: [
+//         {
+//             label: 'Revenue',
+//             backgroundColor: documentStyle.getPropertyValue('--primary-500'),
+//             barThickness: 12,
+//             borderRadius: 12,
+//             data: selectedWeek.value.data[0]
+//         },
+//         {
+//             label: 'Profit',
+//             backgroundColor: documentStyle.getPropertyValue('--primary-200'),
+//             barThickness: 12,
+//             borderRadius: 12,
+//             data: selectedWeek.value.data[1]
+//         }
+//     ]
+// };
 
-    // const weeks = ref([
-    //     {
-    //         label: 'Last Week',
-    //         value: 0,
-    //         data: [
-    //             [65, 59, 80, 81, 56, 55, 40],
-    //             [28, 48, 40, 19, 86, 27, 90]
-    //         ]
-    //     },
-    //     {
-    //         label: 'This Week',
-    //         value: 1,
-    //         data: [
-    //             [35, 19, 40, 61, 16, 55, 30],
-    //             [48, 78, 10, 29, 76, 77, 10]
-    //         ]
-    //     }
-    // ]);
-    // const selectedWeek = ref(weeks.value[0]);
+// Function to update bar chart data based on the selected week
+// const updateChartData = () => {
+//         pieData.value = {
+//         labels: ['Electronics', 'Fashion', 'Household'],
+//         datasets: [
+//             {
+//                 data: [300, 50, 100],
+//                 backgroundColor: [documentStyle.getPropertyValue('--primary-700'), documentStyle.getPropertyValue('--primary-400'), documentStyle.getPropertyValue('--primary-100')],
+//                 hoverBackgroundColor: [documentStyle.getPropertyValue('--primary-600'), documentStyle.getPropertyValue('--primary-300'), documentStyle.getPropertyValue('--primary-200')]
+//             }
+//         ]
+//     };
+// };
 
-    // watch(selectedWeek, updateChartData, { immediate: true });
+// Function to handle the week change
+// const onWeekChange = () => {
+//     updateChartData();
+// };
 
-    onMounted(() => {
-        userStore.setUser( props.user )
-    });
+// const weeks = ref([
+//     {
+//         label: 'Last Week',
+//         value: 0,
+//         data: [
+//             [65, 59, 80, 81, 56, 55, 40],
+//             [28, 48, 40, 19, 86, 27, 90]
+//         ]
+//     },
+//     {
+//         label: 'This Week',
+//         value: 1,
+//         data: [
+//             [35, 19, 40, 61, 16, 55, 30],
+//             [48, 78, 10, 29, 76, 77, 10]
+//         ]
+//     }
+// ]);
+// const selectedWeek = ref(weeks.value[0]);
+
+// watch(selectedWeek, updateChartData, { immediate: true });
+
+onMounted(() => {
+    userStore.setUser(props.user)
+});
 </script>
 
 <template>
@@ -138,36 +138,20 @@
         <template #page-content>
             <div class="grid">
                 <div class="col-12 md:col-6 xl:col-3">
-                    <BaseOverviewCard
-                        title="Συνολικές Αιτήσεις Εθελοντών"
-                        :value="summary.volunteerApplications"
-                        percentageChange="+12%"
-                        :isPositiveChange="true"
-                    />
+                    <BaseOverviewCard title="Συνολικές Αιτήσεις Εθελοντών" :value="summary.volunteerApplications"
+                        percentageChange="+12%" :isPositiveChange="true" />
                 </div>
                 <div class="col-12 md:col-6 xl:col-3">
-                    <BaseOverviewCard
-                        title="Συνολικές Συνεδρίες Ε,Π."
-                        :value="summary.sessionRequests"
-                        percentageChange="+12%"
-                        :isPositiveChange="true"
-                    />
+                    <BaseOverviewCard title="Συνολικές Συνεδρίες Ε,Π." :value="summary.sessionRequests"
+                        percentageChange="+12%" :isPositiveChange="true" />
                 </div>
                 <div class="col-12 md:col-6 xl:col-3">
-                    <BaseOverviewCard
-                        title="Ολοκληρωμένα Test"
-                        :value="summary.testSubmissions"
-                        percentageChange="+12%"
-                        :isPositiveChange="true"
-                    />
+                    <BaseOverviewCard title="Ολοκληρωμένα Test" :value="summary.testSubmissions" percentageChange="+12%"
+                        :isPositiveChange="true" />
                 </div>
                 <div class="col-12 md:col-6 xl:col-3">
-                    <BaseOverviewCard
-                        title="Συνολικά Επαγγέλματα"
-                        :value="summary.careers"
-                        percentageChange="+12%"
-                        :isPositiveChange="true"
-                    />
+                    <BaseOverviewCard title="Συνολικά Επαγγέλματα" :value="summary.careers" percentageChange="+12%"
+                        :isPositiveChange="true" />
                 </div>
 
                 <div class="col-12 xl:col-6">
@@ -178,44 +162,24 @@
                         optionLabel="label" 
                         @change="onWeekChange" 
                     /> -->
-                    
+
                     <!-- <BaseBarChart title="Σύνολο" /> -->
                     <!-- <BasePieChart title="Πωλήσεις ανά Κατηγορία" /> -->
-                    <BaseLineChart 
-                        title="Αιτήσεις Εθελοντικής Συμμετοχής" 
-                        label="Πλήθος Αιτήσεων"
-                        :data="volunteers.data"
-                        :labels="volunteers.labels"
-                        color="#6366F1"
-                    />
+                    <BaseLineChart title="Αιτήσεις Εθελοντικής Συμμετοχής" label="Πλήθος Αιτήσεων / Έτος"
+                        :data="volunteers.data" :labels="volunteers.labels" color="#6366F1" />
 
-                    <BaseLineChart 
-                        title="Αιτήσεις για Συνεδρία Ε.Π." 
-                        label="Πλήθος Αιτήσεων"
-                        :data="sessionRequests.data"
-                        :labels="sessionRequests.labels"
-                        color="#6366F1"
-                    />
+                    <BaseLineChart title="Αιτήσεις για Συνεδρία Ε.Π." label="Πλήθος Αιτήσεων / Έτος"
+                        :data="sessionRequests.data" :labels="sessionRequests.labels" color="#6366F1" />
                 </div>
                 <div class="col-12 xl:col-6">
-                    <BasePieChart 
-                        title="Κατανομή Εθελοντών" 
-                        label="Εθελοντές "
-                        :data="volunteerRoles.data"
-                        :labels="volunteerRoles.labels"
-                        color="#6366F1"
-                    />
+                    <BasePieChart title="Κατανομή Εθελοντών" label="Εθελοντές " :data="volunteerRoles.data"
+                        :labels="volunteerRoles.labels" color="#6366F1" />
                 </div>
 
                 <div class="col-12">
-                    <BaseBarChart 
-                        title="Συχνότητα Αναζητήσεων Επαγγελμάτων" 
-                        label="Συχνότητα Αναζητήσεων"
-                        :data="careerSearches.data"
-                        :labels="careerSearches.labels"
-                        color="#6366F1"
-                        :pagination="true"
-                    />
+                    <BaseBarChart title="Συχνότητα Αναζητήσεων Επαγγελμάτων" label="Πλήθος Αναζητήσεων"
+                        :data="careerSearches.data" :labels="careerSearches.labels" color="#6366F1"
+                        :pagination="true" />
                 </div>
             </div>
 

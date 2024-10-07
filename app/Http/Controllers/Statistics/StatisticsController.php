@@ -21,6 +21,7 @@ use App\Models\UserManagement\User;
 use App\Models\Volunteer\Volunteer;
 use App\Models\Career\Career;
 use App\Models\Test\Test;
+use App\Models\Test\Submission;
 use App\Models\Career\CareerRequest;
 
 /* Services */
@@ -195,7 +196,7 @@ class StatisticsController extends Controller
         return [
             "volunteerApplications" => Volunteer::where('deleted', false)->count(),
             "careers" => Career::where('deleted', false)->count(),
-            "testSubmissions" => Test::where('deleted', false)->count(),
+            "testSubmissions" => Submission::where('deleted', false)->count(),
             "sessionRequests" => SessionRequest::count()
         ];
     }

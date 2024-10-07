@@ -444,7 +444,7 @@ class SessionRequestController extends Controller
             ->count();
         
         // If accepted request is more than 10, return error
-        if( $acceptedRequests >= 10 ) {
+        if( $acceptedRequests >= 200 ) {
             return redirect()
                 ->route('session-requests.index', ['session_request' => $id])
                 ->with([
