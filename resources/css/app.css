@@ -13,3 +13,16 @@ Leave tailwind out of usage since we are using a theme instead
 
 /* Demos */
 @import '@/assets/demo/demo.scss';
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans&display=swap');
+
+/* Apply Roboto to all headings (h1, h2, h3, etc.) */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Apply Open Sans to the body text */
+body {
+    font-family: 'Open Sans', sans-serif;
+}

@@ -130,11 +130,11 @@ function changePage(event) {
         <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
             <div id="personality-summary" class="mb-6 pb-6 md:my-8 md:py-8">
                 <span class="text-900 block font-bold text-2xl sm:text-5xl mb-4 text-center">
-                    Ανακάλυψε πως είναι να είσαι..
+                    Ανακάλυψε πως είναι να είσαι ..
                 </span>
 
                 <div class="flex justify-content-center flex-wrap">
-                    <div class="flex align-items-center justify-content-center border-round m-2">
+                    <div class="flex align-items-center justify-content-center border-round m-2 full-w">
                         <IconField iconPosition="left">
                             <InputIcon class="pi pi-search" />
                             <InputText v-model="filters.search" rounded @input="onFilter"

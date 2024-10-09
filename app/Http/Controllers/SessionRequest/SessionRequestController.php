@@ -464,19 +464,33 @@ class SessionRequestController extends Controller
         ]);
     }
 
-    // public function decline( $id ) {
-    //     $sessionRequest = SessionRequest::find( $id );
-    //     $sessionRequest->status = 3;
-    //     $sessionRequest->assignee = auth()->user()->id;
-    //     $sessionRequest->save();
+    public function drop( $sessionRequestId ) {
+        try {
+            $sessionRequest = SessionRequest::find( $sessionRequestId );
 
-    //     return redirect()
-    //         ->route('session-requests.show', ['session_request' => $id])
-    //         ->with([
-    //             'message' => 'Η συνεδρία ακυρώθηκε με επιτυχία!',
-    //             'status' => 'success',
-    //         ]);
-    // }
+            $sessionRequest->status = 3;
+            $sessionRequest->assignee = auth()->user()->id;
+
+            $sessionRequest->save();
+
+            // $hookService = new HookService( new EmailService );
+            // $vdata = Volunteer::where('email', $sessionRequest->email)->first();        
+    
+            // $hookService->trigger('request_career_session_feedback', $sessionRequest->email, $vdata );
+
+            return redirect()
+                ->route('my-session-requests.index',)   
+                ->with([
+                    'message' => 'Η συνεδρία απορρίφθηκε με επιτυχία!',
+                    'status' => 'success',
+                ]);
+        } catch (\Exception $e) {
+            return back()->with([
+                'message' => 'Ουπς, κάτι πήγε στραβά. Παρακαλούμε ξαναπροσπαθήστε.',
+                'status' => 'error',
+            ]);
+        }
+    }
 
     public function complete( $id ) {
         try {
