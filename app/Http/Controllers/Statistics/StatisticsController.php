@@ -196,7 +196,7 @@ class StatisticsController extends Controller
         return [
             "volunteerApplications" => Volunteer::where('deleted', false)->count(),
             "careers" => Career::where('deleted', false)->count(),
-            "testSubmissions" => Submission::where('deleted', false)->count(),
+            "testSubmissions" => Submission::count(),
             "sessionRequests" => SessionRequest::count()
         ];
     }
