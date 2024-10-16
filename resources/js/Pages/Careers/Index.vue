@@ -113,16 +113,13 @@ watch(() => careersStore.getTableFilters, () => {
                 />
             </div> -->
 
-            <!-- Φόρμα για την εισαγωγή του CSV αρχείου -->
-            <form @submit.prevent="submit">
+            <!-- <form @submit.prevent="submit">
                 <input type="file" @input="form.file = $event.target.files[0]" />
 
-                <!-- <progress v-if="form.progress" :value="form.progress.percentage" max="100">
-                    {{ form.progress.percentage }}%
-                </progress> -->
+             
 
                 <button type="submit">Import Careers</button>
-            </form>
+            </form> -->
 
 
             <div

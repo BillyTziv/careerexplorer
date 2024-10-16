@@ -1,5 +1,5 @@
 <script setup>
-	import { watch, ref } from 'vue';
+	import { watch, ref, computed } from 'vue';
     import BaseTextareaInput from '@/Components/Base/BaseTextareaInput.vue';
 
     const emit = defineEmits([
@@ -12,6 +12,11 @@
             required: true,
             default: ''
         },
+        showModal: {
+            type: Boolean,
+            required: true,
+            default: false
+        }
     })
 
     watch(() => props.notes, (newVal) => {
@@ -19,23 +24,20 @@
     });
 
     const notes = ref( props.notes );
-    const display = ref(false);
-
-
 
     function submit() {
         emit('change', notes.value );
-        display.value = false;
-
     }
-
-    const open = () => {
-        display.value = true;
-    };
 </script>
 
 <template>
-    <Dialog header="Σημειώσεις Εθελοντή" v-model:visible="display" maximizable  :style="{ width: '100vw' }" :modal="true">
+    <Dialog 
+        header="Σημειώσεις Εθελοντή" 
+        v-model:visible="props.showModal" 
+        maximizable  
+        :style="{ width: '100vw' }" 
+        :modal="true"
+    >
         <form @submit.prevent="submit">
             <BaseTextareaInput
                 v-model="notes"
@@ -58,6 +60,6 @@
         />
     </Dialog>
 
-    <Button label="Επεξεργασία Σημειώσεων" class="m-1" icon="pi pi-pencil" style="width: auto" @click="open" />
+    <!-- <Button label="Επεξεργασία Σημειώσεων" class="m-1" icon="pi pi-pencil" style="width: auto" @click="open" /> -->
 </template>
   

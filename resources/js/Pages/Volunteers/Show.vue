@@ -17,10 +17,13 @@ import HistoryCard from './HistoryCard.vue';
 
 import TheVolunteerCommentModal from '@/Components/Modals/TheVolunteerCommentModal.vue';
 import TheCommentList from '@/Components/TheCommentList.vue';
+import BaseFormattedText from '@/Components/Base/BaseFormattedText.vue';
+import BaseTimeline from '@/Components/Base/BaseTimeline.vue';
 
 import { useVolunteerStatusMapper } from '@/Composables/useVolunteerStatusMapper';
 import { useToastNotification } from '@/Composables/useToastNotification';
 import { useToast } from 'primevue/usetoast';
+
 let props = defineProps({
 	user: Object,
 	volunteer: Object,
@@ -48,6 +51,7 @@ const toast = useToast();
 
 const selectedVolunteerStatus = ref(props.volunteer.status);
 const selectedAssignedRecruiter = ref(props.volunteer.assigned_to);
+const showVolunteerNotesModal = ref(false);
 
 function submitComment(comment) {
 	router.post('/volunteers/' + props.volunteer.id + '/comment', {
@@ -69,8 +73,12 @@ function updateNotes(notes) {
 		preserveState: true,
 		replace: true,
 		onSuccess: () => {
+			// Popup a notification for the susccessful update of the notes.
 			let saveNotesMsg = 'Οι σημειώσεις του εθελοντή ενημερώθηκαν επιτυχώς.';
 			notify('success', 'Ολοκληρώθηκε', saveNotesMsg);
+
+			// Close the volunteer notes modal.
+			showVolunteerNotesModal.value = false;
 		},
 	});
 }
@@ -401,27 +409,44 @@ const vInfo = computed(() => {
 					<VolunteerSection :sectionId="'notes'">
 						<template #header>
 							<VSectionHeading>
-								Σημειώσεις
+								<span>Σημειώσεις</span>
+
+								<template #actions>
+									<Button
+										@click="showVolunteerNotesModal = true" 
+										icon="pi pi-pencil" 
+										text
+										rounded
+									/>
+								</template>
 							</VSectionHeading>
 						</template>
 
-						<p style="white-space: pre-wrap;" class="dark:text-slate-100 dark:text-sm">
-							{{ volunteer.notes }}
-						</p>
-
-						<VolunteerNotesModal :notes="volunteer.notes ?? ''" @change="updateNotes" />
-
+						<BaseFormattedText
+							:text="volunteer.notes"
+						/>
+						
+						<VolunteerNotesModal
+							:notes="volunteer.notes ?? ''"
+							:show-modal="showVolunteerNotesModal"
+							@change="updateNotes"
+						/>
 					</VolunteerSection>
 
 					<VolunteerSection :sectionId="'comments'">
 						<template #header>
-							<VSectionHeading>Σχόλια</VSectionHeading>
+							<VSectionHeading>
+								<span>Σχόλια</span>
+							</VSectionHeading>
 						</template>
 
-						<TheCommentList :comments="props.comments" />
+						<BaseTimeline :items="props.comments" />
 
-						<!-- Add New Comment -->
-						<TheVolunteerCommentModal @submitComment="submitComment" />
+						<!-- <TheCommentList :comments="props.comments" /> -->
+
+						<TheVolunteerCommentModal
+							@submitComment="submitComment"
+						/>
 					</VolunteerSection>
 
 					<!-----------------------------------------------------------------------------------------

@@ -10,6 +10,8 @@
 
     function submitComment() {
         emit('submitComment', comment.value);
+
+        comment.value = ""
     }
 </script>
 
@@ -23,9 +25,9 @@
 
     <Button
         @click="submitComment"
-        label="Υποβολή"
+        label="Υποβολή Σχόλίου"
         primary
-        class="mt-4"
+        class="mx-2"
     />
 </template>
   
