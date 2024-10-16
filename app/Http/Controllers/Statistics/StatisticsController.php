@@ -84,10 +84,16 @@ class StatisticsController extends Controller
         $query->select('career_requests.keyword as date', DB::raw('count(career_requests.keyword) as total_number'))
               ->groupBy('career_requests.keyword')
               ->orderBy('total_number', 'desc');
-    
+
         // Paginate the results, 10 items per page
         $paginatedResults = $query->paginate(10);
-    
+        
+        $paginatedResultsAll = CareerRequest::query();
+        $query->select('career_requests.keyword as date', DB::raw('count(career_requests.keyword) as total_number'))
+              ->groupBy('career_requests.keyword')
+              ->orderBy('total_number', 'desc');
+        $paginatedResultsAll = $query->get();
+
         // Prepare labels and data arrays
         $labels = $paginatedResults->pluck('date');
         $data = $paginatedResults->pluck('total_number');
@@ -95,6 +101,7 @@ class StatisticsController extends Controller
         return [
             'labels' => $labels,
             'data' => $data,
+            'all' => $paginatedResultsAll,
             'pagination' => [
                 'current_page' => $paginatedResults->currentPage(),
                 'last_page' => $paginatedResults->lastPage(),

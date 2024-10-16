@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 /* Layouts */
 import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
@@ -123,6 +123,7 @@ let props = defineProps({
 // const selectedWeek = ref(weeks.value[0]);
 
 // watch(selectedWeek, updateChartData, { immediate: true });
+const filterVolunteersTable     = ref( null );     // Used for filtering the table
 
 onMounted(() => {
     userStore.setUser(props.user)
@@ -177,9 +178,48 @@ onMounted(() => {
                 </div>
 
                 <div class="col-12">
-                    <BaseBarChart title="Συχνότητα Αναζητήσεων Επαγγελμάτων" label="Πλήθος Αναζητήσεων"
-                        :data="careerSearches.data" :labels="careerSearches.labels" color="#6366F1"
-                        :pagination="true" />
+                    <div class="grid">
+                        <div class="col-6">
+                            <BaseBarChart
+                                title="Συχνότητα Αναζητήσεων Επαγγελμάτων"
+                                label="Πλήθος Αναζητήσεων"
+                                :data="careerSearches.data" 
+                                :labels="careerSearches.labels" 
+                                color="#6366F1"
+                                :pagination="true"
+                            />
+                        </div>
+                        <div class="col-6 bg-white">
+                            <DataTable
+                                dataKey="id"
+                                ref="searchKeywordFrequenvcyTableRef"
+                                :value="careerSearches.all"
+                                v-model:filters="filterVolunteersTable"
+                                :size="10"
+                                stripedRows
+                                responsiveLayout="scroll"
+                                paginator
+                                :rows="10"
+                                :rowsPerPageOptions="[5, 10, 20, 50]"
+                            >
+                                <template #empty>Δεν βρέθηκαν λέξεις κλειδία.</template>
+                                
+                                <Column field="keyword" header="Λέξη-Κλειδί" sortable>
+                                    <template #body="{ data }">
+                                        <span class="p-column-title">Λέξη-Κλειδί</span>
+                                        {{ data.date }}
+                                    </template>
+                                </Column>
+
+                                <Column field="frequency" header="Πληθος Αναζητήσεων" sortable>
+                                    <template #body="{ data }">
+                                        <span class="p-column-title">Πληθος Αναζητήσεων</span>
+                                        {{ data.total_number }}
+                                    </template>
+                                </Column>
+                            </DataTable>
+                        </div>
+                    </div>
                 </div>
             </div>
 
