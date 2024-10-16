@@ -440,7 +440,7 @@ const vInfo = computed(() => {
 							</VSectionHeading>
 						</template>
 
-						<BaseTimeline :items="props.comments" />
+						<BaseTimeline :items="props.comments"/>
 
 						<!-- <TheCommentList :comments="props.comments" /> -->
 
