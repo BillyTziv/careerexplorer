@@ -68,17 +68,22 @@
     };
 
     const sendTestEmail = () => {
-        router.post( `/email-templates/${selectedEmailTemplate.value.id}/send-test-email`, {
+        const reqEndpoint = `/email-templates/${selectedEmailTemplate.value.id}/send-test-email`;
+
+        const reqPayload = {
             email: testEmailReceiverEmail.value
-        }, { 
-                preserveState: true, 
-                replace: true, 
-                onSuccess: () => {
-                    notify('success', 'Ολοκληρώθηκε', `Το δοκιμαστικό email στάλθηκε επιτυχώς στον παραλήπτη ${testEmailReceiverEmail.value}`);
-                    sendTestEmailDialog.value = false;
-                }
+        };
+
+        const reqOptions = { 
+            preserveState: true, 
+            replace: true, 
+            onSuccess: () => {
+                notify('success', 'Ολοκληρώθηκε', `Το δοκιμαστικό email στάλθηκε επιτυχώς στον παραλήπτη ${testEmailReceiverEmail.value}`);
+                sendTestEmailDialog.value = false;
             }
-        );
+        };
+
+        router.post( reqEndpoint, reqPayload, reqOptions );
     };
 
     const searchFilter = ref("");
@@ -107,7 +112,15 @@
                 </div>
             </div>
 
-            <DataTable ref="emailTemplatesTableRef" :value="emailTemplates" dataKey="id" paginator :rows="5" responsiveLayout="scroll" v-model:filters="filterEmailTemplatesTable">
+            <DataTable
+                ref="emailTemplatesTableRef" 
+                :value="emailTemplates" 
+                dataKey="id"
+                paginator 
+                :rows="15" 
+                responsiveLayout="scroll" 
+                v-model:filters="filterEmailTemplatesTable"
+            >
                 <template #empty>Δεν βρέθηκαν πρότυπα email.</template>
                 
                 <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">

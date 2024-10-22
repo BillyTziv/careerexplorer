@@ -60,6 +60,7 @@ function submitComment(comment) {
 		preserveState: true,
 		replace: true,
 		onSuccess: () => {
+			console.log("xaxa")
 			let saveNotesMsg = 'Οι σημειώσεις του εθελοντή ενημερώθηκαν επιτυχώς.';
 			notify('success', 'Ολοκληρώθηκε', saveNotesMsg);
 		},

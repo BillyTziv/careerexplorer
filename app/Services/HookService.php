@@ -38,15 +38,18 @@ class HookService
         // Get the placeholders from the function argument. Try to build the array dynamically. Return any error message if not.
         // Loop throught the plcaeholders and build an association array like the followng with the correct data.
         $data = [];
-        $placeholders = explode(',', json_decode($emailTemplate->placeholders, true));
-        if( count($placeholders) > 0 ) {
-            foreach ($placeholders as $placeholder) {
-                if (isset($userData->$placeholder)) {
-                    $data[$placeholder] = $userData->$placeholder;
+        if( $emailTemplate->placeholders ) {
+            $placeholders = explode(',', json_decode($emailTemplate->placeholders, true));
+            if( count($placeholders) > 0 ) {
+                foreach ($placeholders as $placeholder) {
+                    if (isset($userData->$placeholder)) {
+                        $data[$placeholder] = $userData->$placeholder;
+                    }
                 }
             }
         }
-        
+
+
         return $this->emailService->sendTestEmail($emailTo, $emailTemplate, $data);
     }
 }
