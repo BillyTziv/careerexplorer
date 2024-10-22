@@ -217,8 +217,8 @@ class ApplicationController extends Controller
                 $rules = [
                     'form.firstname.value' => 'required|string|max:255',
                     'form.lastname.value' => 'required|string|max:255',
-                    'form.phone.value' => 'required|string|max:255|unique:volunteers,phone',
-                    'form.email.value' => 'required|email|max:255|unique:volunteers,email',
+                    'form.phone.value' => 'required|string|max:255',
+                    'form.email.value' => 'required|email|max:255',
                     // 'hasGivenConsent.value' => 'required|accepted',
                 ];
                 
