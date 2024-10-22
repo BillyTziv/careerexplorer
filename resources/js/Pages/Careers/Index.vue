@@ -121,6 +121,9 @@ watch(() => careersStore.getTableFilters, () => {
                 <button type="submit">Import Careers</button>
             </form> -->
 
+            <a target="_blank" href="https://docs.google.com/spreadsheets/d/1wczCVEfy-sAUN6whhd_t5oQS5PWvL2jllQDWlwnwsuA/edit?gid=0#gid=0">
+            <b>Δες την λίστα με όλα τα επαγγέλματα (google drive)</b>
+            </a>
 
             <div
                 class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">

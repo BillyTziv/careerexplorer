@@ -312,6 +312,12 @@ class SessionRequestController extends Controller
                 ]
             ]);
 
+            // EMAIL
+            $hookService = new HookService( new EmailService );
+            $vdata = Volunteer::where('email', $sessionRequest->email)->first();        
+    
+            $hookService->trigger('first_mail_for_career_session', $sessionRequest->email, $vdata );
+
             return redirect()->route( 'session-requests.submit-success' )->with([
                 'status' => 'success',
                 'message'=> 'Η αίτησή σας ολοκληρώθηκε.'

@@ -143,6 +143,22 @@ class EmailTemplateController extends Controller
         ]);
     }
 
+    public function destroy( $id )
+    {
+        $emailTemplate = EmailTemplate::find( $id );
+
+        if( $emailTemplate ) {
+            $emailTemplate->delete();
+        }
+
+        return redirect()
+        ->route('email-templates.index')
+        ->with([
+            'message'=> 'Η πρότυπο email διαγράφηκε με επιτυχία!',
+            'status' => 'success'
+        ]);
+    }
+
     public function sendTestEmail( Request $request, EmailTemplate $emailTemplate ) {
         $hookService = new HookService( new EmailService );
 

@@ -147,15 +147,25 @@
     ------------------------------------------------------------->
     <Dialog v-model:visible="sendTestEmailDialog" :style="{ width: '450px' }" header="Αποστολή Δοκιμαστικού Email" :modal="true">
         <div class="flex align-items-center justify-content-center">
-            <!-- <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" /> -->
-            <!-- <span v-if="selectedEmailTemplate">
-                Είστε σίγουροι οτι θέλετε να διαγράψετε το πρότυπα <b>{{ selectedEmailTemplate.name }}</b>?
-            </span -->
             <BaseTextInput v-model="testEmailReceiverEmail" label="Email Παραλήπτη"/>
         </div>
         <template #footer>
             <Button label="Ακύρωση" icon="pi pi-times" text @click="sendTestEmailDialog = false" />
             <Button label="Αποστολή Δοκιμαστικού Email" icon="pi pi-send"  @click="sendTestEmail" />
+        </template>
+    </Dialog>
+
+    <Dialog v-model:visible="deleteEmailTemplateDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Διαγραφής" :modal="true">
+        <div class="flex align-items-center justify-content-center">
+            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+            <span v-if="selectedEmailTemplate">
+                Είστε σίγουροι οτι θέλετε να διαγράψετε το πρότυπο email <b>{{ selectedEmailTemplate.name }}</b>?
+            </span
+            >
+        </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="deleteEmailTemplateDialog = false" />
+            <Button label="Yes" icon="pi pi-check" text @click="deleteEmailTemplate" />
         </template>
     </Dialog>
 </template>
