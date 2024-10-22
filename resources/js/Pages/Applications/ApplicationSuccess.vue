@@ -17,9 +17,11 @@
 
 <template>
     <div class="card">
-        <span class="text-700 text-xl">Τέλεια!</span>
-        <div class="text-900 font-bold text-4xl my-2">Επιτυχής υποβολής αίτησης 🚀</div>
+        <!-- <span class="text-700 text-xl">Τέλεια!</span> -->
+        <div class="text-900 font-bold text-4xl my-2">Η αίτησή σου ολοκληρώθηκε 🚀</div>
         <p class="text-700 text-xl mt-0 mb-4 p-0">Τα στοιχεία σου έχουν καταχωρηθεί με ασφάλεια στο σύστημα. Ένας εκπρόσωπος του οργανισμού θα έρθει σε επικοινωνία μαζί σου στο email ή τηλέφωνο που έδωσες.</p>
+
+        <p class="text-700 text-xl mt-0 mb-4 p-0">Θυμήσου πάντα, να ελέγξεις και τα ανεπιθύμητα (spam/junk) email σου. Θα πρέπει ήδη να έχεις λάβει το πρωτο, το καλύτερο που έχεις να κάνεις είναι να το ορίσεις ως μή ανεπιθύμητο.</p>
 
         <div :style="{ height: '3px', background: 'linear-gradient(90deg, var(--primary-color) 0%, rgba(33, 150, 243, 0) 50%)' }"></div>
 
@@ -51,20 +53,20 @@
             <div class="flex flex-row justify-center">
                 <div class="px-2">
                     <a href="https://www.facebook.com/futuregenerationgr" target="_blank">
-                        <i class="pi pi-facebook"style="font-size: 3.5rem; color: darkblue"></i>
+                        <i class="pi pi-facebook"style="font-size: 3.5rem; "></i>
                     </a> 
                 </div>
 
                 <div class="px-2">
                     <a href="https://www.linkedin.com/company/futuregeneration" target="_blank">
-                        <i class="pi pi-linkedin"style="font-size: 3.5rem; color: darkblue"></i>
+                        <i class="pi pi-linkedin"style="font-size: 3.5rem; "></i>
 
                     </a>
                 </div>
 
                 <div class="px-2">
                     <a href="https://www.instagram.com/futuregenerationgr/" target="_blank">
-                        <i class="pi pi-instagram"style="font-size: 3.5rem; color: darkblue"></i>
+                        <i class="pi pi-instagram"style="font-size: 3.5rem; "></i>
                     </a>
                 </div>
             </div>
