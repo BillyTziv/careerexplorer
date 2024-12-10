@@ -6,7 +6,8 @@ use Inertia\Inertia;
 
 Route::put('/session-requests/{id}/accept/', [SessionRequestController::class, 'accept'])->name('session-requests.accept');
 Route::put('/session-requests/{id}/complete', [SessionRequestController::class, 'complete'])->name('session-requests.complete');
-Route::put('/session-requests/{id}/drop', [SessionRequestController::class, 'drop'])->name('session-requests.drop');
+Route::put('/session-requests/{id}/reject', [SessionRequestController::class, 'drop'])->name('session-requests.drop');
+Route::post('/session-requests/{id}/notes', [SessionRequestController::class, 'updateNotes']);
 
 Route::put('/session-requests/{id}/transfer-ownership', [SessionRequestController::class, 'transferOwnership'])->name('session-requests.transfer-ownership');
 Route::get('/my-session-requests', [SessionRequestController::class, 'getMySessionRequests'])->name('session-requests.my-session-requests');

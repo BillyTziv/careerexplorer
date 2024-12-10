@@ -1,7 +1,7 @@
 <script setup>
     import { computed } from 'vue';
     import { useForm } from '@inertiajs/vue3';
-    
+
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
     import AppFormLayout from '@/Layouts/AppFormLayout.vue';
@@ -14,7 +14,7 @@
     import BaseTextareaInput from '@/Components/Base/BaseTextareaInput.vue';
     import BaseCalendarInput from '@/Components/Base/BaseCalendarInput.vue';
     import BaseDynamicFileInput from '@/Components/Base/Dynamic/BaseDynamicFileInput.vue';
-    
+
     let props = defineProps({
         user: Object,
         response: Object,
@@ -109,12 +109,14 @@
     });
 
     function submit() {
+        console.log( volunteerForm );
+
         if( volunteerForm.id && volunteerForm.id > 0 ) {
             volunteerForm.put('/volunteers/'+ volunteerForm.id, volunteerForm);
         }else {
             volunteerForm.post('/volunteers/', volunteerForm);
         }
-    }    
+    }
 </script>
 
 <template>
@@ -133,7 +135,7 @@
                         <!-- FirstName -->
                         <BaseTextInput
                             v-model="volunteerForm.firstname"
-                            label="Όνομα" 
+                            label="Όνομα"
                             placeholder="Όνομα.."
                             :required="true"
                             :errors="errors['firstname']"
@@ -193,7 +195,7 @@
                             class="col-12 md:col-12"
                         />
                     </div>
-                    
+
                     <div class="p-fluid formgrid grid">
                         <BaseDynamicFileInput
                             v-model="volunteerForm.cv"
@@ -205,21 +207,19 @@
                     <Accordion :activeIndex="0">
                         <AccordionTab header="Εθελοντική Συμμετοχή">
                             <div class="p-fluid formgrid grid">
-                                
-
                                 <!-- Start Date -->
-                                <!-- <BaseCalendarInput
+                                <BaseCalendarInput
                                     v-model="volunteerForm.start_date"
-                                    label="Ημ/νία Έναρξης"
-                                    :errors="errors['date_of_birth']"
-                                /> -->
+                                    label="Ημ/νία Αίτησης"
+                                    :errors="errors['start_date']"
+                                />
 
                                 <!-- End Date -->
-                                <!-- <BaseCalendarInput
+                                <BaseCalendarInput
                                     v-model="volunteerForm.end_date"
                                     label="Ημ/νία Ολοκλήρωσης"
-                                    :errors="errors['date_of_birth']"
-                                /> -->
+                                    :errors="errors['end_date']"
+                                />
 
                                 <!-- Hours Contributed -->
                                 <BaseNumberInput
@@ -440,14 +440,14 @@
                                 <!------------------------------------------------------------------------------------------>
                                 <!-- CV -->
                                 <!------------------------------------------------------------------------------------------>
-                               
 
-                                <!-- <FileUpload 
-                                    mode="basic" 
-                                    name="demo[]" 
-                                    accept="image/*" 
-                                    :maxFileSize="1000000" 
-                                    @uploader="onUpload" 
+
+                                <!-- <FileUpload
+                                    mode="basic"
+                                    name="demo[]"
+                                    accept="image/*"
+                                    :maxFileSize="1000000"
+                                    @uploader="onUpload"
                                     customUpload
                                 /> -->
 
@@ -471,7 +471,7 @@
                     </Accordion>
                 </AppFormLayout>
 
-                <Button 
+                <Button
                     @click="submit"
                     label="Αποθήκευση"
                     raised

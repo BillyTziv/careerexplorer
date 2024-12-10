@@ -19,45 +19,41 @@
 
     const inputValue = ref( props.modelValue );
 
-    watch(inputValue, () => {
-        updateValue( inputValue );
-    });
-
-    const updateValue = ( selectedDate ) => {
-        emit('update:modelValue', moment( selectedDate ).format('DD/MM/YYYY HH:mm'));
-    };
-
     const hasErrors = computed(() => {
         return props.errors.length > 0;
+    });
+
+    watch(inputValue, () => {
+        emit('update:modelValue', moment( inputValue.value ).format('DD/MM/YYYY'));
     });
 </script>
 
 <template>
     <div class="field col-12">
-        <label class="font-medium text-md text-900"> 
+        <label class="font-medium text-md text-900">
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
 
         <Calendar
-            dateFormat="mm-dd-yy" 
-            inputId="start" 
+            dateFormat="mm-dd-yy"
+            inputId="start"
             :invalid="hasErrors"
             v-model="inputValue"
         ></Calendar>
 
         <!-- <InputText
-            :type="fieldType" 
-            :placeholder="placeholder" 
+            :type="fieldType"
+            :placeholder="placeholder"
             :value="inputValue"
             :invalid="hasErrors"
-            
+
         /> -->
 
         <InputError
             v-if="hasErrors"
             :message="errors"
-            class="mt-2" 
+            class="mt-2"
         />
     </div>
 </template>

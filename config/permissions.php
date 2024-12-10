@@ -48,15 +48,22 @@ return [
     /* SESSION REQUESTS */
     ['name' => 'View All Session Requests', 'code' => 'view-all-session-requests', 'entity' => 'session' ],
     ['name' => 'View My Session Requests', 'code' => 'view-my-session-requests', 'entity' => 'session' ],
+    ['name' => 'Create Session Request', 'code' => 'create-session-request', 'entity' => 'session' ],
     ['name' => 'Edit Session Request', 'code' => 'edit-session-request', 'entity' => 'session' ],
     ['name' => 'Delete Session Request', 'code' => 'delete-session-request', 'entity' => 'session' ],
-    
+
+    /* SESSION REQUEST STATUS */
+    ['name' => 'View All Session Request Statuses', 'code' => 'view-all-session-request-statuses', 'entity' => 'session' ],
+    ['name' => 'Create Session Request  Status', 'code' => 'create-session-request-status', 'entity' => 'session' ],
+    ['name' => 'Edit Session Request  Status', 'code' => 'edit-session-request-status', 'entity' => 'session' ],
+    ['name' => 'Delete Session Request  Status', 'code' => 'delete-session-request-status', 'entity' => 'session' ],
+
     /* APPLICATIONS */
     ['name' => 'View All Applications', 'code' => 'view-all-applications', 'entity' => 'application' ],
     ['name' => 'View Application', 'code' => 'view-application', 'entity' => 'application' ],
     ['name' => 'Edit Application', 'code' => 'edit-application', 'entity' => 'application' ],
     ['name' => 'Delete Application', 'code' => 'delete-application', 'entity' => 'application' ],
-                
+
     /* CAREERS */
     ['name' => 'View All Careers', 'code' => 'view-all-careers', 'entity' => 'career' ],
     ['name' => 'Approve Career', 'code' => 'approve-career', 'entity' => 'career' ],

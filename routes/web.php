@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
 
     /*Session Request Routes */
     require __DIR__.'/authRoutes/sessionRequestRoutes.php';
+    require __DIR__.'/authRoutes/sessionRequestStatusRoutes.php';
 
     /* Test Routes */
     require __DIR__.'/authRoutes/testRoutes.php';
@@ -56,7 +57,7 @@ Route::middleware('auth')->group(function () {
 
     /* User Management Routes */
     require __DIR__.'/authRoutes/userManagementRoutes.php';
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

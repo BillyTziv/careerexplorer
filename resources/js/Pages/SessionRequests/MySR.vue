@@ -3,8 +3,8 @@ import { ref, watch, reactive } from 'vue';
 import { router } from '@inertiajs/vue3'
 
 /* Components */
-import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
-import BaseInfoText from '@/Components/Base/BaseInfoText.vue';
+// import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
+// import BaseInfoText from '@/Components/Base/BaseInfoText.vue';
 
 /* Layouts */
 import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
@@ -22,15 +22,18 @@ let props = defineProps({
     roleDropdownOptions: Array,
     filters: Object,
     response: Object,
+    sessionRequestStatusDropdownOptions: Array,
 });
 
-const { getStatusName } = useSessionRequestStatusMapper();
+const { getStatusName, adjustOpacity, determineTextColor  } = useSessionRequestStatusMapper( props.sessionRequestStatusDropdownOptions );
 const { notify } = useToastNotification();
 
 const selectedSR = ref(null);
 const sessionRequestsTableRef = ref(null);
-const filterUsersTable = ref(props.filters);
 const completeSRDialog = ref(false);
+const selectedSessionRequests = ref();
+const filterSessionRequestsTable     = ref( props.filters );
+const size = ref({ label: 'Small', value: 'small' });
 
 const filters = reactive(sessionRequestStore.getTableFilters);
 
@@ -40,9 +43,8 @@ const exportCSV = () => {
 
 /* Watch for changes in the filters */
 watch(() => sessionRequestStore.getTableFilters, () => {
-    router.get('/session-requests/', sessionRequestStore.getTableFilters, { preserveState: true, replace: true });
+    router.get('/my-session-requests/', sessionRequestStore.getTableFilters, { preserveState: true, replace: true });
 }, { deep: true });
-
 
 // Popup a dialog to confirm the deletion of a volunteer
 const confirmCompleteSR = (sessionRequest) => {
@@ -50,8 +52,13 @@ const confirmCompleteSR = (sessionRequest) => {
     completeSRDialog.value = true;
 };
 
+const viewDetails = ( sessionRequest ) => {
+    router.visit(`/session-requests/${sessionRequest.id}`);
+};
+
 // Popup a dialog to confirm the deletion of a volunteer
 const dropSR = (sessionRequest) => {
+    selectedSR.value = sessionRequest;
     router.put(`/session-requests/${selectedSR.value.id}/reject`, {},
         {
             preserveState: true,
@@ -64,7 +71,6 @@ const dropSR = (sessionRequest) => {
         }
     );
 };
-
 
 const completeSR = () => {
     router.put(`/session-requests/${selectedSR.value.id}/complete`, {},
@@ -84,14 +90,14 @@ const completeSR = () => {
 <template>
     <AppPageWrapper>
         <template #page-title>
-            Οι Ενεργές Συνεδρίες μου
+            Οι Συνεδρίες Μου
         </template>
 
         <template #page-content>
-            <BaseInfoText>
+            <!-- <BaseInfoText>
                 Μπορείτε να έχετε ταυτόχρονα μέχρι και 10 συνεδρίες σε εξέλιξη. Μετά την ολοκλήρωση μιας συνεδρίας,
                 μπορείτε να αποδεχτείτε νέα.
-            </BaseInfoText>
+            </BaseInfoText> -->
 
             <div
                 class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
@@ -102,10 +108,34 @@ const completeSR = () => {
                 </IconField>
             </div>
 
-            <DataTable ref="sessionRequestsTableRef" :value="sessions" dataKey="id" paginator :rows="10"
-                responsiveLayout="scroll" v-model:filters="filterUsersTable">
-                <template #empty>Δεν βρέθηκαν ενεργές συνεδρίες. Επιλέξτε από το μενού αιτήσεις συνεδριών και κάνε
-                    αποδοχή.</template>
+            <DataTable
+                dataKey="id"
+                ref="sessionRequestsTableRef"
+                :value="sessions"
+                v-model:filters="filterSessionRequestsTable"
+                v-model:selection="selectedSessionRequests"
+                :filters="filters"
+                :size="size.value"
+                stripedRows
+                responsiveLayout="scroll"
+                paginator
+                :rows="10"
+                :rowsPerPageOptions="[5, 10, 20, 50]"
+            >
+                <template #empty>
+                    Δεν βρέθηκαν ενεργές συνεδρίες. Επιλέξτε από το μενού αιτήσεις συνεδριών και κάνε αποδοχή.
+                </template>
+
+
+                <Column headerStyle="width: 5rem">
+                    <template #header>
+
+                    </template>
+                    <template #body="slotProps">
+                        <Button icon="pi pi-search" rounded  outlined  @click="viewDetails(slotProps.data)" />
+                    </template>
+                </Column>
+
                 <Column field="firstname" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα</span>
@@ -113,30 +143,38 @@ const completeSR = () => {
                     </template>
                 </Column>
 
-                <Column field="lastname" header="Επίθετο" sortable :headerStyle="{ minWidth: '12rem' }">
+                <Column field="lastname" header="Επώνυμο" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
-                        <span class="p-column-title">Επίθετο</span>
+                        <span class="p-column-title">Επώνυμο</span>
                         {{ data.lastname }}
                     </template>
                 </Column>
 
-                <Column field="assignee" header="Υπεύθυνος" sortable :headerStyle="{ minWidth: '12rem' }">
+                <!-- <Column field="assignee" header="Υπεύθυνος" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Υπεύθυνος</span>
                         {{ data.assignee_firstname }} {{ data.assignee_lastname }}
                     </template>
-                </Column>
+                </Column> -->
 
-                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
+                <Column field="status" header="Κατάσταση" sortable>
                     <template #body="{ data }">
                         <span
-                            class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md">
+                            class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
+                            :style="{
+                                'background-color': adjustOpacity(data.status, 0.2),
+                                'color': determineTextColor(data.status),
+                                'white-space': 'nowrap',
+                                'overflow': 'hidden',
+                                'text-overflow': 'ellipsis',
+                            }"
+                        >
                             {{ getStatusName(data.status) }}
                         </span>
                     </template>
                 </Column>
 
-                <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
+                <!-- <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Τηλέφωνο</span>
                         {{ data.phone }}
@@ -148,16 +186,14 @@ const completeSR = () => {
                         <span class="p-column-title">Email</span>
                         {{ data.email }}
                     </template>
-                </Column>
+                </Column> -->
 
-                <Column field="actions" header="Ενέργειες" headerStyle="min-width:10rem;">
+                <!-- <Column field="actions" header="Ενέργειες">
                     <template #body="slotProps">
-                        <Button v-if="slotProps.data.status === 2" icon="pi pi-check" label="Ολοκλήρωση" class="mr-2"
-                            rounded outlined severity="success" @click="confirmCompleteSR(slotProps.data)" />
-                        <Button v-if="slotProps.data.status === 2" icon="pi pi-trash" label="Ακύρωση" class="mr-2"
-                            rounded outlined severity="error" @click="dropSR(slotProps.data)" />
+                        <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="confirmCompleteSR(slotProps.data)" />
+                        <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="dropSR(slotProps.data)" />
                     </template>
-                </Column>
+                </Column> -->
             </DataTable>
         </template>
     </AppPageWrapper>

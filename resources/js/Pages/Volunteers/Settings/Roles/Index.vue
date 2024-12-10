@@ -13,7 +13,7 @@
     /* Component Properties */
     let props = defineProps({
         user: Object,
-        volunteerRoles: Object, 
+        volunteerRoles: Object,
         filters: Object,
         response: Object,
         volunteerStatusDropdownOptions: Array,
@@ -32,14 +32,14 @@
     const exportCSV = () => {
         volunteerRoleTableRef.value.exportCSV();
     };
-    const { getStatusName, getStatusDecoration, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
+    const { getStatusName, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
 
     const exportRolesDatatableAsCSV = () => {
         volunteerRoleTableRef.value.exportCSV();
     };
 
     // Navigate to the edit page of a course
-    const editEntity = ( volunteerRole ) => {    
+    const editEntity = ( volunteerRole ) => {
         router.visit(`/volunteer-roles/${volunteerRole.id}/edit`);
     };
 
@@ -57,7 +57,7 @@
         selectedvolunteerRole.value = null;
     };
 
-    const redirectToCreate = () => {    
+    const redirectToCreate = () => {
         router.visit(`/volunteer-roles/create`);
     };
 
@@ -85,17 +85,17 @@
                 </div>
             </div>
 
-            <DataTable 
-                ref="volunteerRoleTableRef" 
-                :value="volunteerRoles" 
-                dataKey="id" 
-                paginator 
-                :rows="10" 
-                responsiveLayout="scroll" 
+            <DataTable
+                ref="volunteerRoleTableRef"
+                :value="volunteerRoles"
+                dataKey="id"
+                paginator
+                :rows="10"
+                responsiveLayout="scroll"
                 v-model:filters="filterVolunteerRoleTable"
             >
                 <template #empty>Δεν βρέθηκαν ρόλοι.</template>
-                
+
                 <Column field="name" header="Όνομα" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Όνομα Ρόλου</span>

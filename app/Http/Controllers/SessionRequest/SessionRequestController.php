@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\SessionRequest\SessionRequest;
 use App\Models\UserManagement\User;
 use App\Models\Volunteer\Volunteer;
+use App\Models\SessionRequest\SessionRequestStatus;
 
 /* Services */
 use App\Services\HookService;
@@ -37,87 +38,96 @@ class SessionRequestController extends Controller
             $query->where('role', '=', request('role'));
         }
 
-        if( request('search') && request('search') !== -1 ) {   
-            $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
-            $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
-            $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
-            $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
-        }
-        
-        $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
-            ->select(
-                'session_requests.*', 
-                'users.id as assignee_id', 
-                'users.firstname as assignee_firstname', 
-                'users.lastname as assignee_lastname'
-            )
-            ->where('session_requests.status', '=', 1)
-            ->orderBy('session_requests.id');
-
-        return $query->get();
-    }
-
-    private function getActiveSessionRequests( Request $request ) {
-        $query = SessionRequest::query();
-
-        $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
-            ->select('session_requests.*', 'users.id as assignee_id', 'users.firstname as assignee_firstname', 'users.lastname as assignee_lastname')
-            ->where('session_requests.status', '!=', 1)
-            ->orderBy('session_requests.status');;
-
         if( request('search') && request('search') !== -1 ) {
             $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
             $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
             $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
             $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
         }
-     
-        if( !$request->user()->secured ) {
-            $query->where('session_requests.assignee', $request->user()->id);
-        }
 
-        $activeSR = $query->paginate(30);
-        return $activeSR;
+        $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
+            ->select(
+                'session_requests.*',
+                'users.id as assignee_id',
+                'users.firstname as assignee_firstname',
+                'users.lastname as assignee_lastname'
+            )
+            ->where('session_requests.status', '=', SessionRequestStatus::where('name', 'Application Received')->first()->id)
+            ->orderBy('session_requests.id');
+
+        return $query->get();
     }
+
+    // private function getActiveSessionRequests( Request $request ) {
+    //     $query = SessionRequest::query();
+
+    //     $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
+    //         ->select('session_requests.*', 'users.id as assignee_id', 'users.firstname as assignee_firstname', 'users.lastname as assignee_lastname')
+    //         ->whereNotIn('session_requests.status', function ($query) {
+    //             $query->select('id')
+    //                 ->from('session_request_statuses')
+    //                 ->whereIn('name', ['Accepted', 'Rejected']);
+    //         })
+    //         ->orderBy('session_requests.status');
+
+    //     if( request('search') && request('search') !== -1 ) {
+    //         $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
+    //         $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
+    //         $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
+    //         $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
+    //     }
+
+    //     if( !$request->user()->secured ) {
+    //         $query->where('session_requests.assignee', $request->user()->id);
+    //     }
+
+    //     return $query->get();
+    // }
 
     public function getMySessionRequests(Request $request)
     {
         $query = SessionRequest::query();
 
-        if( request('search') && request('search') !== -1 ) {   
-            $query->where('session_requests.firstname', 'LIKE', '%'.request('search').'%');
-            $query->orWhere('session_requests.lastname', 'LIKE', '%'.request('search').'%');
-            $query->orWhere('session_requests.email', 'LIKE', '%'.request('search').'%');
-            $query->orWhere('session_requests.phone', 'LIKE', '%'.request('search').'%');
+        if (request('search') && request('search') !== -1) {
+            $query->where(function ($subQuery) {
+                $subQuery->where('session_requests.firstname', 'LIKE', '%' . request('search') . '%')
+                    ->orWhere('session_requests.lastname', 'LIKE', '%' . request('search') . '%')
+                    ->orWhere('session_requests.email', 'LIKE', '%' . request('search') . '%')
+                    ->orWhere('session_requests.phone', 'LIKE', '%' . request('search') . '%');
+            });
         }
 
         $query->leftJoin('users', 'users.id', '=', 'session_requests.assignee')
+            ->leftJoin('session_request_statuses', 'session_request_statuses.id', '=', 'session_requests.status')
             ->select(
-                'session_requests.id', 
-                'session_requests.status', 
+                'session_requests.id',
+                'session_requests.status',
                 'session_requests.firstname',
                 'session_requests.lastname',
                 'session_requests.email',
                 'session_requests.phone',
-                'session_requests.created_at', 
-                'users.id as assignee_id', 
+                'session_requests.created_at',
+                'users.id as assignee_id',
                 'users.firstname as assignee_firstname',
                 'users.lastname as assignee_lastname',
-            )    
-            ->where('session_requests.status', 2)       // Active
-            // ->orWhere('session_requests.status', 3)     // Rejected
-            // ->orWhere('session_requests.status', 4)     // Completed
+                'session_request_statuses.name as status_name'
+            )
+            ->where(function ($query) {
+                $query->whereIn('session_request_statuses.name', ['Active', 'Rejected', 'Completed']);
+            })
             ->where('session_requests.assignee', auth()->id())
             ->orderBy('session_requests.status');
+
+        $results = $query->get();
 
         return Inertia::render('SessionRequests/MySR', [
             'filters' => [
                 'search' => request('search') ? request('search') : '',
             ],
-            'sessions' => $query->get(),
+            'sessions' => $results,
+            'sessionRequestStatusDropdownOptions'=> SessionRequestStatus::where('deleted', false)->get()
         ]);
     }
-
 
     /**
      * Display a listing of the resource.
@@ -130,6 +140,7 @@ class SessionRequestController extends Controller
         return Inertia::render('SessionRequests/Index', [
             'response' => [],
             'sessions' => self::getAvailableSessionRequests( $request ),
+            'sessionRequestStatusDropdownOptions'=> SessionRequestStatus::where('deleted', false)->get()
         ]);
     }
 
@@ -186,6 +197,7 @@ class SessionRequestController extends Controller
      */
     public function create()
     {
+        return redirect()->route( 'applications.fg.session-request' );
         // return Inertia::render('SessionRequests/Create', [
         //     'submitRoute' => [
         //         'url' => '/session-requests',
@@ -231,7 +243,7 @@ class SessionRequestController extends Controller
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255'
         ];
-        
+
         $messages = [
             'required' => 'Το πεδίο είναι υποχρεωτικό',
             'unique' => 'Το πεδίο πρέπει να είναι μοναδικό.'
@@ -241,16 +253,16 @@ class SessionRequestController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             $sessionRequest = new SessionRequest();
             $sessionRequest->firstname = $validatedData['firstname'];
             $sessionRequest->lastname = $validatedData['lastname'];
             $sessionRequest->phone = $validatedData['phone'];
             $sessionRequest->email = $validatedData['email'];
-            $sessionRequest->status = 1;
-           
+            $sessionRequest->status = SessionRequestStatus::where('is_default', true)->first()->id;
+
             $sessionRequest->save();
-        
+
             DB::commit();
 
             // DISCORD
@@ -281,7 +293,7 @@ class SessionRequestController extends Controller
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255'
         ];
-        
+
         $messages = [
             'required' => 'Το πεδίο είναι υποχρεωτικό',
             'unique' => 'Το πεδίο πρέπει να είναι μοναδικό.'
@@ -291,16 +303,18 @@ class SessionRequestController extends Controller
 
         try {
             DB::beginTransaction();
-            
+
             $sessionRequest = new SessionRequest();
             $sessionRequest->firstname = $validatedData['firstname'];
             $sessionRequest->lastname = $validatedData['lastname'];
             $sessionRequest->phone = $validatedData['phone'];
             $sessionRequest->email = $validatedData['email'];
-            $sessionRequest->status = 1;
-           
+
+            // Find detault status marked with is_default `true` in the session request statuses table.
+            $sessionRequest->status = SessionRequestStatus::where('is_default', true)->first()->id;
+
             $sessionRequest->save();
-        
+
             DB::commit();
 
             // DISCORD
@@ -314,7 +328,7 @@ class SessionRequestController extends Controller
 
             // EMAIL
             $hookService = new HookService( new EmailService );
-    
+
             $hookService->trigger('first_mail_for_career_session', $validatedData['email'], null );
 
             return redirect()->route( 'session-requests.submit-success' )->with([
@@ -351,7 +365,8 @@ class SessionRequestController extends Controller
         }
 
         return Inertia::render('SessionRequests/Show', [
-            'session-request' => $sr,
+            'sessionRequest' => $sr,
+            'sessionRequestStatusDropdownOptions' => SessionRequestStatus::where('deleted', false)->get(),
             'careerCoachDropdownOptions' => DB::table('users')->join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'roles.id', '=', 'role_user.role_id')
             ->where('roles.id', '=', 3)
@@ -361,7 +376,7 @@ class SessionRequestController extends Controller
     }
 
     public function update( Request $request ) {
-      
+
         $sessionRequest = SessionRequest::find( $request->id );
 
         if( is_null($sessionRequest) ) {
@@ -395,7 +410,46 @@ class SessionRequestController extends Controller
             ]);
     }
 
-    // public function transferOwnership( Request $request ) {        
+    /**
+     * Update the notes of a session request
+     *
+     * @param Request $request : The request object
+     */
+    public function updateNotes( Request $request, $sessionRequestId ) {
+        $sessionRequest = SessionRequest::find( $sessionRequestId );
+
+        if( is_null($request->notes) ) {
+            return redirect()->back()->with([
+                'message'=> 'Ουπς, κάτι πήγε στραβά. Οι σημειώσεις δεν αποθηκεύτηκαν.'
+            ]);;
+        }
+
+        $sessionRequest->notes = $request->notes ?? '';
+        $sessionRequest->save();
+
+        // $query = SessionRequest::query();
+
+        // $volunteer = $query->leftjoin('volunteer_roles', 'volunteer_roles.id', '=', 'volunteers.role')
+        //     ->select('volunteers.*', DB::raw("JSON_OBJECT('name', volunteer_roles.name) as volunteer_role"),
+        //      DB::raw("JSON_ARRAY(
+        //          JSON_OBJECT('label', 'linkedin', 'link', linkedin),
+        //          JSON_OBJECT('label', 'facebook', 'link', facebook),
+        //          JSON_OBJECT('label', 'instagram', 'link', instagram)
+        //      ) as socialMedia"))
+        //     ->find($vid);
+
+        // Log the status change
+        // VolunteerHistory::create([
+        //     'volunteer_id' => $volunteer->id,
+        //     'user_id' => Auth::id(),
+        //     'action' => 'notes changed',
+        //     'description' => 'Έχουν τροποποιηθεί οι σημειώσεις του εθελοντή.',
+        // ]);
+
+        return redirect()->back();
+    }
+
+    // public function transferOwnership( Request $request ) {
     //     if( is_null($request) ) {
     //         return redirect()
     //             ->route('session-requests.show', ['session_request' => $request->id])
@@ -447,7 +501,7 @@ class SessionRequestController extends Controller
         $acceptedRequests = SessionRequest::where('assignee', $careerCoach->id)
             ->where('status', 2)
             ->count();
-        
+
         // If accepted request is more than 10, return error
         if( $acceptedRequests >= 200 ) {
             return redirect()
@@ -459,7 +513,7 @@ class SessionRequestController extends Controller
         }
 
         $sessionRequest = SessionRequest::find( $id );
-        $sessionRequest->status = 2;
+        $sessionRequest->status = SessionRequestStatus::where('name', 'Active')->first()->id;
         $sessionRequest->assignee = auth()->user()->id;
         $sessionRequest->save();
 
@@ -473,18 +527,18 @@ class SessionRequestController extends Controller
         try {
             $sessionRequest = SessionRequest::find( $sessionRequestId );
 
-            $sessionRequest->status = 3;
+            $sessionRequest->status = SessionRequestStatus::where('name', 'Rejected')->first()->id;
             $sessionRequest->assignee = auth()->user()->id;
 
             $sessionRequest->save();
 
             // $hookService = new HookService( new EmailService );
-            // $vdata = Volunteer::where('email', $sessionRequest->email)->first();        
-    
+            // $vdata = Volunteer::where('email', $sessionRequest->email)->first();
+
             // $hookService->trigger('request_career_session_feedback', $sessionRequest->email, $vdata );
 
             return redirect()
-                ->route('my-session-requests.index',)   
+                ->route('my-session-requests.index',)
                 ->with([
                     'message' => 'Η συνεδρία απορρίφθηκε με επιτυχία!',
                     'status' => 'success',
@@ -501,18 +555,18 @@ class SessionRequestController extends Controller
         try {
             $sessionRequest = SessionRequest::find( $id );
 
-            $sessionRequest->status = 4;
+            $sessionRequest->status = SessionRequestStatus::where('name', 'Completed')->first()->id;
             $sessionRequest->assignee = auth()->user()->id;
 
             $sessionRequest->save();
 
             $hookService = new HookService( new EmailService );
-            $vdata = Volunteer::where('email', $sessionRequest->email)->first();        
-    
+            $vdata = Volunteer::where('email', $sessionRequest->email)->first();
+
             $hookService->trigger('request_career_session_feedback', $sessionRequest->email, $vdata );
 
             return redirect()
-                ->route('my-session-requests.index',)   
+                ->route('my-session-requests.index',)
                 ->with([
                     'message' => 'Η συνεδρία ολοκληρώθηκε με επιτυχία!',
                     'status' => 'success',

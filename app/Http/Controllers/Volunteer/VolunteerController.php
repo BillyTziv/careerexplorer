@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
 
 /* MOdels */
 use App\Models\UserManagement\User;
@@ -66,7 +67,7 @@ class VolunteerController extends Controller {
                 $q->orWhere('phone', 'LIKE', '%'.request('search').'%');
             });
         }
-        
+
         if( request('assigned_recruiter') ) {
             $query->where('assigned_to', '=', request('assigned_recruiter'));
         }
@@ -75,7 +76,7 @@ class VolunteerController extends Controller {
 
         $volunteers = $query->leftjoin('volunteer_roles', 'volunteer_roles.id', '=', 'volunteers.role')
             ->select('volunteers.*', DB::raw("volunteer_roles.name as volunteer_role"))
-            ->orderByRaw("CASE 
+            ->orderByRaw("CASE
                 WHEN volunteers.status = 1 THEN 0
                 WHEN volunteers.status = 7 THEN 1
                 WHEN volunteers.status = 8 THEN 2
@@ -99,18 +100,6 @@ class VolunteerController extends Controller {
         })->select('id', 'firstname', 'lastname')->get();
 
         return $recruiters;
-
-
-        // $assignedToIds = Volunteer::where('deleted', false)
-        //     ->pluck('assigned_to')
-        //     ->filter(function ($value) {
-        //         return !is_null($value);
-        //     })
-        //     ->toArray();
-
-        // return User::whereIn('id', $assignedToIds)
-        //     ->select('id', 'firstname', 'lastname')
-        //     ->get();
     }
 
     private function getAssignees() {
@@ -132,7 +121,7 @@ class VolunteerController extends Controller {
         return VolunteerStatus::where('deleted', false)->get();
     }
 
-    public function index() {        
+    public function index() {
         return Inertia::render('Volunteers/Index', [
             'volunteers' => self::getVolunteers(),
             'volunteerRoleDropdownOptions' => self::getVolunteerRoles(),
@@ -190,7 +179,7 @@ class VolunteerController extends Controller {
                 'cv-section' => [
                     'title' => 'Βιογραφικό Σημείωμα (CV)',
                     'type' => 'section',
-                ],  
+                ],
                 'cv' => [
                     'label' => 'Βιογραφικό',
                     'type' => 'file',
@@ -254,18 +243,18 @@ class VolunteerController extends Controller {
                     ],
                     'value' => null,
                     'required' => true,
-                ],      
+                ],
                 'volunteering_details' => [
                     'label' => 'Αν ναι, πες μας την εμπειρία σου',
                     'type' => 'textarea',
                     'value' => '',
                     'placeholder' => 'Περιέγραψε τον εθελοντικό ρόλο και τις αρμοδιότητες που είχες..',
                     'required' => false,
-                ],        
+                ],
                 'studies-section' => [
                     'title' => 'Σπουδές',
                     'type' => 'section',
-                ],            
+                ],
                 'university' => [
                     'label' => 'Σε ποιο εκπαιδευτικό ίδρυμα/πανεπιστήμιο φοιτάς ή φοίτησες;',
                     'type' => 'text',
@@ -290,7 +279,7 @@ class VolunteerController extends Controller {
                 'social-section' => [
                     'title' => 'Social Media',
                     'type' => 'section',
-                ],   
+                ],
                 'linkedin' => [
                     'label' => 'Linkedin',
                     'type' => 'text',
@@ -334,7 +323,7 @@ class VolunteerController extends Controller {
             'assignees' => self::getAssignees(),
         ]);
     }
-    
+
     private function validateVolunteer( $request ) {
         $rules = [
             'firstname' => 'required|string|max:255',
@@ -344,13 +333,13 @@ class VolunteerController extends Controller {
             'role' => 'required|integer|exists:volunteer_roles,id',
             'cv' => 'required|string',
         ];
-        
+
         $messages = [
             'required' => 'Το πεδίο είναι υποχρεωτικό.',
             'email.unique' => 'Το email πρέπει να είναι μοναδικό.',
             'role.exists' => 'Ο ρόλος που επιλέξατε δεν υπάρχει στο σύστημα. Διαλέξτε έναν τυχαία και αναφέρετε το σφάλμα στην συνέντευξη.',
         ];
-        
+
         $validatedData = $request->validate($rules, $messages);
 
         // PHONE already exist.
@@ -373,22 +362,22 @@ class VolunteerController extends Controller {
         return ['error' => false];
     }
 
-    public function store(Request $request) {        
+    public function store(Request $request) {
         $validationResult = $this->validateVolunteer($request);
 
-     
+
         if ($validationResult['error']) {
             return back()->withErrors($validationResult['message']);
         }
 
         $volunteer = new Volunteer();
-    
+
         // Personal Information
         $volunteer->firstname = $request->firstname; // REQUIRED
         $volunteer->lastname = $request->lastname; // REQUIRED
         $volunteer->phone = $request->phone; // REQUIRED
         $volunteer->email = $request->email; // REQUIRED
-     
+
         // CV
         $volunteer->cv = $request->cv; // REQUIRED
 
@@ -414,7 +403,7 @@ class VolunteerController extends Controller {
         $volunteer->instagram = $request->instagram ?? null;
         $volunteer->linkedin = $request->linkedin ?? null;
         $volunteer->linkedin = $request->tiktok ?? null;
-     
+
         // Find detault status marked with is_default `true` in the volunteer_statuses table.
         $volunteer->status = VolunteerStatus::where('is_default', true)->first()->id;
 
@@ -441,13 +430,13 @@ class VolunteerController extends Controller {
                 'linkedin' => $request['form']['linkedin']['value'] ?? null,
             ],
         ]);
-     
+
         $volunteer->start_date = now();
         $volunteer->deleted = false;
         $volunteer->cv_consent = true;
-      
+
         $volunteer->save();
-       
+
         $selectedRoleName = VolunteerRole::where('id', $volunteer->role)->first();
 
         // DISCORD
@@ -502,7 +491,7 @@ class VolunteerController extends Controller {
              ) as socialMedia"))
             ->find($id);
 
-            
+
         if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
 
         $volunteerHistory = DB::table('volunteer_histories')
@@ -565,7 +554,7 @@ class VolunteerController extends Controller {
                 // If exists, get the email template for the status change email.
                 $status = VolunteerStatus::find($request->newStatusValue);
                 $emailTemplateId = $status->email_template_id;
-                
+
                 $hookId = EmailTemplate::findOrFail($emailTemplateId)->hook_id;
             } catch (ModelNotFoundException $e) {
                 // Handle the error here
@@ -620,6 +609,7 @@ class VolunteerController extends Controller {
         //     return back()->withErrors($validationResult['message']);
         // }
 
+
         $volunteer = Volunteer::find( $request->id );
 
         if( is_null($volunteer) ) {
@@ -646,9 +636,8 @@ class VolunteerController extends Controller {
         $volunteer->email = $request->email ?? null;
 
         // Volunteering
-        $volunteer->role = $request->role;
-        $volunteer->start_date = $request->start_date ?? null;
-        $volunteer->end_date = $request->end_date ?? null;
+        $volunteer->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d')  ?? null;
+        $volunteer->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date)->format('Y-m-d') ?? null;
         $volunteer->hours_contributed = $request->hours_contributed ?? 0;
         $volunteer->onboarding_completed = $request->onboarding_completed ?? false;
         $volunteer->previous_volunteer_experience = $request->previous_volunteer_experience ?? null;
@@ -675,13 +664,12 @@ class VolunteerController extends Controller {
         $volunteer->department = $request->department ?? null;
         $volunteer->otherstudies = $request->otherstudies ?? null;
         $volunteer->university = $request->university ?? null;
-    
+
         // Links
         $volunteer->google_drive = $request->googleDrive ?? null;
         $volunteer->asana = $request->asana ?? null;
 
         $volunteer->notes = $request->notes ?? '';
-
         $volunteer->deleted = false;
         $volunteer->save();
 
@@ -692,7 +680,7 @@ class VolunteerController extends Controller {
             'status' => 'success',
         ]);
     }
-    
+
     public function assignRecruiter( Request $request, $volunteer )
     {
         $volunteer = Volunteer::find( $volunteer );
@@ -715,6 +703,11 @@ class VolunteerController extends Controller {
         return redirect()->back();
     }
 
+    /**
+     * Update the notes of a volunteer
+     *
+     * @param Request $request : The request object
+     */
     public function updateNotes( Request $request, $volunteer ) {
         $volunteer = Volunteer::find( $volunteer );
         $vid = $volunteer->id;
@@ -739,7 +732,7 @@ class VolunteerController extends Controller {
              ) as socialMedia"))
             ->find($vid);
 
-            
+
         if( $volunteer->socialMedia ) $volunteer->socialMedia = json_decode($volunteer->socialMedia, true);
 
         // Log the status change
@@ -753,167 +746,11 @@ class VolunteerController extends Controller {
         return redirect()->back();
     }
 
-    // public function acceptApplication( Request $request ) {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $selectedUserRole = $request->role;
-
-    //         // Update the volunteer application status.
-    //         $application = Volunteer::findOrFail($request->id);
-    //         $application->update([
-    //             'status' => 2,
-    //         ]);
-
-    //         // Check if a user with this email already exists to prevent duplication.
-    //         $existingUser = User::where('email', $application->email)->first();
-
-    //         if (!$existingUser) {
-    //             // Create a new user with the approved volunteer's data.
-    //             $user = new User();
-    //             $user->firstname = $application->firstname;
-    //             $user->lastname = $application->lastname;
-    //             $user->phone = $application->phone;
-    //             $user->email = $application->email;
-             
-    //             // Assuming volunteers have a default username or password, you can adjust accordingly
-    //             $user->username = $application->email;
-    //             $randomPassword = Str::random(16);
-    //             $user->password = Hash::make($randomPassword);            
-    //             $user->save();
-            
-    //             // Associate the user with a role.
-    //             // Assuming you have a default role ID for volunteers, adjust the value accordingly
-    //             DB::insert('insert into role_user (role_id, user_id) values (?, ?)', [$selectedUserRole, $user->id]);
-
-    //             // Send an email to the approved volunteer about their new user account.
-    //             $data = [
-    //                 'password' => $randomPassword,
-    //                 'username' => $application->email,
-    //                 'message' => 'Ο λογαριασμός ενεργοποιήθηκε'
-    //             ];
-
-    //             // Get the email template ID.
-    //             //$emailTemplate = EmailTemplate::where('name', 'volunteer_approved')->first();
-
-    //             //Mail::to($application->email)->send(new CreateUserAccount($data));
-    //             //$emailService->sendTestEmail($request, $emailTemplate->id);
-    //             // try {
-    //             //     $volunteerRole = VolunteerRole::find($selectedUserRole);
-    //             //     $application['userrole'] = $volunteerRole->name;
-                    
-    //             //     $this->hookService->trigger('approve_volunteer', $application->email, $application );
-    //             // } catch (\Exception $e) {
-    //             //     // Handle exception
-    //             //     return response()->json(['error' => $e->getMessage()], 400);
-    //             // }
-
-
-    //             DB::commit();
-
-    //             return back()->with([
-    //                 'message' => 'Η κατάσταση ενημερώθηκε με επιτυχία!',
-    //                 'status' => 'success',
-    //             ]);
-    //         }else {
-    //             // Create a new user with the approved volunteer's data.
-    //             $user = $existingUser;
-    //             $randomPassword = Str::random(16);
-    //             $user->password = Hash::make($randomPassword);            
-    //             $user->save();
-            
-    //             // Associate the user with a role.
-    //             // Assuming you have a default role ID for volunteers, adjust the value accordingly
-    //             DB::table('role_user')->where('user_id', $user->id)->delete();
-    //             DB::insert('insert into role_user (role_id, user_id) values (?, ?)', [$selectedUserRole, $user->id]);
-
-    //             // Send an email to the approved volunteer about their new user account.
-    //             // $data = [
-    //             //     'password' => $randomPassword,
-    //             //     'username' => $application->email,
-    //             //     'message' => 'Ο λογαριασμός ενεργοποιήθηκε'
-    //             // ];
-
-    //             //Mail::to($application->email)->send(new CreateUserAccount($data));
-    //             // try {
-    //             //     $volunteerRole = VolunteerRole::find($selectedUserRole);
-    //             //     $application['userrole'] = $volunteerRole->name;
-    //             //     $this->hookService->trigger('approve_volunteer', $application->email, $application );
-    //             // } catch (\Exception $e) {
-    //             //     // Handle exception
-    //             //     return response()->json(['error' => $e->getMessage()], 400);
-    //             // }
-
-    //             DB::commit();
-
-    //             return back()->with([
-    //                 'message' => 'Η κατάσταση ενημερώθηκε με επιτυχία!',
-    //                 'status' => 'success',
-    //             ]);
-    //         }
-    //     } catch (\Throwable $ex) {
-    //         DB::rollBack();
-
-    //         // You can adjust the error message or logging here accordingly
-    //         return back()->with([
-    //             'status' => 'error',
-    //             'message' => 'Oups, something went wrong while trying to approve the volunteer and create an associated user.'
-    //         ]);
-    //     }
-    // }
-
-    /**
-     * Reject a volunteer application
-     * 
-     * @param Request $request : The request object
-     * 
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    // public function rejectApplication( Request $request ) {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $application = Volunteer::findOrFail($request->id);
-    //         $application->update([
-    //             'status' => 3,
-    //             'disapproved_reason' => $request->reason,
-    //         ]);
-    
-    //         // try {
-    //         //     $volunteer = Volunteer::find($application->id);
-    //         //     $volunteerRole = VolunteerRole::find($volunteer->role);
-    //         //     $application['userrole'] = $volunteerRole->name;
-             
-    //         //     $this->hookService->trigger('reject_volunteer', $application->email, $application );
-    //         // } catch (\Exception $e) {
-    //         //     return back()->with([
-    //         //         'message' => 'Ουπς, κάτι πήγε στραβά. Το email δεν στάλθηκε.',
-    //         //         'status' => 'error',
-    //         //     ]);
-    //         // }
-
-    //         DB::commit();
-
-    //         return back()->with([
-    //             'message' => 'Ο κατάσταση ενημερώθηκε.',
-    //             'status' => 'success',
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-
-    //         // Handle the error, e.g. return an error response
-    //         return back()->with([
-    //             'status' => 'error',
-    //             'message' => 'Oups, something went wrong while trying to approve the volunteer and create an associated user.'
-    //         ]);
-    //     }
-    // }
-
     /**
      * Send an invitation to a volunteer
-     * 
+     *
      * @param Request $request : The request object
-     * 
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function sendInvitation( Request $request ) {
@@ -933,6 +770,11 @@ class VolunteerController extends Controller {
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id : The ID of the volunteer to delete
+     */
     public function destroy( $id ) {
         try {
             DB::beginTransaction();

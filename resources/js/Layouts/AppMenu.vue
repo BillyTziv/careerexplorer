@@ -103,7 +103,7 @@
                 }
             ]
         },
-        
+
         {
             label: 'ΚΑΡΙΕΡΑ',
             items: [
@@ -208,7 +208,13 @@
                     icon: 'pi pi-fw pi-plus',
                     permission: "create-session-request",
                     to: '/session-requests/create'
-                }
+                },
+                {
+                    label: 'Διαχείριση Καταστάσεων',
+                    icon: 'pi pi-fw pi-cog',
+                    permission: "view-all-session-request-statuses",
+                    to: '/session-request-statuses'
+                },
             ]
         },
         {

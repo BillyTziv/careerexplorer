@@ -18,12 +18,13 @@
 
     let props = defineProps({
         user: Object,
-        sessions: Object, 
+        sessions: Object,
         roleDropdownOptions: Array,
+        sessionRequestStatusDropdownOptions: Array,
         response: Object,
     });
 
-    const { getStatusName } = useSessionRequestStatusMapper();
+    const { getStatusName, adjustOpacity, determineTextColor  } = useSessionRequestStatusMapper( props.sessionRequestStatusDropdownOptions );
     const { formatDate } = useFormatDate( );
 	const { notify } = useToastNotification();
 
@@ -43,17 +44,17 @@
         sessionRequestStore.resetTableFilters();
     }
 
-    const redirectToCreate = () => {    
+    const redirectToCreate = () => {
         router.visit(`/session-requests/create`);
     };
+
 
     const acceptSessionRequest = (sessionRequest) => {
         router.put(`/session-requests/${sessionRequest.id}/accept`, {},
         {
-            preserveState: true, 
-            replace: true, 
+            preserveState: true,
+            replace: true,
             onSuccess: () => {
-                console.log("edw")
                 notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας έχει ανατεθεί σε σύμβουλο Ε.Π. επιτυχώς.`);
             }
         });
@@ -61,9 +62,9 @@
 
     const completeSessionRequest = (sessionRequest) => {
         router.put(`/session-requests/${sessionRequest.id}/complete`, {},
-        { 
-            preserveState: true, 
-            replace: true, 
+        {
+            preserveState: true,
+            replace: true,
             onSuccess: () => {
                 notify('success', 'Ολοκληρώθηκε', `Η αίτηση συνεδρίας του χρήστη ${sessionRequest.firstname} ${sessionRequest.lastname} ολοκληρώθηκε επιτυχώς.`);
             }
@@ -93,7 +94,7 @@
         </template>
 
         <template #page-subtitle>
-            
+
         </template>
 
         <template #page-content>
@@ -105,7 +106,7 @@
                     class="mx-1"
                     :narrow="true"
                 />
-            
+
                 <Button
                     type="button"
                     icon="pi pi-filter-slash"
@@ -118,35 +119,44 @@
 
             <div class="flex flex-column align-items-center md:flex-row md:align-items-start md:justify-content-between mb-3">
                 <IconField iconPosition="left">
-                    <InputIcon class="pi pi-search" />
-                    <InputText type="text" v-model="sessionRequestFilters.search" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" />
+                    <!-- <InputIcon class="pi pi-search" /> -->
+                    <!-- <InputText type="text" v-model="sessionRequestFilters.search" placeholder="Αναζήτηση.." :style="{ borderRadius: '2rem' }" class="w-full" /> -->
                 </IconField>
-                
+
                 <div class="flex">
-                    <Button type="button" icon="pi pi-download" rounded v-tooltip="'Export Data'" text @click="exportSessionRequestsAsCSV"></Button>
-                    <Button type="button" rounded icon="pi pi-plus" @click="redirectToCreate" />
+                    <Button @click="exportSessionRequestsAsCSV" type="button" icon="pi pi-download" v-tooltip="'Λήψη των αιτήσεων συνεδρίας'" rounded outlined class="mx-1" />
+                    <Button @click="redirectToCreate" type="button" icon="pi pi-plus" rounded class="mx-1" />
                 </div>
             </div>
 
             <DataTable
-                ref="sessionRequestsTableRef" 
+                ref="sessionRequestsTableRef"
                 :value="sessions"
-                dataKey="id" 
-                paginator 
-                :rows="15" 
-                responsiveLayout="scroll" 
+                dataKey="id"
+                paginator
+                :rows="15"
+                responsiveLayout="scroll"
                 v-model="sessionRequestFilters"
                 v-model:filters="filterVolunteersTable"
 
             >
-                <template #empty>Δεν βρέθηκαν συνεδρίες.</template>
-                
+                <template #empty>Δεν βρέθηκαν αιτήσεις συνεδριών.</template>
+
                 <Column field="id" header="A/A">
                     <template #body="{ data }">
                         <span class="p-column-title">A/A</span>
                         {{ data.id }}
                     </template>
                 </Column>
+
+                <!-- <Column headerStyle="width: 5rem">
+                    <template #header>
+
+                    </template>
+                    <template #body="slotProps">
+                        <Button icon="pi pi-search" rounded text @click="viewDetails(slotProps.data)" />
+                    </template>
+                </Column> -->
 
                 <Column field="firstname" header="Όνομα Υποψηφίου" sortable>
                     <template #body="{ data }">
@@ -161,15 +171,32 @@
                         {{ data.lastname.toUpperCase() }}
                     </template>
                 </Column>
-<!-- 
-                <Column field="assignee" header="Σύμβουλος Ε.Π." sortable :headerStyle="{ minWidth: '12rem' }">
+
+                <!-- <Column field="assignee" header="Σύμβουλος Ε.Π." sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
                         <span class="p-column-title">Σύμβουλος Ε.Π.</span>
                         {{ data.assignee_firstname }} {{ data.assignee_lastname }}
                     </template>
                 </Column> -->
 
-                <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
+                <Column field="status" header="Κατάσταση" sortable>
+                    <template #body="{ data }">
+                        <span
+                            class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
+                            :style="{
+                                'background-color': adjustOpacity(data.status, 0.2),
+                                'color': determineTextColor(data.status),
+                                'white-space': 'nowrap',
+                                'overflow': 'hidden',
+                                'text-overflow': 'ellipsis',
+                            }"
+                        >
+                            {{ getStatusName(data.status) }}
+                        </span>
+                    </template>
+                </Column>
+
+                <!-- <Column field="status" header="Κατάσταση" sortable :headerStyle="{ minWidth: '15rem' }">
                     <template #body="{ data }">
                         <span
                             class="whitespace-nowrap text-md mr-2 border-l-2 dark:text-slate-300 px-4 py-1 rounded-md shadow-md"
@@ -177,7 +204,7 @@
                            {{ getStatusName( data.status ) }}
                         </span>
                     </template>
-                </Column>
+                </Column> -->
 
                 <!-- <Column field="phone" header="Τηλέφωνο" sortable :headerStyle="{ minWidth: '12rem' }">
                     <template #body="{ data }">
@@ -191,13 +218,13 @@
                         <span class="p-column-title">Ημ/νία Αίτησης</span>
                         {{ formatDate(data.created_at) }}
                     </template>
-                </Column> 
+                </Column>
 
                <Column field="actions" header="Ενέργειες" headerStyle="min-width:10rem;">
                     <template #body="slotProps">
-                        <Button v-if="slotProps.data.status === 1" icon="pi pi-check" label="Αποδοχή" class="mr-2" rounded outlined severity="info" @click="acceptSessionRequest(slotProps.data)" />
+                        <Button label="Αποδοχή" class="mr-2" rounded outlined severity="success" @click="acceptSessionRequest(slotProps.data)" />
                         <!-- <Button v-if="slotProps.data.status === 2" icon="pi pi-times" label="Απόρριψη" class="mr-2" rounded outlined severity="danger" @click="rejectSessionRequest(slotProps.data)" /> -->
-                        <Button v-if="slotProps.data.status === 2" icon="pi pi-check" label="Ολοκλήρωση" class="mr-2" rounded outlined severity="success" @click="completeSessionRequest(slotProps.data)" />
+                        <!-- <Button  icon="pi pi-check" label="Ολοκλήρωση" class="mr-2" rounded outlined severity="success" @click="completeSessionRequest(slotProps.data)" /> -->
 
                         <!-- <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editSessionRequest(slotProps.data)" /> -->
                             <!-- <Button icon="pi pi-trash" class="mt-2" rounded outlined severity="danger" @click="confirmDeleteSessionRequest(slotProps.data)" /> -->
