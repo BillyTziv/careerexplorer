@@ -188,7 +188,7 @@ watch(() => selectedAssignedRecruiter.value, (newVal) => {
 
 
 const volunteerStatusInfo = computed(() => {
-	return `<span class="whitespace-nowrap text-md mr-2 border-l-2 px-4 py-1 rounded-md shadow-md" 
+	return `<span class="whitespace-nowrap text-md mr-2 border-l-2 px-4 py-1 rounded-md shadow-md"
 					style="background-color: ${adjustOpacity(volunteerStatus.value.id, 0.2)}; color: ${determineTextColor(volunteerStatus.value.id)};">
 					${volunteerStatus.value.name}
 				</span>`;
@@ -221,31 +221,6 @@ const vInfo = computed(() => {
 <template>
 	<AppPageWrapper>
 		<template #page-title>
-			<!-- <div class="flex flex-column">
-				<div class="px-2 flex text-center justify-center">{{ volunteer.firstname + " " + volunteer.lastname }}</div>
-			</div> -->
-
-			<div class="flex p-2">
-				<!-- <VolunteerStatusChangeModal
-					:volunteerId="volunteer.id"
-					:roles="roles"
-					@change="changeVolunteerStatus"
-				/> -->
-
-
-
-				<!-- <select
-					
-					@change="handleStatusChange( $event )" 
-					class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-lime-500 focus:border-lime-500 block p-2 dark:bg-slate-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-200 dark:focus:ring-lime-500 dark:focus:border-lime-500"
-				>
-					<option 
-						v-for="statusItem in volunteerStatusDropdownOptions" 
-						:value="statusItem.id" 
-						v-html="statusItem.name"
-					></option>
-				</select> -->
-			</div>
 		</template>
 
 		<template #page-content>
@@ -274,13 +249,13 @@ const vInfo = computed(() => {
 								</div>
 							</div>
 							<!-- <select
-								v-model="selectedVolunteerStatus" 
-								@change="handleStatusChange( $event )" 
+								v-model="selectedVolunteerStatus"
+								@change="handleStatusChange( $event )"
 								class="border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-lime-500 focus:border-lime-500 block p-2 dark:bg-slate-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-slate-200 dark:focus:ring-lime-500 dark:focus:border-lime-500"
 							>
-								<option 
-									v-for="statusItem in volunteerStatusDropdownOptions" 
-									:value="statusItem.id" 
+								<option
+									v-for="statusItem in volunteerStatusDropdownOptions"
+									:value="statusItem.id"
 									v-html="statusItem.name"
 								></option>
 							</select> -->
@@ -414,8 +389,8 @@ const vInfo = computed(() => {
 
 								<template #actions>
 									<Button
-										@click="showVolunteerNotesModal = true" 
-										icon="pi pi-pencil" 
+										@click="showVolunteerNotesModal = true"
+										icon="pi pi-pencil"
 										text
 										rounded
 									/>
@@ -426,7 +401,7 @@ const vInfo = computed(() => {
 						<BaseFormattedText
 							:text="volunteer.notes"
 						/>
-						
+
 						<VolunteerNotesModal
 							:notes="volunteer.notes ?? ''"
 							:show-modal="showVolunteerNotesModal"

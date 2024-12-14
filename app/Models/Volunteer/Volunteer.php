@@ -85,4 +85,9 @@ class Volunteer extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function status()
+{
+    return $this->belongsTo(VolunteerStatus::class, 'status');
+}
 }

@@ -46,7 +46,7 @@
             default: () => []
         },
     });
-    
+
     const { getRecruiterName } = useVolunteerAssigneeRecruiterMapper( props.volunteerAssignedRecruiterDropdownOptions );
     const { getRoleName } = useVolunteerRoleMapper( props.volunteerRoleDropdownOptions );
     const { getStatusName, adjustOpacity, determineTextColor  } = useVolunteerStatusMapper( props.volunteerStatusDropdownOptions );
@@ -63,7 +63,7 @@
     const volunteersTableRef        = ref( null );              // Used for exportCSV
     const filterVolunteersTable     = ref( props.filters );     // Used for filtering the table
     const volunteerEmailList        = ref( '' );                // Used for preview email dialog
-    
+
     /* Component Methods */
 
     // Export the volunteers table to CSV
@@ -72,7 +72,7 @@
     };
 
     // Navigate to the edit page of a volunteer
-    const editEntity = ( volunteer ) => {    
+    const editEntity = ( volunteer ) => {
         router.visit(`/volunteers/${volunteer.id}/edit`);
     };
 
@@ -90,10 +90,10 @@
     const deleteVolunteer = () => {
         if( !selectVolunteer.value.id || selectVolunteer.value.id <= 0 ) return;
 
-        router.delete(`/volunteers/${selectVolunteer.value.id}`, 
-            { 
-                preserveState: true, 
-                replace: true, 
+        router.delete(`/volunteers/${selectVolunteer.value.id}`,
+            {
+                preserveState: true,
+                replace: true,
                 onSuccess: () => {
                     notify('success', 'Ολοκληρώθηκε', `Ο εθελοντής ${selectVolunteer.value.firstname} ${selectVolunteer.value.lastname} διαγράφηκε επιτυχώς.`);
                     deleteVolunteerDialog.value = false;
@@ -136,7 +136,7 @@
 
     /* Datatable Size Change */
     const size = ref({ label: 'Small', value: 'small' });
-    
+
     const sizeOptions = ref([
         { label: 'Small', value: 'small' },
         { label: 'Normal', value: 'null' },
@@ -145,7 +145,7 @@
 
     const selectedVolunteers = ref();
 
-    const redirectToCreate = () => {    
+    const redirectToCreate = () => {
         router.visit(`/volunteers/create`);
     };
 
@@ -220,7 +220,7 @@
                     :narrow="true"
                     class="mx-1"
                 />
-            
+
                 <BaseDropdownInput
                     v-model="filters.assigned_recruiter"
                     placeholder="Όλοι οι recruiter"
@@ -267,12 +267,12 @@
                 :rowsPerPageOptions="[5, 10, 20, 50]"
             >
                 <template #empty>Δεν βρέθηκαν εθελοντές.</template>
-                
+
                 <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
 
                 <Column headerStyle="width: 5rem">
                     <template #header>
-                        
+
                     </template>
                     <template #body="slotProps">
                         <Button icon="pi pi-search" rounded text @click="viewDetails(slotProps.data)" />
@@ -345,7 +345,7 @@
                         {{ formatDate(data.created_at) }}
                     </template>
                 </Column>
- 
+
                 <Column header="Ενέργειες">
                     <template #body="slotProps">
                         <Button icon="pi pi-pencil" class="mr-2" rounded outlined @click="editEntity(slotProps.data)" />

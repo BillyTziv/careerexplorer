@@ -33,7 +33,7 @@
             items: [
                 {
                     label: 'Λίστα Εργασιών',
-                    icon: 'pi pi-fw pi-tasks',
+                    icon: 'pi pi-fw pi-list',
                     permission: "view-all-tasks",
                     to: '/tasks'
                 },

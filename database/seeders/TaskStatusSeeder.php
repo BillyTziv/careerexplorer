@@ -15,10 +15,33 @@ class TaskStatusSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('task_statuses')->insert([
-            ['name' => 'todo', 'description' => 'Task has not yet started.', 'hex_color' => '#f59e0b', 'is_default' => true],
-            ['name' => 'in-progress', 'description' => 'Task is currently being worked on.', 'hex_color' => '#2563eb'],
-            ['name' => 'completed', 'description' => 'Task has been finished.', 'hex_color' => '#16a34a'],
-        ]);
+        $statuses = [
+            [
+                'name' => 'To Do',
+                'description' => 'Tasks that need to be started.',
+                'hex_color' => '#ef4444', // Red
+                'is_default' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'In Progress',
+                'description' => 'Tasks that are currently in progress.',
+                'hex_color' => '#f59e0b', // Yellow
+                'is_default' => 0,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Completed',
+                'description' => 'Tasks that have been finished.',
+                'hex_color' => '#10b981', // Green
+                'is_default' => 0,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ];
+
+        DB::table('task_statuses')->insert($statuses);
     }
 }

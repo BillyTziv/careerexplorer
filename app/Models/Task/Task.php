@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Task;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Volunteer\Volunteer;
 
 class Task extends Model
 {
@@ -43,7 +44,7 @@ class Task extends Model
      */
     public function taskLogs()
     {
-        return $this->hasMany(TaskLog::class);
+        return $this->hasMany(TaskLog::class, 'task_id');
     }
 
     /**

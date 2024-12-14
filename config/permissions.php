@@ -103,6 +103,19 @@ return [
     ['name' => 'Edit Career Value', 'code' => 'edit-career-value', 'entity' => 'career_value' ],
     ['name' => 'Delete Career Value', 'code' => 'delete-career-value', 'entity' => 'career_value' ],
 
+    /* TASKS */
+    ['name' => 'View All Tasks', 'code' => 'view-all-tasks', 'entity' => 'task' ],
+    ['name' => 'Create Task', 'code' => 'create-task', 'entity' => 'task' ],
+    ['name' => 'Edit Task', 'code' => 'edit-task', 'entity' => 'task' ],
+    ['name' => 'Delete Task', 'code' => 'delete-task', 'entity' => 'task' ],
+
+
+    /* TASK STATUSES */
+    ['name' => 'View All Task Statuses', 'code' => 'view-all-task-statuses', 'entity' => 'task' ],
+    ['name' => 'Create Task Status', 'code' => 'create-task-status', 'entity' => 'task' ],
+    ['name' => 'Edit Task Status', 'code' => 'edit-task-status', 'entity' => 'task' ],
+    ['name' => 'Delete Task Status', 'code' => 'delete-task-status', 'entity' => 'task' ],
+
     /* CAREER RIASEC CODES */
     ['name' => 'View All Career RIASEC Codes', 'code' => 'view-all-career-riasec-codes', 'entity' => 'riasec_code' ],
     ['name' => 'Create Career RIASEC Code', 'code' => 'create-career-riasec-code', 'entity' => 'riasec_code' ],

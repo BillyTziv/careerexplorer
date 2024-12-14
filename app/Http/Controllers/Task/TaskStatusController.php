@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Volunteer;
+namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
 use App\Models\EmailTemplate\EmailTemplate;
-use App\Models\Volunteer\TaskStatus;
+use App\Models\Task\TaskStatus;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
