@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
 
     /* User Management Routes */
     require __DIR__.'/authRoutes/userManagementRoutes.php';
+    require __DIR__.'/authRoutes/taskStatusRoutes.php';
+    require __DIR__.'/authRoutes/taskRoutes.php';
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

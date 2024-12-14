@@ -9,5 +9,18 @@ class EmailTemplate extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'subject', 'body', 'placeholders'];
+    protected $fillable = [
+        'name',
+        'subject',
+        'body',
+        'placeholders'
+    ];
+
+    /**
+     * Get the task statuses associated with the email template.
+     */
+    public function taskStatuses()
+    {
+        return $this->hasMany(TaskStatus::class);
+    }
 }

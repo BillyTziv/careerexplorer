@@ -50,4 +50,12 @@ class User extends Authenticatable
     public function roles(){
         return $this->belongsToMany(Role::class);
     }
+
+    /**
+     * Get the volunteers assigned to the user.
+     */
+    public function assignedVolunteers()
+    {
+        return $this->hasMany(Volunteer::class, 'assigned_to');
+    }
 }

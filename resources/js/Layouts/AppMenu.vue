@@ -29,6 +29,29 @@
             ]
         },
         {
+            label: 'ΕΡΓΑΣΙΕΣ',
+            items: [
+                {
+                    label: 'Λίστα Εργασιών',
+                    icon: 'pi pi-fw pi-tasks',
+                    permission: "view-all-tasks",
+                    to: '/tasks'
+                },
+                {
+                    label: 'Διαχείριση Καταστάσεων',
+                    icon: 'pi pi-fw pi-cog',
+                    permission: "view-all-task-statuses",
+                    to: '/task-statuses'
+                },
+                {
+                    label: 'Δημιουργία Εργασίας',
+                    icon: 'pi pi-fw pi-plus',
+                    permission: "create-task",
+                    to: '/tasks/create'
+                }
+            ]
+        },
+        {
             label: 'ΕΘΕΛΟΝΤΙΣΜΟΣ',
             items: [
                 {
@@ -49,12 +72,6 @@
                     permission: "view-all-volunteer-roles",
                     to: '/volunteer-roles'
                 }
-                // {
-                //     label: 'Δημιουργία Εθελοντή',
-                //     icon: 'pi pi-fw pi-plus',
-                //     permission: "create-volunteer",
-                //     to: '/volunteers/create'
-                // }
             ]
         },
         {
