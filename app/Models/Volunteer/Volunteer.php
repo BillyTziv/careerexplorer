@@ -5,6 +5,8 @@ namespace App\Models\Volunteer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Volunteer\Comment;
+use App\Models\Volunteer\Task;
+use App\Models\Team;
 
 class Volunteer extends Model
 {
@@ -54,6 +56,7 @@ class Volunteer extends Model
         'age',
         'career_status',
         'cv_consent',
+        'team_id'
     ];
 
     protected $casts = [
@@ -68,11 +71,17 @@ class Volunteer extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /**
+     * Get the role that the volunteer is assigned to.
+     */
     public function role()
     {
         return $this->belongsTo('App\Models\VolunteerRole', 'role');
     }
 
+    /**
+     * Get the comments for the volunteer.
+     */
     public function comments()
     {
         return $this->hasMany(Comment::class);
@@ -86,8 +95,19 @@ class Volunteer extends Model
         return $this->hasMany(Task::class);
     }
 
+    /**
+     * Get the status for the volunteer.
+     */
     public function status()
-{
-    return $this->belongsTo(VolunteerStatus::class, 'status');
-}
+    {
+        return $this->belongsTo(VolunteerStatus::class, 'status');
+    }
+
+    /**
+     * Get the team that owns the volunteer.
+     */
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

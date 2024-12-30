@@ -38,7 +38,7 @@
                     to: '/tasks'
                 },
                 {
-                    label: 'Διαχείριση Καταστάσεων',
+                    label: 'Διαχ. Καταστάσεων',
                     icon: 'pi pi-fw pi-cog',
                     permission: "view-all-task-statuses",
                     to: '/task-statuses'
@@ -61,16 +61,22 @@
                     to: '/volunteers'
                 },
                 {
-                    label: 'Διαχείριση Καταστάσεων',
+                    label: 'Διαχ. Καταστάσεων',
                     icon: 'pi pi-fw pi-cog',
                     permission: "view-all-volunteer-statuses",
                     to: '/volunteer-statuses'
                 },
                 {
-                    label: 'Διαχείριση Ρόλων',
+                    label: 'Διαχ. Ρόλων',
                     icon: 'pi pi-fw pi-cog',
                     permission: "view-all-volunteer-roles",
                     to: '/volunteer-roles'
+                },
+                {
+                    label: 'Διαχ. Ομάδων',
+                    icon: 'pi pi-fw pi-cog',
+                    permission: "view-all-teams",
+                    to: '/teams'
                 }
             ]
         },
@@ -227,7 +233,7 @@
                     to: '/session-requests/create'
                 },
                 {
-                    label: 'Διαχείριση Καταστάσεων',
+                    label: 'Διαχ. Καταστάσεων',
                     icon: 'pi pi-fw pi-cog',
                     permission: "view-all-session-request-statuses",
                     to: '/session-request-statuses'

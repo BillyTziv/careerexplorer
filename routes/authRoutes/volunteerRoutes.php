@@ -29,16 +29,11 @@ Route::post('/volunteers/sendInvitation', [VolunteerController::class, 'sendInvi
     ->middleware('can:sendInvitation,App\Models\Volunteer');
 
 Route::post('/volunteers/{volunteer}/notes', [VolunteerController::class, 'updateNotes']);
+Route::put('/volunteers/{volunteer}/team', [VolunteerController::class, 'updateTeam']);
 
 Route::put('/volunteers/{volunteer}/assign-recruiter', [VolunteerController::class, 'assignRecruiter']);
 
 Route::post('/volunteers/{volunteer}/comment', [VolunteerController::class, 'submitComment']);
-
-
-// Route::get('/volunteers/join', [VolunteerController::class, 'createPublicApplication'])
-// ->middleware('can:create, App\Models\Volunteer')
-// ->name('volunteers.join');
-    
 
 // --------------------------------------------------------------------------------
 // PLACE ABOVE ALL ROUTES
@@ -56,8 +51,6 @@ Route::post('/volunteers', [VolunteerController::class, 'store']);
 
 Route::get('/volunteers/{volunteer}', [VolunteerController::class, 'show'])
     ->name('volunteers.show');
-    // ->middleware('can:view, App\Models\Volunteer')
-    
 
 Route::get('/volunteers/{volunteer}/edit', [VolunteerController::class, 'edit'])
     // ->middleware('can:update, App\Models\Volunteer')

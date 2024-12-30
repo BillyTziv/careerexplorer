@@ -165,6 +165,11 @@ class TaskStatusController extends Controller
             DB::beginTransaction();
 
             $taskStatus = TaskStatus::findOrFail($id);
+
+            if ($taskStatus->is_builtin) {
+                throw new Exception('System status cannot be deleted, only renamed.');
+            }
+
             $taskStatus->delete();
 
             DB::commit();

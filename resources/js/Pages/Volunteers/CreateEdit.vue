@@ -15,6 +15,8 @@
     import BaseCalendarInput from '@/Components/Base/BaseCalendarInput.vue';
     import BaseDynamicFileInput from '@/Components/Base/Dynamic/BaseDynamicFileInput.vue';
 
+	import { useToastNotification } from '@/Composables/useToastNotification';
+
     let props = defineProps({
         user: Object,
         response: Object,
@@ -22,6 +24,9 @@
         volunteer: Object,
         roles: Object,
     });
+
+    const { notify } = useToastNotification();
+
 
     const volunteerForm = useForm({
         id: props.volunteer.id ? props.volunteer.id : null,
@@ -112,9 +117,25 @@
         console.log( volunteerForm );
 
         if( volunteerForm.id && volunteerForm.id > 0 ) {
-            volunteerForm.put('/volunteers/'+ volunteerForm.id, volunteerForm);
+            volunteerForm.put(`/volunteers/${volunteerForm.id}`, volunteerForm,
+                {
+                    preserveState: true,
+                    replace: true,
+                    onSuccess: () => {
+                        notify('success', 'Ολοκληρώθηκε', `Ο εθελοντής ${volunteerForm.firstname} ${volunteerForm.lastname} ενημερώθηκε επιτυχώς.`);
+                    }
+                }
+            );
         }else {
-            volunteerForm.post('/volunteers/', volunteerForm);
+            volunteerForm.post(`/volunteers/`, volunteerForm,
+                {
+                    preserveState: true,
+                    replace: true,
+                    onSuccess: () => {
+                        notify('success', 'Ολοκληρώθηκε', `Ο εθελοντής ${volunteerForm.firstname} ${volunteerForm.lastname} δημιουργηθηκε επιτυχώς.`);
+                    }
+                }
+            );
         }
     }
 </script>

@@ -2,6 +2,7 @@
     /* Core */
     import { ref, computed, watch } from 'vue';
     import { useForm, router } from '@inertiajs/vue3';
+    import moment from 'moment';
 
     /* Layouts */
     import AppPageWrapper from '@/Layouts/AppPageWrapper.vue';
@@ -11,6 +12,8 @@
     import { useFormatDate } from '@/Composables/useFormatDate';
     import { useToastNotification } from '@/Composables/useToastNotification';
     import BaseDropdownInput from '@/Components/Base/BaseDropdownInput.vue';
+
+    import ConfettiExplosion from "vue-confetti-explosion";
 
     const { formatBoolean } = useFormatBoolean();
     const { formatDate } = useFormatDate();
@@ -37,7 +40,6 @@
     });
 
     const calcTaskStatusDropdownOptions = computed(() => {
-        console.log( props.taskStatusDropdownOptions )
         if( !props.taskStatusDropdownOptions ) {
             return [];
         }
@@ -50,6 +52,8 @@
     /* Reactive Variables */
     const selectedTaskLog = ref(null); // Selected task log for deletion
     const deleteTaskLogDialog = ref(false); // Visibility of delete confirmation dialog
+
+    const completeTaskExplosion = ref(false);
 
     // ----------------------------
     // ADD TASK LOG MODAL VARIABLES
@@ -64,41 +68,38 @@
         duration: 0
     });
 
-    /**
-     * Open Add Task Log Modal
-     */
-    const openAddTaskLogModal = () => {
-        // Reset the form
+    const onOpenAddTimeLogModal = () => {
         taskLogForm.reset();
         addTaskLogDialog.value = true;
     };
 
-    /**
-     * Submit the Task Log Form
-     */
     const submitTaskLog = () => {
+        // Convert totalTime (hours) into start_date, end_date_and duration
+        taskLogForm.duration = totalMin.value * 60; // Convert hours to minutes
+        taskLogForm.start_time = moment(new Date()).format('YYYY-MM-DD');
+        taskLogForm.end_time = moment(new Date()).format('YYYY-MM-DD');
+
         // Calculate duration if end_time is provided
-        if (taskLogForm.end_time) {
-            const start = new Date(taskLogForm.start_time);
-            const end = new Date(taskLogForm.end_time);
-            const duration = Math.floor((end - start) / 60000); // Duration in minutes
+        // if (taskLogForm.end_time) {
+        //     const start = new Date(taskLogForm.start_time);
+        //     const end = new Date(taskLogForm.end_time);
+        //     const duration = Math.floor((end - start) / 60000);
 
-            if (duration < 0) {
-                notify('error', 'Σφάλμα', 'Η ώρα λήξης πρέπει να είναι μετά την ώρα έναρξης.');
-                return;
-            }
+        //     if (duration < 0) {
+        //         notify('error', 'Σφάλμα', 'Η ώρα λήξης πρέπει να είναι μετά την ώρα έναρξης.');
+        //         return;
+        //     }
 
-            taskLogForm.duration = duration;
-        } else {
-            taskLogForm.duration = 0;
-        }
+        //     taskLogForm.duration = duration;
+        // } else {
+        //     taskLogForm.duration = 0;
+        // }
 
         taskLogForm.post('/task-logs', {
             preserveScroll: true,
             onSuccess: () => {
-                notify('success', 'Ολοκληρώθηκε', 'Το task log δημιουργήθηκε επιτυχώς.');
+                notify('success', 'Ολοκληρώθηκε', 'Τέλεια! Ευχαριστούμε πολύ για την συνεισφορά σου.');
                 addTaskLogDialog.value = false;
-                // Optionally, you can emit an event or refresh the page to show the new log
                 router.reload();
             },
             onError: () => {
@@ -107,15 +108,27 @@
         });
     };
 
-    const taskStatus = ref(null);
+    const taskStatus = ref(props.task.status_id);
 
     watch(() => taskStatus.value, (newValue) => {
         console.log( newValue )
         handleTaskStatusChange();
     });
 
+    function formatPriority( priority ) {
+        switch( priority ) {
+            case 0:
+                return 'Χαμηλή';
+            case 1:
+                return 'Μεσαία';
+            case 2:
+                return 'Υψηλή';
+            default:
+                return '---';
+        }
+    }
+
     function handleTaskStatusChange( event ) {
-        console.log( "asdasdasd")
         router.put('/tasks/' + props.task.id + '/status', {
             newStatusValue: taskStatus.value,
         }, {
@@ -149,6 +162,99 @@
         // });
     }
 
+    function convertToReadableTime(minutes) {
+        const days = Math.floor(minutes / 1440);            // 1 day = 1440 minutes
+        const hours = Math.floor((minutes % 1440) / 60);    // 1 hour = 60 minutes
+        const mins = minutes % 60;                          // Remaining minutes
+
+        let result = '';
+        if (days > 0) result += `${days} ημέρες `;
+        if (hours > 0) result += `${hours} ώρες `;
+        if (mins > 0) result += `${mins} λεπτά`;
+
+        return result.trim();
+    }
+
+    const taskDetails = [
+        {
+        label: 'Εθελοντής',
+        value: `${props.task.volunteer.firstname} ${props.task.volunteer.lastname}`
+        },
+        {
+        label: 'Προτεραιότητα',
+        value: formatPriority(props.task.priority)
+        },
+        {
+        label: 'Κατάσταση',
+        value: props.task.status ? props.task.status.name : '---'
+        },
+        {
+        label: 'Εκτιμώμενος Χρόνος',
+        value: props.task.estimated_time ? `${convertToReadableTime(props.task.estimated_time)}` : '---'
+        },
+        {
+        label: 'Συνολικός Χρόνος',
+        value: props.task.actual_time ? `${convertToReadableTime(props.task.actual_time)}` : '---'
+        },
+        {
+        label: 'Ημ/νια Ολοκλήρωσης',
+        value: formatDate(props.task.due_date, true)
+        },
+        {
+        label: 'Ημ/νια Δημιουργίας',
+        value: formatDate(props.task.created_at, true)
+        }
+    ];
+
+    const getTagLabel = (tag) => {
+        let status = props.taskStatusDropdownOptions.find(option => option.id === tag);
+        if( status ) {
+            return status.name;
+        }else {
+            return '---';
+        }
+    };
+
+    const getTagStyle = (tag) => {
+
+        let status = props.taskStatusDropdownOptions.find(option => option.id === tag);
+        if( status ) {
+            return {
+                backgroundColor: status.hex_color,
+                borderRadius: '0.80rem',
+                color: 'white'
+            };
+        }else {
+            return {
+                backgroundColor: 'transparent',
+                borderRadius: '0.80rem',
+                color: 'black'
+            };
+        }
+    };
+
+    const totalMin = ref(0);
+
+    function onCompleteTask() {
+        // Check if time log has been added
+        if( props.task.task_logs.length === 0 ) {
+            notify('error', 'Σφάλμα', 'Πρέπει να προσθέσεις χρονική καταγραφή πριν ολοκληρϋσεις την εργασία.');
+            return;
+        }
+
+        router.put(`/tasks/${props.task.id}/complete`, null, {
+            preserveState: true,
+            replace: true,
+            onSuccess: () => {
+                completeTaskExplosion.value = true;
+
+                let changeStatusMsg = 'Τέλεια, η εργασία ' + props.task.task_name + ' ολοκληρώθηκε επιτυχώς!';
+                notify('success', 'Μπράβο!', changeStatusMsg);
+            }
+        });
+    }
+
+    const hasCompleted = props.task.status_id !== 3;
 </script>
 
 <template>
@@ -158,55 +264,24 @@
             {{ task.task_name }}
         </template>
 
-        <!-- Page Content -->
-        <template #page-content>
-            <BaseDropdownInput
-                v-model="taskStatus"
-                label="Κατάσταση Εργασίας"
-                :options="calcTaskStatusDropdownOptions"
-                @change="handleTaskStatusChange(event)"
-            />
+        <template #page-actions>
+            <template v-if="hasCompleted">
+                <Button
+                    @click="onOpenAddTimeLogModal()"
+                    label="Προσθήκη Χρόνου"
+                    icon="pi pi-plus"
+                    outlined
+                    class="mx-1"
+                />
 
-            <!-- Task Details -->
-                    <!-- Task Information -->
-                    <div class="flex-1">
-                        <p class="text-gray-700 mb-2">
-                            <strong>Κατάσταση:</strong>
-                            {{ task.status.name ? task.status.name : '---' }}
-                        </p>
-                        <p class="text-gray-700 mb-2">
-                            <strong>Εθελοντής:</strong> {{ task.volunteer.firstname }} {{ task.volunteer.lastname }}
-                        </p>
-                        <p class="text-gray-700 mb-2">
-                            <strong>Εκτιμώμενος Χρόνος:</strong>
-                            {{ task.estimated_time ? task.estimated_time + ' λεπτά' : '---' }}
-                        </p>
-                        <p class="text-gray-700 mb-2">
-                            <strong>Συνολικός Χρόνος:</strong>
-                            {{ task.actual_time ? task.actual_time + ' λεπτά' : '---' }}
-                        </p>
-
-                        <br />
-                        <p class="text-gray-700 mb-2">
-                            <strong>Περιγραφή:</strong> {{ task.description || '---' }}
-                        </p>
-
-                        <br />
-
-                        <p class="text-gray-700 mb-2">
-                            <strong>Ημ/νια Δημιουργίας:</strong> {{ formatDate(task.created_at) }}
-                        </p>
-                        <p class="text-gray-700 mb-2">
-                            <strong>Ημ/νια Ενημέρωσης:</strong> {{ formatDate(task.updated_at) }}
-                        </p>
-                        <p class="text-gray-700 mb-2">
-                            <strong>Προεπιλεγμένη Κατάσταση:</strong> {{ formatBoolean(task.status.is_default) }}
-                        </p>
-                    </div>
-
-            <br /><br />
-
-            <!-- <div class="absolute bottom-0 left-0 border-round font-bold w-full">
+                <Button
+                    @click="onCompleteTask()"
+                    label="Ολοκλήρωση"
+                    icon="pi pi-check"
+                    class="mx-1"
+                />
+            </template>
+              <!-- <div class="absolute bottom-0 left-0 border-round font-bold w-full">
                 <ProgressBar
                     :value="calculateProgress"
                 >
@@ -215,75 +290,115 @@
             </div> -->
 
 
+        </template>
 
-            <!-- Task Logs -->
-            <div class="">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold">Χρονική Καταγραφή</h3>
+        <!-- Page Content -->
+        <template #page-content>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <ConfettiExplosion
+                    v-if="completeTaskExplosion"
+                    :particleCount="300"
+                    :stageHeight="600"
+                    :stageWidth="1100"
+                    :particleSize="20"
+                    :force="1.2"
+                    />
+            </div>
+            <!-- Task Description -->
+            <div class="font-medium text-md text-surface-900 dark:text-surface-0 mb-4">
+                    {{ task.description }}
+            </div>
+
+            <!-- Task Status-->
+            <!-- <BaseDropdownInput
+                v-model="taskStatus"
+                label="Κατάσταση Εργασίας"
+                :options="calcTaskStatusDropdownOptions"
+                @change="handleTaskStatusChange(event)"
+            /> -->
+            <div class="grid">
+                <div class="col-fixed" style="width: 250px">
+                    <div class="text-left text-lg p-2 font-bold">
+                        Κατάσταση Εργασίας
+                    </div>
                 </div>
+                <div class="col">
+                    <div
+                        class="text-left text-lg p-1"
+                    >
+                        <span class="flex items-center">
+                            <Tag
+                                shape="circle"
+                                :style="getTagStyle(props.task.status_id)"
+                                class="px-3 text-lg"
+                            >{{ getTagLabel(props.task.status_id) }}</Tag>
 
-                <Button
-                    label="Προσθήκη"
-                    icon="pi pi-plus"
-                    rounded
-                    outlined
-                    @click="openAddTaskLogModal"
-                />
+                        </span>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Task Details -->
+            <template v-for="(field, index) in taskDetails" :key="index">
+                <div class="grid">
+                    <div class="col-fixed" style="width: 250px">
+                        <div class="text-left text-lg p-2 font-bold">
+                            {{ field.label }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div
+                            class="text-left text-lg p-2"
+                            :style="{
+                            backgroundColor: index % 2 === 0 ? 'transparent' : '#f5f5f5'
+                            }"
+                        >
+                            {{ field.value }}
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+
+            <h3 class="text-xl font-normal">Ανάλυση Χρονικών Καταγραφών</h3>
+            <template
+                v-if="true"
+            >
                 <DataTable
                     :value="task.task_logs"
                     dataKey="id"
-                    paginator
-                    :rows="5"
                     responsiveLayout="scroll"
                     stripedRows
-                    :rowsPerPageOptions="[5, 10, 20]"
                 >
                     <template #empty>
-                        Δεν βρέθηκαν task logs.
+                        Δεν βρέθηκαν χρονκή συνεισφορά.
                     </template>
 
                     <!-- Start Time Column -->
-                    <Column field="start_time" header="Έναρξη" sortable>
+                    <Column field="start_time" header="Έναρξη Εργασίας" sortable>
                         <template #body="{ data }">
-                            <span class="p-column-title">Έναρξη</span>
-                            {{ formatDate(data.start_time) }}
+                            <span class="p-column-title">Έναρξη Εργασίας</span>
+                            {{ formatDate(data.start_time, true) }}
                         </template>
                     </Column>
 
                     <!-- End Time Column -->
-                    <Column field="end_time" header="Λήξη" sortable>
+                    <Column field="end_time" header="Λήξη Εργασίας" sortable>
                         <template #body="{ data }">
-                            <span class="p-column-title">Λήξη</span>
-                            {{ data.end_time ? formatDate(data.end_time) : '---' }}
+                            <span class="p-column-title">Λήξη Εργασίας</span>
+                            {{ data.end_time ? formatDate(data.end_time, true) : '---' }}
                         </template>
                     </Column>
 
                     <!-- Duration Column -->
-                    <Column field="duration" header="Διάρκεια (λεπτά)" sortable>
+                    <Column field="duration" header="Διάρκεια" sortable>
                         <template #body="{ data }">
                             <span class="p-column-title">Διάρκεια</span>
-                            {{ data.duration ? data.duration + ' λεπτά' : '---' }}
+                            {{ convertToReadableTime(data.duration) }}
                         </template>
                     </Column>
-
-
-                    <!-- Actions Column -->
-                    <!-- <Column header="Ενέργειες">
-                        <template #body="slotProps">
-                            <Button
-                                icon="pi pi-trash"
-                                class="mt-2"
-                                rounded
-                                outlined
-                                severity="danger"
-                                tooltip="Διαγραφή Task Log"
-                                @click="confirmDeleteTaskLog(slotProps.data)"
-                            />
-                        </template>
-                    </Column> -->
                 </DataTable>
-            </div>
+            </template>
         </template>
     </AppPageWrapper>
 
@@ -291,62 +406,26 @@
     <Dialog
         v-model:visible="addTaskLogDialog"
         :style="{ width: '500px' }"
-        header="Δημιουργία Task Log"
+        header="Πόσα λεπτά έχεις αφιερώσεις σε αυτή την εργασία;"
         :modal="true"
     >
         <form @submit.prevent="submitTaskLog" autocomplete="off">
-            <div class="flex flex-col space-y-4">
-                <!-- Start Time -->
-                <div>
-                    <label for="start_time" class="block text-sm font-medium text-gray-700">Ώρα Έναρξης</label>
-                    <InputText
-                        id="start_time"
-                        type="datetime-local"
-                        v-model="taskLogForm.start_time"
-                        class="mt-1 block w-full"
-                        :class="{ 'border-red-500': errors.start_time }"
-                        required
-                    />
-                    <span v-if="errors.start_time" class="text-red-500 text-sm">{{ errors.start_time }}</span>
-                </div>
+            <InputText v-model.number="totalMin" class="mb-5"/>
+            <span class="text-lg ml-2">λεπτά</span>
 
-                <!-- End Time -->
-                <div>
-                    <label for="end_time" class="block text-sm font-medium text-gray-700">Ώρα Λήξης</label>
-                    <InputText
-                        id="end_time"
-                        type="datetime-local"
-                        v-model="taskLogForm.end_time"
-                        class="mt-1 block w-full"
-                        :class="{ 'border-red-500': errors.end_time }"
-                    />
-                    <span v-if="errors.end_time" class="text-red-500 text-sm">{{ errors.end_time }}</span>
-                </div>
+            <Slider v-model="totalMin" :max="60"/>
 
-                <!-- Duration (Read-Only) -->
-                <div>
-                    <label for="duration" class="block text-sm font-medium text-gray-700">Διάρκεια (λεπτά)</label>
-                    <InputText
-                        id="duration"
-                        type="number"
-                        v-model="taskLogForm.duration"
-                        class="mt-1 block w-full"
-                        readonly
-                    />
-                </div>
-            </div>
-
-            <div class="flex justify-end mt-4">
-                <Button
+            <div class=" mt-4">
+                <!-- <Button
                     label="Ακύρωση"
                     icon="pi pi-times"
                     text
                     @click="addTaskLogDialog = false"
                     class="mr-2"
-                />
+                /> -->
+
                 <Button
-                    label="Δημιουργία"
-                    icon="pi pi-check"
+                    label="Προσθήκη Συνεισφοράς"
                     type="submit"
                 />
             </div>

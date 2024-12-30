@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use App\Models\UserManagement\User;
 use App\Models\UserManagement\Role;
 use App\Models\UserManagement\Permission;
-
+use App\Models\Team;
 use App\Models\Volunteer\Volunteer;
 use App\Models\Volunteer\VolunteerRole;
 use App\Models\Volunteer\VolunteerStatus;
@@ -479,6 +479,10 @@ class VolunteerController extends Controller {
         return Role::where('deleted', false)->select('id', 'name as label')->get();
     }
 
+    public function getTeams() {
+        return Team::get();
+    }
+
     public function show( $id ) {
         $query = Volunteer::query();
 
@@ -510,6 +514,7 @@ class VolunteerController extends Controller {
             'assignees' => self::getAssignees(),
             'volunteerStatusDropdownOptions'=> self::getVolunteerStatuses(),
             'volunteerAssignedRecruiterDropdownOptions'=> self::getVolunteerRecruiters(),
+            'teamDropdownOptions' => self::getTeams(),
             'volunteerHistory' => $volunteerHistory,
         ]);
     }
@@ -636,8 +641,8 @@ class VolunteerController extends Controller {
         $volunteer->email = $request->email ?? null;
 
         // Volunteering
-        $volunteer->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d')  ?? null;
-        $volunteer->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date)->format('Y-m-d') ?? null;
+        $volunteer->start_date = $request->start_date  ?? null;
+        $volunteer->end_date = $request->end_date ?? null;
         $volunteer->hours_contributed = $request->hours_contributed ?? 0;
         $volunteer->onboarding_completed = $request->onboarding_completed ?? false;
         $volunteer->previous_volunteer_experience = $request->previous_volunteer_experience ?? null;
@@ -673,8 +678,6 @@ class VolunteerController extends Controller {
         $volunteer->deleted = false;
         $volunteer->save();
 
-        //$emailService->sendTestEmail($request, $emailTemplate);
-
         return back()->with([
             'message' => 'Τα στοιχεία ενημερώθηκαν με επιτυχία!',
             'status' => 'success',
@@ -698,6 +701,28 @@ class VolunteerController extends Controller {
             'user_id' => Auth::id(),
             'action' => 'assigned to recruiter',
             'description' => 'Ο εθελοντής ανατέθηκε στον recruiter ' . User::find($request->recruiterId)->firstname . ' ' . User::find($request->recruiterId)->lastname,
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function updateTeam( Request $request, $volunteer )
+    {
+        $volunteer = Volunteer::find( $volunteer );
+
+        $vid = $volunteer->id;
+
+        $volunteer->team_id = $request->teamId ?? null;
+        $volunteer->save();
+
+        $query = Volunteer::query();
+
+        // Log the status change
+        VolunteerHistory::create([
+            'volunteer_id' => $volunteer->id,
+            'user_id' => Auth::id(),
+            'action' => 'assigned to team',
+            'description' => 'Ο εθελοντής ανατέθηκε στην ομάδα ' . Team::find($request->teamId)->name,
         ]);
 
         return redirect()->back();

@@ -33,7 +33,7 @@
 
 <template>
     <div class="field col-12">
-        <label class="font-medium text-md text-900"> 
+        <label class="font-medium text-lg text-900">
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
@@ -51,8 +51,8 @@
         <InputError
             v-if="hasErrors"
             :message="errors"
-            class="mt-2" 
+            class="mt-2"
         />
     </div>
 </template>
-  
+

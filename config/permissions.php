@@ -45,6 +45,12 @@ return [
     ['name' => 'Edit Volunteer Status', 'code' => 'edit-volunteer-status', 'entity' => 'volunteer' ],
     ['name' => 'Delete Volunteer Status', 'code' => 'delete-volunteer-status', 'entity' => 'volunteer' ],
 
+    /* TEAMS */
+    ['name' => 'View All Teams', 'code' => 'view-all-teams', 'entity' => 'team' ],
+    ['name' => 'Create Team', 'code' => 'create-team', 'entity' => 'team' ],
+    ['name' => 'Edit Team', 'code' => 'edit-team', 'entity' => 'team' ],
+    ['name' => 'Delete Team', 'code' => 'delete-team', 'entity' => 'team' ],
+
     /* SESSION REQUESTS */
     ['name' => 'View All Session Requests', 'code' => 'view-all-session-requests', 'entity' => 'session' ],
     ['name' => 'View My Session Requests', 'code' => 'view-my-session-requests', 'entity' => 'session' ],
@@ -108,7 +114,6 @@ return [
     ['name' => 'Create Task', 'code' => 'create-task', 'entity' => 'task' ],
     ['name' => 'Edit Task', 'code' => 'edit-task', 'entity' => 'task' ],
     ['name' => 'Delete Task', 'code' => 'delete-task', 'entity' => 'task' ],
-
 
     /* TASK STATUSES */
     ['name' => 'View All Task Statuses', 'code' => 'view-all-task-statuses', 'entity' => 'task' ],

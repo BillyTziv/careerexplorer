@@ -33,34 +33,13 @@ let props = defineProps({
 	sessionRequestStatusDropdownOptions: {
 		type: Array,
 		default: () => []
-	},
-	// sessionRequestHistory: {
-	// 	type: Array,
-	// 	default: () => []
-	// }
+	}
 });
 
-// const { adjustOpacity } = usesessionRequestStatusMapper(props.sessionRequestStatusDropdownOptions);
 const { notify } = useToastNotification();
-const toast = useToast();
 
-const selectedsessionRequestStatus = ref(props.sessionRequest.status);
-const selectedAssignedRecruiter = ref(props.sessionRequest.assigned_to);
 const showSessionRequestNotesModal = ref(false);
-
-// function submitComment(comment) {
-// 	router.post('/volunteers/' + props.sessionRequest.id + '/comment', {
-// 		comment: comment
-// 	}, {
-// 		preserveState: true,
-// 		replace: true,
-// 		onSuccess: () => {
-// 			console.log("xaxa")
-// 			let saveNotesMsg = 'Οι σημειώσεις του εθελοντή ενημερώθηκαν επιτυχώς.';
-// 			notify('success', 'Ολοκληρώθηκε', saveNotesMsg);
-// 		},
-// 	});
-// }
+const completeSRDialog = ref(false);
 
 function updateNotes(notes) {
 	router.post('/session-requests/' + props.sessionRequest.id + '/notes', {
@@ -194,6 +173,24 @@ const vInfo = computed(() => {
 		return {};
 	}
 });
+
+const confirmCompleteSR = (sessionRequest) => {
+    completeSRDialog.value = true;
+};
+
+const completeSR = () => {
+    router.put(`/session-requests/${props.sessionRequest.id}/complete`, {},
+        {
+            preserveState: true,
+            replace: true,
+            onSuccess: () => {
+                completeSRDialog.value = false;
+
+                notify('success', 'Ολοκληρώθηκε', `Η συνεδρία επαγγελματικού προσανατολισμού ολοκληρώθηκε επιτυχώς.`);
+            }
+        }
+    );
+};
 </script>
 
 <style scoped>
@@ -257,6 +254,14 @@ const vInfo = computed(() => {
 									<div class="text-3xl font-bold text-primary">
 										{{ sessionRequest.firstname + " " + sessionRequest.lastname }}
 									</div>
+
+                                    <br />
+
+                                    <Button
+                                        @click="confirmCompleteSR"
+                                        icon="pi pi-check"
+                                        label="Ολοκλήρωση Συνεδρίας"
+                                    />
 
 									<!-- <div class="text-xl py-2">
 										{{ volunteerRole }}
@@ -366,4 +371,20 @@ const vInfo = computed(() => {
 			</div>
 		</template>
 	</AppPageWrapper>
+
+    <Dialog v-model:visible="completeSRDialog" :style="{ width: '450px' }" header="Επιβεβαίωση Ολοκλήρωσης"
+        :modal="true">
+        <div class="flex align-items-center justify-content-center">
+            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+            <span>
+                Είστε σίγουροι πως θέλετε να ολοκληρώσετε την συνεδρία? Με την ενέργεια αυτή, θα σταλεί ένα ενημερωτικό
+                email στον υποψήφιο.
+            </span>
+        </div>
+
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="completeSRDialog = false" />
+            <Button label="Yes" icon="pi pi-check" text @click="completeSR" />
+        </template>
+    </Dialog>
 </template>

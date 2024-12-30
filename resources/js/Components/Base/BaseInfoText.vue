@@ -7,7 +7,7 @@
             'text-blue-400 ': type === 'info'
         }"
     >
-        <small class="text-sm">
+        <small class="text-lg">
             <slot></slot>
         </small>
     </div>

@@ -79,7 +79,7 @@ const unbindOutsideClickListener = () => {
     }
 };
 
-const isOutsideClicked = (event) => {    
+const isOutsideClicked = (event) => {
     const sidebarEl = sidebarRef?.value.$el;
     const topbarEl = topbarRef?.value.$el.querySelector('.topbar-menubutton');
 
@@ -103,20 +103,20 @@ onMounted(() => {
 
         <div class="layout-content-wrapper">
             <AppTopbar ref="topbarRef" />
-            
+
             <!-- <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
 
             <div class="layout-content">
-                <div :class="{ card: applyCardLayout }"> 
+                <div :class="{ card: applyCardLayout }">
 					<div class="flex flex-column md:flex-row md:align-items-start md:justify-content-between mb-3">
-						<div class="text-900 text-2xl font-semibold mb-3 md:mb-0">
-							<slot name="page-title"></slot>
-						</div>
+                        <div class="bg-surface-0 dark:bg-surface-950">
+                            <div class="font-medium text-3xl text-surface-900 dark:text-surface-0 mb-4">
+                                <slot name="page-title"></slot>
+                            </div>
+                        </div>
 
 						<div class="inline-flex align-items-center">
 							<slot name="page-actions"></slot>
-
-						
 						</div>
 					</div>
 

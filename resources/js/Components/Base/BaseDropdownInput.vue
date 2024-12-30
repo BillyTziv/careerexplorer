@@ -7,7 +7,7 @@
     ]);
 
     let props = defineProps({
-        modelValue:     { type: Number, default: '' },
+        modelValue:     { type: Number, default: null },
         options:        { type: Array, default: [] },
         label:          { type: String, default: '' },
         placeholder:    { type: String, default: '' },
@@ -29,7 +29,7 @@
 
 <template>
     <div :class="['field', { 'col-12': !props.narrow }]">
-        <label class="font-medium text-900"> 
+        <label class="font-medium text-lg text-900">
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
@@ -37,7 +37,7 @@
         <Dropdown
             v-model="inputValue"
             @update:modelValue="updateValue"
-            :options="options" 
+            :options="options"
             optionLabel="label"
             optionValue="id"
             :placeholder="placeholder"
@@ -46,6 +46,6 @@
         ></Dropdown>
 
         <InputError class="mt-2" :message="errors" />
-    </div> 
+    </div>
 </template>
 

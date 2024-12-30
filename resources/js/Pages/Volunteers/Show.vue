@@ -31,6 +31,10 @@ let props = defineProps({
 	response: Object,
 	roles: Array,
 	errors: Object,
+    teamDropdownOptions: {
+        type: Array,
+        default: () => []
+    },
 	volunteerStatusDropdownOptions: {
 		type: Array,
 		default: () => []
@@ -51,6 +55,7 @@ const toast = useToast();
 
 const selectedVolunteerStatus = ref(props.volunteer.status);
 const selectedAssignedRecruiter = ref(props.volunteer.assigned_to);
+const selectedTeam = ref(props.volunteer.team_id);
 const showVolunteerNotesModal = ref(false);
 
 function submitComment(comment) {
@@ -82,6 +87,23 @@ function updateNotes(notes) {
 			showVolunteerNotesModal.value = false;
 		},
 	});
+}
+
+function handleTeamChange(event) {
+    selectedTeam.value = event.target.value;
+
+    console.log("asdas")
+    router.put('/volunteers/' + props.volunteer.id + '/team', {
+        teamId: selectedTeam.value,
+    }, {
+        preserveState: true,
+        replace: true,
+        onSuccess: () => {
+            // Popup a notification
+            let changeTeamMsg = 'Η ομάδα του εθελοντή άλλαξε επιτυχώς.';
+            notify('success', 'Ολοκληρώθηκε', changeTeamMsg);
+        }
+    });
 }
 
 function changeVolunteerStatus(form) {
@@ -120,6 +142,13 @@ const volunteerProfileImage = computed(() => {
 
 const volStatusDropdownOptions = computed(() => {
 	return props.volunteerStatusDropdownOptions.map(option => ({
+		id: option.id,
+		label: option.name
+	}));
+});
+
+const teamDropdownOptions = computed(() => {
+	return props.teamDropdownOptions.map(option => ({
 		id: option.id,
 		label: option.name
 	}));
@@ -170,6 +199,20 @@ const showVolunteerStatusChangeModal = ref(false);
 
 watch(() => selectedVolunteerStatus.value, (newVal) => {
 	showVolunteerStatusChangeModal.value = true;
+});
+
+watch(() => selectedTeam.value, (newVal) => {
+    router.put('/volunteers/' + props.volunteer.id + '/team', {
+        teamId: selectedTeam.value,
+    }, {
+        preserveState: true,
+        replace: true,
+        onSuccess: () => {
+            // Popup a notification
+            let changeTeamMsg = 'Η ομάδα του εθελοντή άλλαξε επιτυχώς.';
+            notify('success', 'Ολοκληρώθηκε', changeTeamMsg);
+        }
+    });
 });
 
 watch(() => selectedAssignedRecruiter.value, (newVal) => {
@@ -260,20 +303,37 @@ const vInfo = computed(() => {
 								></option>
 							</select> -->
 
-							<VolunteerStatusChangeModal :volunteerId="volunteer.id"
+							<VolunteerStatusChangeModal
+                                :volunteerId="volunteer.id"
 								:isOpen="showVolunteerStatusChangeModal"
 								@update:isOpen="showVolunteerStatusChangeModal = $event"
-								@change="changeVolunteerStatus" />
+								@change="changeVolunteerStatus"
+                            />
 
-							<BaseDropdownInput v-model="selectedVolunteerStatus" label="Κατάσταση Εθελοντή"
-								:options="volStatusDropdownOptions" @change="handleStatusChange(event)" />
+							<BaseDropdownInput
+                                v-model="selectedVolunteerStatus"
+                                label="Κατάσταση Εθελοντή"
+								:options="volStatusDropdownOptions"
+                                @change="handleStatusChange(event)"
+                            />
 
-							<BaseDropdownInput v-model="selectedAssignedRecruiter" label="Υπεύθυνος Recruiter"
+							<BaseDropdownInput
+                                v-model="selectedAssignedRecruiter"
+                                label="Υπεύθυνος Recruiter"
 								:options="volAssignedRecruiterDropdownOptions"
-								@change="handleAssignedRecruiterChange(event)" />
+                            />
 
-							<VSectionInfoGridItem v-if="volunteer.disapproved_reason" label="Τελευταίο Σχόλιο"
-								:value="volunteer.disapproved_reason" />
+                            <BaseDropdownInput
+                                v-model="selectedTeam"
+                                label="Ομάδα"
+								:options="teamDropdownOptions"
+                            />
+
+							<VSectionInfoGridItem
+                                v-if="volunteer.disapproved_reason"
+                                label="Τελευταίο Σχόλιο"
+								:value="volunteer.disapproved_reason"
+                            />
 						</div>
 					</div>
 

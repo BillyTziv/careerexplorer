@@ -14,6 +14,10 @@
     import BaseColorPickerInput from '@/Components/Base/BaseColorPickerInput.vue';
     import BaseToggleSwitchInput from '@/Components/Base/BaseToggleSwitchInput.vue';
 
+    import { useToastNotification } from '@/Composables/useToastNotification';
+
+    const { notify } = useToastNotification();
+
     let props = defineProps({
         user: Object,
         taskStatus: Object,
@@ -26,7 +30,7 @@
         id: props.taskStatus.id ? props.taskStatus.id : null,
         name: props.taskStatus.name ? props.taskStatus.name : "",
         description: props.taskStatus.description ? props.taskStatus.description : "",
-        hex_color: props.taskStatus.hex_color ? props.taskStatus.hex_color : "",
+        hex_color: props.taskStatus.hex_color ? props.taskStatus.hex_color : "#",
         is_default: props.taskStatus.is_default ? true : false,
         email_template_id: props.taskStatus.email_template_id ? parseInt(props.taskStatus.email_template_id) : null,
     });
@@ -35,18 +39,21 @@
     const submitButtonLabel = computed(() => { return isEditMode.value ? 'Ενημέρωση' : 'Δημιουργία' });
 
     function saveTaskStatus() {
-        console.log("asdasd",  taskStatusForm.id)
         if( taskStatusForm.id > 0 ) {
-
-            console.log("xexe")
             taskStatusForm.put('/task-statuses/' + taskStatusForm.id, {
                 preserveScroll: true,
-                onSuccess: () => taskStatusForm.reset('role'),
+                onSuccess: () => {
+                    notify('success', 'Επιτυχία', 'Η κατάσταση εργασίας ενημερώθηκε επιτυχώς.');
+                    taskStatusForm.reset('role')
+                },
             });
         } else {
             taskStatusForm.post('/task-statuses', {
                 preserveScroll: true,
-                onSuccess: () => taskStatusForm.reset('role'),
+                onSuccess: () => {
+                    notify('success', 'Επιτυχία', 'Η κατάσταση εργασίας δημιουργήθηκε επιτυχώς.');
+                    taskStatusForm.reset('role')
+                },
             });
         }
     }

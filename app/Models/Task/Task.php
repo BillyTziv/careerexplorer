@@ -15,13 +15,25 @@ class Task extends Model
      *
      * @var array
      */
+/**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'volunteer_id',
         'task_name',
         'description',
+        'due_date',
         'estimated_time',
+        'points',
+        'priority',
         'status_id',
+        'team_id',
+        'category_id'
     ];
+
+    protected $dates = ['due_date'];
 
     /**
      * Get the volunteer that owns the task.
@@ -37,6 +49,30 @@ class Task extends Model
     public function status()
     {
         return $this->belongsTo(TaskStatus::class);
+    }
+
+    /**
+     * Get the priority of the task.
+     */
+    // public function priority()
+    // {
+    //     return $this->belongsTo(Priority::class);
+    // }
+
+    /**
+     * Get the team that the task belongs to.
+     */
+    public function team()
+    {
+        return $this->belongsTo(Team::class);  // Relationship to Team model
+    }
+
+    /**
+     * Get the category of the task.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);  // Relationship to Category model
     }
 
     /**

@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     //     return Inertia::render('Statistics');
     // })->name('statistics');
     Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+    require __DIR__.'/authRoutes/teamRoutes.php';
 
     /*Session Request Routes */
     require __DIR__.'/authRoutes/sessionRequestRoutes.php';

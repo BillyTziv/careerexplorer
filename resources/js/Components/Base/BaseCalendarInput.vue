@@ -17,26 +17,26 @@
         errors: { type: String, default: "" }
     });
 
-    const inputValue = ref( props.modelValue );
+    const inputValue = ref( moment( props.modelValue ).format('DD-MM-YYYY') );
 
     const hasErrors = computed(() => {
         return props.errors.length > 0;
     });
 
     watch(inputValue, () => {
-        emit('update:modelValue', moment( inputValue.value ).format('DD/MM/YYYY'));
+        emit('update:modelValue', moment( inputValue.value ).format('YYYY-MM-DD'));
     });
 </script>
 
 <template>
     <div class="field col-12">
-        <label class="font-medium text-md text-900">
+        <label class="font-medium text-lg text-900">
             {{ label }}
             <span v-if="required" class="text-red-600 dark:text-red-500"> *</span>
         </label>
-
+<br/>
         <Calendar
-            dateFormat="mm-dd-yy"
+            dateFormat="dd-mm-yy"
             inputId="start"
             :invalid="hasErrors"
             v-model="inputValue"
